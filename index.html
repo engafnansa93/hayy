@@ -590,7 +590,7 @@ $('#arClose').onclick = () => $('#arModal').hidden = true;
 $('#arModal').onclick = e => { if (e.target.id === 'arModal') $('#arModal').hidden = true; };
 addEventListener('keydown', e => { if (e.key === 'Escape') $('#arModal').hidden = true; });
 </script>
-<script>(function(){var S='https://sites.google.com/moe.edu.kw/omara-electrons',G={'':'./','/الدرس-1':'lesson1.html','/الدرس-2':'lesson2.html','/الدرس-3':'lesson3.html'},emb=window.top!==window;
-function fix(){document.querySelectorAll('a[href^="'+S+'"]').forEach(function(a){var p;try{p=decodeURIComponent(a.getAttribute('href').slice(S.length)).replace(/\/$/,'');}catch(e){return;}if(emb){a.target='_top';}else if(G[p]!==undefined){a.href=G[p];a.removeAttribute('target');}});}
+<script>(function(){var S='https://sites.google.com/moe.edu.kw/omara-electrons',G={'':'./','/الرئيسية':'./','/الدرس-1':'lesson1.html','/الدرس-2':'lesson2.html','/الدرس-3':'lesson3.html'};
+function fix(){document.querySelectorAll('a[href^="'+S+'"]').forEach(function(a){var p;try{p=decodeURIComponent(a.getAttribute('href').slice(S.length).split('?')[0]).replace(/\/$/,'');}catch(e){return;}if(G[p]!==undefined){a.href=G[p];a.removeAttribute('target');}});}
 fix();new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});})();</script></body>
 </html>
