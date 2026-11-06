@@ -403,9 +403,9 @@ const CONFIG = {
 <script>/* ملف المشروع: عبّي الروابط هني (يوتيوب، Drive، أو Google Slides) وتطلع بروحها. الفاضي يطلع «قريبًا». */
 (function(){
   var PROJECT = {
-    intro:   '',   // فيديو المقدمة
+    intro:   'intro.mp4',   // فيديو المقدمة
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
-    ai:      '',   // فيديو الذكاء الاصطناعي
+    ai:      'حي الكيمياء - افتتاحية (2).mp4',   // فيديو الذكاء الاصطناعي
     slides:  '',   // العرض التقديمي (Google Slides)
     results: '',   // النتائج (صورة الرسم أو رابط)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
@@ -421,7 +421,7 @@ const CONFIG = {
   function card(t,d,u,icon,wide){
     var e=embed(u);
     var isVid=/\.mp4(\?|$)/i.test(u||'');
-    if(isVid){ var m='<div class="media"><video src="'+u+'" controls playsinline preload="metadata" poster="'+u.replace(/\.mp4.*$/i,'.jpg')+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video></div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
+    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':''; var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="metadata"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video></div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
     var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
            :'<div class="media"><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
     var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
