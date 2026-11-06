@@ -9,7 +9,72 @@ all.forEach(function(a){try{if(!a.paused||!a.src&&!a.currentSrc)return;var m=a.m
 if(p&&p.then)p.then(function(){if(!a.__up){a.pause();try{a.currentTime=0;}catch(e){}}a.muted=m;}).catch(function(){a.muted=m;});else a.muted=m;}catch(e){priming=false;}});
 try{var C=window.AudioContext||window.webkitAudioContext;if(C){var c=new C();var b=c.createBuffer(1,1,22050);var s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);c.resume&&c.resume();}}catch(e){}}
 ['touchend','pointerdown','click','keydown'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true});});
-try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}})();</script>
+try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}})();</script><script>/* Judge mode: ?judge on any page (or the home button) opens everything for the jury, remembers it, and shows a short guide. ?student turns it off. */
+(function(){
+  var q=location.search, J=false;
+  try{
+    if(/[?&]judge\b/.test(q)) localStorage.setItem('hayy.judge','1');
+    if(/[?&]student\b/.test(q)) localStorage.removeItem('hayy.judge');
+    J=localStorage.getItem('hayy.judge')==='1';
+  }catch(e){ J=/[?&]judge\b/.test(q); }
+  window.HAYY_JUDGE=J;
+  if(!J) return;
+  if(!/[?&](all|teacher)\b/.test(q)){
+    try{ history.replaceState(null,'',location.pathname+(q?q+'&all':'?all')+location.hash); }catch(e){}
+  }
+
+  var page=(location.pathname.split('/').pop()||'index.html');
+  var base=location.pathname.replace(/[^\/]*$/,'');
+  var L=function(p){ return base+p+'?judge'; };
+  var guides={
+    'lesson1.html':['المحطة 1: عمارة الإلكترونات','الذرة كأنها عمارة: الأدوار = مستويات الطاقة، والشقق والغرف = تحت المستويات والأفلاك. شوفوا المقاطع بصوت أ. أفنان، وبعدين الألعاب وورقة العمارة التفاعلية آخر الدرس.'],
+    'lesson2.html':['المحطة 2: وين يسكن الإلكترون؟','مهمة الإسكان: الإلكترونات تسكن الأدوار من الأقل طاقة للأعلى (مبدأ أوفباو). جرّبوا اللعبة وشوفوا الشبابيك تنوّر مع التقدم.'],
+    'lesson3.html':['المحطة 3: سوبرماركت العناصر','الجدول الدوري كأنه جمعية: كل عنصر له رف وعنوان. جرّبوا «استكشفي العناصر» والبطاقات، وتجربة الواقع المعزّز من الجوال.']
+  };
+  var css='#hayyJ{position:fixed;top:10px;left:10px;z-index:2147483000;font-family:"Readex Pro",system-ui,sans-serif;direction:rtl}'+
+    '#hayyJ .pill{background:#2b2b3a;color:#fff;border:0;border-radius:999px;padding:8px 14px;font:700 13px/1.2 inherit;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}'+
+    '#hayyJ .card{margin-top:8px;width:min(330px,calc(100vw - 20px));background:#fff;color:#2b2b3a;border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;line-height:1.7;max-height:70vh;overflow:auto}'+
+    '#hayyJ h4{margin:0 0 6px;font-size:15px;color:#C64C39}#hayyJ p{margin:0 0 8px}#hayyJ ol{margin:0 0 8px;padding-inline-start:20px}'+
+    '#hayyJ a{color:#C64C39;font-weight:700}#hayyJ .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}'+
+    '#hayyJ .row a,#hayyJ .row button{border:1.5px solid #C64C39;border-radius:999px;padding:5px 12px;background:#fff;color:#C64C39;font:700 12.5px inherit;text-decoration:none;cursor:pointer}'+
+    '#hayyJ .row .main{background:#C64C39;color:#fff}#hayyJ .x{float:left;border:0;background:none;font-size:18px;cursor:pointer;color:#888}';
+  var g=guides[page], body;
+  if(g){
+    body='<h4>'+g[0]+'</h4><p>'+g[1]+'</p>'+
+      '<p>✅ <b>كل شي مفتوح لكم:</b> المقاطع والألعاب بأي ترتيب، وتقدرون تضغطون «التالي» بدون ما يخلص المقطع.</p>'+
+      '<p>🎯 <b>ما تحتاجون تعرفون كيمياء:</b> اختاروا أي إجابة، والموقع يقول لكم صح أو غلط بصوت أ. أفنان («عفية عليج» / «مو جذي…»).</p>'+
+      '<p>🤖 زر <b>Afnan I</b> تحت: اسألوه أي سؤال، مثل «عطني سؤال من بنك الأسئلة عن الترتيب الإلكتروني».</p>'+
+      '<div class="row"><a href="'+L('lesson1.html')+'">الدرس 1</a><a href="'+L('lesson2.html')+'">الدرس 2</a><a href="'+L('lesson3.html')+'">الدرس 3</a><a href="'+base+'index.html?judge">الرئيسية</a></div>';
+  }else{
+    body='<h4>أهلًا بلجنة التحكيم 👋</h4>'+
+      '<p>جولة سريعة (5 دقايق تقريبًا)، وكل شي مفتوح لكم:</p>'+
+      '<ol><li>اضغطوا <b>«اسمعوا ترحيبي 🔊»</b> فوق.</li>'+
+      '<li><b>الدرس 1:</b> عمارة الإلكترونات، مقاطع بصوت أ. أفنان وألعاب.</li>'+
+      '<li><b>الدرس 2:</b> وين يسكن الإلكترون؟ لعبة الإسكان.</li>'+
+      '<li><b>الدرس 3:</b> سوبرماركت العناصر + الواقع المعزّز 📱.</li>'+
+      '<li><b>Afnan I 🤖</b>: المساعدة الذكية، تجاوب من الكتاب وبنك الأسئلة بلهجتنا.</li></ol>'+
+      '<p>🎯 ما تحتاجون تعرفون كيمياء: جرّبوا أي إجابة، والموقع يصحح ويشجع بصوت المعلمة.</p>'+
+      '<div class="row"><a class="main" href="'+L('lesson1.html')+'" target="_blank" rel="noopener">ابدأوا بالدرس 1 ←</a><a href="'+L('lesson2.html')+'" target="_blank" rel="noopener">الدرس 2</a><a href="'+L('lesson3.html')+'" target="_blank" rel="noopener">الدرس 3</a></div>';
+  }
+  body+='<div class="row" style="margin-top:10px"><button id="hayyJout">🎓 رجوع لوضع الطالبة</button></div>';
+  function mount(){
+    if(document.getElementById('hayyJ')) return;
+    var st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+    var w=document.createElement('div'); w.id='hayyJ';
+    var seen=false; try{ seen=sessionStorage.getItem('hayyJseen:'+page)==='1'; sessionStorage.setItem('hayyJseen:'+page,'1'); }catch(e){}
+    w.innerHTML='<button class="pill" aria-expanded="'+(!seen)+'">⚖️ وضع التحكيم</button><div class="card"'+(seen?' hidden':'')+'><button class="x" aria-label="إغلاق">✕</button>'+body+'</div>';
+    document.body.appendChild(w);
+    var pill=w.querySelector('.pill'), card=w.querySelector('.card');
+    pill.onclick=function(){ card.hidden=!card.hidden; pill.setAttribute('aria-expanded',!card.hidden); };
+    w.querySelector('.x').onclick=function(){ card.hidden=true; pill.setAttribute('aria-expanded','false'); };
+    document.getElementById('hayyJout').onclick=function(){
+      try{ localStorage.removeItem('hayy.judge'); }catch(e){}
+      location.href=location.pathname+location.hash;
+    };
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount); else mount();
+})();</script>
+
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -252,6 +317,7 @@ const CONFIG = {
       <div class="hbtns rise" style="animation-delay:.8s">
         <a class="btn main" href="#lessons">يلا نكتشف الدروس ↓</a>
         <button class="btn" id="hear">اسمعوا ترحيبي 🔊</button>
+        <a class="btn" href="?judge" style="background:#2b2b3a;color:#fff;border-color:#2b2b3a">⚖️ أنا حكم وأبي أجرب</a>
       </div>
       <div class="audio" id="player" hidden>
         <button class="btn" id="pp">⏸️</button><div class="bar"><i id="pbar"></i></div><button class="btn" id="again">🔁</button>
