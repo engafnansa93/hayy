@@ -44,7 +44,7 @@ try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
       '<p>✅ <b>كل شي مفتوح لكم:</b> المقاطع والألعاب بأي ترتيب، وتقدرون تضغطون «التالي» بدون ما يخلص المقطع.</p>'+
       '<p>🎯 <b>ما تحتاجون تعرفون كيمياء:</b> اختاروا أي إجابة، والموقع يقول لكم صح أو غلط بصوت أ. أفنان («عفية عليج» / «مو جذي…»).</p>'+
       '<p>🤖 زر <b>Afnan I</b> تحت: اسألوه أي سؤال، مثل «عطني سؤال من بنك الأسئلة عن الترتيب الإلكتروني».</p>'+
-      '<div class="row"><a href="'+L('lesson1.html')+'">الدرس 1</a><a href="'+L('lesson2.html')+'">الدرس 2</a><a href="'+L('lesson3.html')+'">الدرس 3</a><a href="'+base+'index.html?judge">الرئيسية</a></div>';
+      '<div class="row"><a href="'+L('lesson1.html')+'">الدرس 1</a><a href="'+L('lesson2.html')+'">الدرس 2</a><a href="'+L('lesson3.html')+'">الدرس 3</a><a href="'+base+'index.html?judge#project">📁 ملف المشروع</a><a href="'+base+'index.html?judge">الرئيسية</a></div>';
   }else{
     body='<h4>أهلًا بلجنة التحكيم 👋</h4>'+
       '<p>جولة سريعة (5 دقايق تقريبًا)، وكل شي مفتوح لكم:</p>'+
@@ -284,6 +284,7 @@ const CONFIG = {
     <nav aria-label="التنقل">
       <a href="#top">الرئيسية</a>
       <a href="#lessons">الدروس</a>
+      <a href="#project">📁 ملف المشروع</a>
       <a id="navExplore" target="_blank" rel="noopener">استكشاف العناصر</a>
       <button id="calm" aria-pressed="false">⏸️ إيقاف الحركة</button>
     </nav>
@@ -373,6 +374,65 @@ const CONFIG = {
     </article>
   </div>
 </section>
+<style>
+/* ملف المشروع */
+.pf{background:#fff;border-top:1px solid var(--line);padding:44px 0 50px}
+.pf h2{margin:0 0 6px;font-size:1.6rem;color:var(--maroon)}
+.pf .sub{margin:0 0 22px;color:var(--soft)}
+.pf .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pf .card{background:var(--page);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+.pf .card h3{margin:0;font-size:1.08rem;color:var(--ink)}
+.pf .card p{margin:0;color:var(--soft);font-size:.95rem}
+.pf .media{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--blush);display:grid;place-items:center;color:var(--maroon);font-weight:600;text-align:center}
+.pf .media iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pf .soon{opacity:.75;font-size:.95rem}
+.pf .wide{grid-column:1/-1}
+.pf .who{display:flex;align-items:center;gap:12px}
+.pf .who b{font-size:1.1rem;color:var(--maroon)}
+@media(max-width:600px){.pf h2{font-size:1.3rem}}
+</style>
+
+<section class="pf" id="project">
+  <div class="wrap">
+    <h2>📁 ملف المشروع</h2>
+    <p class="sub">حيّ الكيمياء: الفكرة، والتجربة مع الطالبات، والنتائج.</p>
+    <div class="grid" id="pfGrid"></div>
+  </div>
+</section>
+<script>/* ملف المشروع: عبّي الروابط هني (يوتيوب، Drive، أو Google Slides) وتطلع بروحها. الفاضي يطلع «قريبًا». */
+(function(){
+  var PROJECT = {
+    intro:   '',   // فيديو المقدمة
+    video:   '',   // فيديو المشروع (التصوير + المونتاج)
+    ai:      '',   // فيديو الذكاء الاصطناعي
+    slides:  '',   // العرض التقديمي (Google Slides)
+    results: '',   // النتائج (صورة الرسم أو رابط)
+    keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
+  };
+  function embed(u){
+    if(!u) return '';
+    var m;
+    if((m=u.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/))) return 'https://www.youtube.com/embed/'+m[1];
+    if((m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/))) return 'https://drive.google.com/file/d/'+m[1]+'/preview';
+    if((m=u.match(/docs\.google\.com\/presentation\/d\/([\w-]+)/))) return 'https://docs.google.com/presentation/d/'+m[1]+'/embed?start=false&loop=false';
+    return u;
+  }
+  function card(t,d,u,icon,wide){
+    var e=embed(u);
+    var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
+           :'<div class="media"><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
+    var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
+    return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+a+'</div>';
+  }
+  var g=document.getElementById('pfGrid');
+  g.innerHTML=
+    card('فيديو المقدمة','تعريف سريع بالمشروع.',PROJECT.intro,'🎬')+
+    card('فيديو المشروع','من السبورة… للعمارة… للموقع، والتجربة مع الطالبات.',PROJECT.video,'🎥')+
+    card('فيديو بالذكاء الاصطناعي','فيديو مصنوع بأدوات الذكاء الاصطناعي.',PROJECT.ai,'✨')+
+    card('العرض التقديمي','رحلة المشروع بتسع محطات.',PROJECT.slides,'🗺️',true)+
+    card('النتائج','قبل وبعد، ورأي الطالبات وأولياء الأمور والمؤلفين.',PROJECT.results,'📊')+
+    '<div class="card"><h3>♻️ مين يكمل المشروع؟</h3><p>مسؤولة الاستمرار وتطوير الموقع للدروس الجاية.</p><div class="who"><span style="font-size:2rem">👩‍🏫</span><b>'+PROJECT.keeper+'</b></div></div>';
+})();</script>
 
 <footer>
   <div class="wrap">
