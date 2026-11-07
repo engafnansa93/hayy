@@ -771,10 +771,10 @@ function botGo(){
   };
   try {
     const a = new Audio(CONFIG.links.botVoice);
-    a.addEventListener('ended', finish);
+    a.addEventListener('ended', () => { t.innerHTML = '✨ يالله نروح لـ Afnan I…'; setTimeout(finish, 1500); });
     a.addEventListener('error', finish);
     const pr = a.play(); if (pr && pr.catch) pr.catch(finish);
-    setTimeout(finish, 9000);
+    setTimeout(finish, 11000);
   } catch (x) { finish(); }
 }
 window.hayyBotGo = botGo;
