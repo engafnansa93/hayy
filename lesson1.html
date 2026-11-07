@@ -4,7 +4,7 @@
 (function(){var L=[],O=window.Audio,priming=false;if(O){window.Audio=function(s){var a=s===undefined?new O():new O(s);L.push(a);return a;};window.Audio.prototype=O.prototype;}
 try{var MP=HTMLMediaElement.prototype,P=MP.play;MP.play=function(){if(!priming)this.__up=true;return P.apply(this,arguments);};}catch(e){}
 var done=false;function unlock(){if(done)return;done=true;
-var all=L.concat([].slice.call(document.querySelectorAll('audio,video')));
+var all=L.concat([].slice.call(document.querySelectorAll('audio')));
 all.forEach(function(a){try{if(!a.paused||!a.src&&!a.currentSrc)return;var m=a.muted;a.__up=false;a.muted=true;priming=true;var p=a.play();priming=false;
 if(p&&p.then)p.then(function(){if(!a.__up){a.pause();try{a.currentTime=0;}catch(e){}}a.muted=m;}).catch(function(){a.muted=m;});else a.muted=m;}catch(e){priming=false;}});
 try{var C=window.AudioContext||window.webkitAudioContext;if(C){var c=new C();var b=c.createBuffer(1,1,22050);var s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);c.resume&&c.resume();}}catch(e){}}
