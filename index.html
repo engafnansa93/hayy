@@ -391,7 +391,7 @@ const CONFIG = {
 .pf .who{display:flex;align-items:center;gap:12px}
 .pf .who b{font-size:1.1rem;color:var(--maroon)}
 
-.pf .mag{position:relative;width:100%;max-width:1100px;margin:6px auto 0;perspective:2000px}
+.pf .mag{position:relative;overflow:hidden;width:100%;max-width:1100px;margin:6px auto 0;perspective:2000px}
 .pf .magBook{margin:0 auto;filter:drop-shadow(0 14px 22px rgba(139,52,40,.22))}
 .pf .magBook .page{background:#fff;overflow:hidden;border-radius:6px}
 .pf .magBook .page img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;user-select:none}
@@ -399,6 +399,7 @@ const CONFIG = {
 .pf .magBack>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
 .pf .magInner{background:linear-gradient(135deg,#fbe9e5,#fff5f3)!important}
 .pf .magBack .mbT{font-size:clamp(1.1rem,3vw,2rem);font-weight:800}
+.pf .magBook .page img.mbLogo{width:min(46%,320px);height:auto;object-fit:contain;margin:6px 0;display:block}
 .pf .magBack .mbS{font-size:clamp(.9rem,2vw,1.3rem)}
 .pf .magBack .mbS2{font-size:clamp(.8rem,1.6vw,1rem);opacity:.75}
 .pf .magNav{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
@@ -419,7 +420,7 @@ const CONFIG = {
     intro:   'intro.mp4',   // فيديو المقدمة
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'حي الكيمياء - افتتاحية (2).mp4',   // فيديو الذكاء الاصطناعي
-    slides:  'flip',   // العرض التقديمي: 'flip' = مجلة من صور deck-1..N.jpg
+    slides:  (/[?&]preview\b/.test(location.search)?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
     slidesCount: 11,
     slidesLink: 'https://docs.google.com/presentation/d/1biB3SIzQATmgIYWAT0L5Kmfkv_C-upLGaLPONDkaUQ4/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
@@ -472,30 +473,58 @@ const CONFIG = {
   function label(k){
     if(!book) return;
     var portrait=book.getOrientation&&book.getOrientation()==='portrait';
-    if(k===0){ numEl.textContent='النهاية 💛'; return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
+    if(k===0){ numEl.textContent='النهاية'; return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
     var arr=[s1,s2].filter(function(x){return x>0&&x<=N;}).sort(function(a,b){return a-b;});
     numEl.textContent=arr.length?(arr.join('–')+' / '+N):('النهاية');
   }
+  /* لما المجلة مسكّرة (الغلاف أو الغلاف الخلفي) نخليها بالنص بدل ما يطلع نص أبيض */
+  function center(k){
+    var bk=document.getElementById('magBook'); if(!bk||!book) return;
+    var portrait=book.getOrientation&&book.getOrientation()==='portrait', last=book.getPageCount()-1, x=0;
+    if(!portrait){ if(k>=last) x=25; else if(k===0) x=-25; }
+    bk.style.transition='transform .6s ease'; bk.style.transform='translateX('+x+'%)';
+  }
+  /* صوت تقليب الورق (يتولّد بالمتصفح، بدون ملف) */
+  var actx=null, lastSnd=0;
+  function unlock(){ try{ if(!actx){ var C=window.AudioContext||window.webkitAudioContext; if(C) actx=new C(); } if(actx&&actx.state==='suspended') actx.resume(); }catch(e){} }
+  function flipSound(){
+    var now=Date.now(); if(now-lastSnd<350) return; lastSnd=now;
+    unlock(); if(!actx) return;
+    try{
+      var t=actx.currentTime, dur=.42, n=Math.floor(actx.sampleRate*dur), buf=actx.createBuffer(1,n,actx.sampleRate), d=buf.getChannelData(0);
+      for(var i=0;i<n;i++){ var p=i/n; d[i]=(Math.random()*2-1)*Math.pow(1-p,1.6)*(0.6+0.4*Math.sin(p*38)); }
+      var src=actx.createBufferSource(); src.buffer=buf;
+      var bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=0.9; bp.frequency.setValueAtTime(900,t); bp.frequency.exponentialRampToValueAtTime(3800,t+dur*.6);
+      var hp=actx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=350;
+      var g=actx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.5,t+.03); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(actx.destination); src.start(t); src.stop(t+dur);
+    }catch(e){}
+  }
+  ['pointerdown','touchstart','mousedown','keydown'].forEach(function(ev){ wrap.addEventListener(ev,unlock,{passive:true}); });
   function build(startAt){
     if(book){ try{book.destroy();}catch(e){} }
     var h=document.createElement('div'); h.className='magBook'; h.id='magBook'; h.setAttribute('dir','ltr');
     wrap.innerHTML=''; wrap.appendChild(h);
     var back=document.createElement('div'); back.className='page magBack'; back.setAttribute('data-density','hard');
-    back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><div class="mbS">by Afnan 💛</div><div class="mbS2">شكرًا لكم</div></div>';
+    back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><img class="mbLogo" alt="By Afnan"><div class="mbS2">شكرًا لكم</div></div>';
     h.appendChild(back);
-    if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><div class="mbS">🧪</div><div class="mbS2">by Afnan</div></div>'; h.appendChild(inner); }
+    if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><img class="mbLogo" alt="By Afnan" style="opacity:.55"></div>'; h.appendChild(inner); }
     for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
     var W=wrap.clientWidth||900, single=W<640;
     var pw=single?Math.min(W,980):Math.floor(Math.min(W,1100)/2);
     book=new St.PageFlip(h,{width:pw,height:Math.round(pw*9/16),size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:true,flippingTime:1000,drawShadow:true});
+    var lg=document.getElementById('logo'); var setL=function(){ var src=lg&&lg.getAttribute('src'); if(src) h.querySelectorAll('.mbLogo').forEach(function(i){i.src=src;}); };
+    setL(); setTimeout(setL,0); window.addEventListener('load',setL);
     book.loadFromHTML(h.querySelectorAll('.page'));
     book.turnToPage(startAt==null?N+PAD:startAt);
     label(book.getCurrentPageIndex());
-    book.on('flip',function(e){ label(e.data); });
+    book.on('flip',function(e){ label(e.data); center(e.data); });
+    book.on('changeState',function(e){ if(e.data==='flipping'||e.data==='user_fold') flipSound(); });
+    center(book.getCurrentPageIndex());
   }
   build();
-  document.getElementById('magNext').onclick=function(){ book&&book.flipPrev('top'); };
-  document.getElementById('magPrev').onclick=function(){ book&&book.flipNext('top'); };
+  document.getElementById('magNext').onclick=function(){ unlock(); book&&book.flipPrev('top'); };
+  document.getElementById('magPrev').onclick=function(){ unlock(); book&&book.flipNext('top'); };
   var lw=wrap.clientWidth; window.addEventListener('resize',function(){ if(Math.abs(wrap.clientWidth-lw)>40){ lw=wrap.clientWidth; build(book?book.getCurrentPageIndex():null); } });
 })();</script>
 
