@@ -420,7 +420,7 @@ const CONFIG = {
     intro:   'intro.mp4',   // فيديو المقدمة
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'حي الكيمياء - افتتاحية (2).mp4',   // فيديو الذكاء الاصطناعي
-    slides:  (/[?&]preview\b/.test(location.search)?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
+    slides:  ((function(){ try{ if(/[?&#]preview\b/.test(location.href)) localStorage.setItem('hayy.preview','1'); if(/[?&]student\b/.test(location.search)) localStorage.removeItem('hayy.preview'); return localStorage.getItem('hayy.preview')==='1'; }catch(e){ return /[?&#]preview\b/.test(location.href); } })()?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
     slidesCount: 11,
     slidesLink: 'https://docs.google.com/presentation/d/1biB3SIzQATmgIYWAT0L5Kmfkv_C-upLGaLPONDkaUQ4/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
@@ -532,6 +532,7 @@ const CONFIG = {
 <footer>
   <div class="wrap">
     <p class="big">هذي البداية بس… الكيمياء فيها قصص أكثر نكتشفها مع بعض.</p>
+    <img src="afnan.jpg" alt="أ. أفنان سامي" loading="lazy" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid #e8a79b;box-shadow:0 6px 16px rgba(139,52,40,.2);display:block;margin:6px auto 10px">
     <p style="margin:0">إعداد: أ. أفنان سامي</p>
     <p class="note" style="margin:0">مدرسة أم حبيب بنت العاص القرشية</p>
     <img id="logo2" alt="By Afnan">
