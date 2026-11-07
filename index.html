@@ -443,9 +443,9 @@ const CONFIG = {
     }
     var e=embed(u);
     var isVid=/\.mp4(\?|$)/i.test(u||'');
-    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':''; var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="metadata"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video></div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
+    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':''); var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video></div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
     var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
-           :'<div class="media"><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
+           :'<div class="media"'+(wide?' style="aspect-ratio:auto;height:170px"':'')+'><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
     var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
     return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+a+'</div>';
   }
