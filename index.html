@@ -397,6 +397,7 @@ const CONFIG = {
 .pf .magBook .page img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;user-select:none}
 .pf .magBack{background:linear-gradient(135deg,#f6d3cc,#fbe9e5)!important;display:flex!important;align-items:center;justify-content:center;text-align:center;color:var(--maroon)}
 .pf .magBack>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.pf .magInner{background:linear-gradient(135deg,#fbe9e5,#fff5f3)!important}
 .pf .magBack .mbT{font-size:clamp(1.1rem,3vw,2rem);font-weight:800}
 .pf .magBack .mbS{font-size:clamp(.9rem,2vw,1.3rem)}
 .pf .magBack .mbS2{font-size:clamp(.8rem,1.6vw,1rem);opacity:.75}
@@ -419,7 +420,7 @@ const CONFIG = {
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'حي الكيمياء - افتتاحية (2).mp4',   // فيديو الذكاء الاصطناعي
     slides:  'flip',   // العرض التقديمي: 'flip' = مجلة من صور deck-1..N.jpg
-    slidesCount: 9,
+    slidesCount: 11,
     slidesLink: 'https://docs.google.com/presentation/d/1biB3SIzQATmgIYWAT0L5Kmfkv_C-upLGaLPONDkaUQ4/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
@@ -452,7 +453,7 @@ const CONFIG = {
     card('فيديو المقدمة','تعريف سريع بالمشروع.',PROJECT.intro,'🎬')+
     card('فيديو المشروع','من السبورة… للعمارة… للموقع، والتجربة مع الطالبات.',PROJECT.video,'🎥')+
     card('فيديو بالذكاء الاصطناعي','فيديو مصنوع بأدوات الذكاء الاصطناعي.',PROJECT.ai,'✨')+
-    card('العرض التقديمي','رحلة المشروع بتسع محطات، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
+    card('العرض التقديمي','رحلة المشروع بإحدى عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
     card('النتائج','قبل وبعد، ورأي الطالبات وأولياء الأمور والمؤلفين.',PROJECT.results,'📊')+
     '<div class="card"><h3>♻️ مين يكمل المشروع؟</h3><p>مسؤولة الاستمرار وتطوير الموقع للدروس الجاية.</p><div class="who"><span style="font-size:2rem">👩‍🏫</span><b>'+PROJECT.keeper+'</b></div></div>';
 })();</script>
@@ -466,7 +467,8 @@ const CONFIG = {
   var numEl=document.getElementById('magNum');
   var N=+(numEl&&numEl.textContent.split('/')[1])||9, book=null, wrap=host.parentNode;
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
-  function slideOf(k){ return k===0?0:N+1-k; }
+  var PAD=(N%2===0)?1:0; // عدد زوجي من السلايدات = نضيف صفحة داخلية عشان الغلاف يبدأ مسكّر
+  function slideOf(k){ return k<=PAD?0:N+1+PAD-k; }
   function label(k){
     if(!book) return;
     var portrait=book.getOrientation&&book.getOrientation()==='portrait';
@@ -481,12 +483,13 @@ const CONFIG = {
     var back=document.createElement('div'); back.className='page magBack'; back.setAttribute('data-density','hard');
     back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><div class="mbS">by Afnan 💛</div><div class="mbS2">شكرًا لكم</div></div>';
     h.appendChild(back);
+    if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><div class="mbS">🧪</div><div class="mbS2">by Afnan</div></div>'; h.appendChild(inner); }
     for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
     var W=wrap.clientWidth||900, single=W<640;
     var pw=single?Math.min(W,980):Math.floor(Math.min(W,1100)/2);
     book=new St.PageFlip(h,{width:pw,height:Math.round(pw*9/16),size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:true,flippingTime:1000,drawShadow:true});
     book.loadFromHTML(h.querySelectorAll('.page'));
-    book.turnToPage(startAt==null?N:startAt);
+    book.turnToPage(startAt==null?N+PAD:startAt);
     label(book.getCurrentPageIndex());
     book.on('flip',function(e){ label(e.data); });
   }
