@@ -754,7 +754,7 @@ let botSaid = false, botBusy = false;
 function botGo(){
   if (!CONFIG.links.bot){ $('#botSoon').hidden = !$('#botSoon').hidden; return; }
   if (botBusy) return;
-  if (!CONFIG.links.botVoice || botSaid){ window.open(CONFIG.links.bot, '_blank', 'noopener'); return; }
+  if (!CONFIG.links.botVoice){ window.open(CONFIG.links.bot, '_blank', 'noopener'); return; }
   botSaid = true; botBusy = true;
   const t = document.createElement('div');
   t.setAttribute('role','status');
