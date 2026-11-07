@@ -443,7 +443,7 @@ const CONFIG = {
     }
     var e=embed(u);
     var isVid=/\.mp4(\?|$)/i.test(u||'');
-    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':''); var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video></div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
+    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':''); var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>'+(pst?'<button type="button" class="vcov" aria-label="شغّلوا الفيديو" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;background:#000 url('+pst.split('"')[1]+') center/contain no-repeat;display:flex;align-items:center;justify-content:center"><span style="width:72px;height:72px;border-radius:50%;background:rgba(139,52,40,.88);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.3);padding-left:6px">▶</span></button>':'')+'</div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
     var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
            :'<div class="media"'+(wide?' style="aspect-ratio:auto;height:170px"':'')+'><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
     var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
@@ -883,6 +883,8 @@ fix();new MutationObserver(fix).observe(document.documentElement,{childList:true
   paint(); setInterval(paint, 2000);
   addEventListener('storage', paint);
 })();
+</script><script>/* غلاف الفيديو: صورة واضحة بكل الأجهزة، وبالضغط يشتغل الفيديو */
+document.addEventListener('click',function(e){ var c=e.target.closest&&e.target.closest('.vcov'); if(!c) return; e.preventDefault(); var v=c.parentNode.querySelector('video'); c.remove(); if(v){ v.preload='auto'; try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(_){} } });
 </script><script>/* التنقّل داخل الصفحة: يحرّك الموقع بس (مو صفحة قوقل اللي فوقه) ويوقف تحت القائمة بالضبط */
 (function(){
   function hdr(){ var h=document.querySelector('header.nav'); return h?h.getBoundingClientRect().height:0; }
