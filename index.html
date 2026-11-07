@@ -749,11 +749,36 @@ $('#navExplore').href = CONFIG.links.ar;
 $('#ar3d').href = CONFIG.links.ar;
 $('#botImg').src = CONFIG.photo;
 if (CONFIG.links.bot) $('#bot').href = CONFIG.links.bot;
-let botSaid = false;
-$('#bot').addEventListener('click', e => {
-  if (CONFIG.links.botVoice && !botSaid){ botSaid = true; try { new Audio(CONFIG.links.botVoice).play(); } catch (x) {} }
-  if (!CONFIG.links.bot){ e.preventDefault(); $('#botSoon').hidden = !$('#botSoon').hidden; }
-});
+/* Afnan I: يقول جملته أول، وبعدها يفتح الشات بوت */
+let botSaid = false, botBusy = false;
+function botGo(){
+  if (!CONFIG.links.bot){ $('#botSoon').hidden = !$('#botSoon').hidden; return; }
+  if (botBusy) return;
+  if (!CONFIG.links.botVoice || botSaid){ window.open(CONFIG.links.bot, '_blank', 'noopener'); return; }
+  botSaid = true; botBusy = true;
+  const t = document.createElement('div');
+  t.setAttribute('role','status');
+  t.style.cssText = 'position:fixed;bottom:84px;left:18px;z-index:9999;background:#fff;border:2px solid var(--maroon);border-radius:16px 16px 16px 4px;padding:10px 14px;max-width:260px;box-shadow:0 10px 26px rgba(139,52,40,.25);font:15px/1.7 "Readex Pro",Tajawal,sans-serif;color:var(--maroon);direction:rtl;font-weight:700';
+  t.innerHTML = '🎧 اسمعوا Afnan I…';
+  document.body.appendChild(t);
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true; botBusy = false;
+    let w = null; try { w = window.open(CONFIG.links.bot, '_blank', 'noopener'); } catch (x) {}
+    t.innerHTML = '<a href="' + CONFIG.links.bot + '" target="_blank" rel="noopener" style="display:inline-block;background:var(--maroon);color:#fff;text-decoration:none;border-radius:99px;padding:6px 16px">يالله نبدأ! افتحوا Afnan I ↗</a>';
+    t.querySelector('a').addEventListener('click', () => setTimeout(() => t.remove(), 300));
+    setTimeout(() => { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 450); }, 12000);
+  };
+  try {
+    const a = new Audio(CONFIG.links.botVoice);
+    a.addEventListener('ended', finish);
+    a.addEventListener('error', finish);
+    const pr = a.play(); if (pr && pr.catch) pr.catch(finish);
+    setTimeout(finish, 9000);
+  } catch (x) { finish(); }
+}
+window.hayyBotGo = botGo;
+$('#bot').addEventListener('click', e => { e.preventDefault(); botGo(); });
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let au = null, cueAt = -1;
 /* guided tour: while Anona talks, the page moves to what she is talking about (seconds in the welcome audio) */
@@ -891,7 +916,7 @@ fix();new MutationObserver(fix).observe(document.documentElement,{childList:true
     e.preventDefault();
     var ov=document.querySelector('#hayyJ .ov'); if(ov) ov.hidden=true; var p=document.querySelector('#hayyJ .pill'); if(p)p.setAttribute('aria-expanded','false');
     if(a.classList.contains('hayyHear')){ window.scrollTo({top:0,behavior:'smooth'}); var h=document.getElementById('hear'); if(h){ h.click(); h.focus&&h.focus({preventScroll:true}); } }
-    else { var b=document.getElementById('bot'); if(b){ if(b.href) window.open(b.href,'_blank','noopener'); else b.click(); } }
+    else { if(window.hayyBotGo) window.hayyBotGo(); else { var b=document.getElementById('bot'); if(b) b.click(); } }
   },true);
   document.addEventListener('click',function(e){
     var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
