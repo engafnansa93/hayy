@@ -401,7 +401,7 @@ const CONFIG = {
 .pf .magBack .mbT{font-size:clamp(1.1rem,3vw,2rem);font-weight:800}
 .pf .magBook .page img.mbLogo{width:min(46%,320px);height:auto;object-fit:contain;margin:6px 0;display:block}
 .pf .magBack .mbS{font-size:clamp(.9rem,2vw,1.3rem)}
-.pf .magBack .mbS2{font-size:clamp(.8rem,1.6vw,1rem);opacity:.75}
+.pf .magBack .mbS2{font-size:clamp(1rem,2vw,1.35rem);font-weight:700;color:var(--maroon)}
 .pf .magNav{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
 .pf .magNav span{font-weight:700;color:var(--maroon);min-width:56px;text-align:center}
 @media(max-width:600px){.pf h2{font-size:1.3rem}}
@@ -506,7 +506,7 @@ const CONFIG = {
     var h=document.createElement('div'); h.className='magBook'; h.id='magBook'; h.setAttribute('dir','ltr');
     wrap.innerHTML=''; wrap.appendChild(h);
     var back=document.createElement('div'); back.className='page magBack'; back.setAttribute('data-density','hard');
-    back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><img class="mbLogo" alt="By Afnan"><div class="mbS2">شكرًا لكم</div></div>';
+    back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><img class="mbLogo" alt="By Afnan"><div class="mbS2">شكراً من القلب 🤍</div></div>';
     h.appendChild(back);
     if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><img class="mbLogo" alt="By Afnan" style="opacity:.55"></div>'; h.appendChild(inner); }
     for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
