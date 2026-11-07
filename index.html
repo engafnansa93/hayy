@@ -48,12 +48,12 @@ try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   }else{
     body='<h4>أهلًا بلجنة التحكيم 👋</h4>'+
       '<p>جولة سريعة (5 دقايق تقريبًا)، وكل شي مفتوح لكم:</p>'+
-      '<ol><li>اضغطوا <b>«اسمعوا ترحيبي 🔊»</b> فوق.</li>'+
-      '<li><b>الدرس 1:</b> عمارة الإلكترونات، مقاطع بصوت أ. أفنان وألعاب.</li>'+
-      '<li><b>الدرس 2:</b> وين يسكن الإلكترون؟ لعبة الإسكان.</li>'+
-      '<li><b>الدرس 3:</b> سوبرماركت العناصر + الواقع المعزّز 📱.</li>'+
-      '<li><b>Afnan I 🤖</b>: المساعدة الذكية، تجاوب من الكتاب وبنك الأسئلة بلهجتنا.</li>'+
-      '<li><b>📁 ملف المشروع</b>: الفيديوهات والعرض التقديمي والنتائج، آخر الصفحة.</li></ol>'+
+      '<ol><li><a href="#" class="hayyHear">اضغطوا <b>«اسمعوا ترحيبي 🔊»</b></a></li>'+
+      '<li><a href="'+L('lesson1.html')+'" target="_blank" rel="noopener"><b>الدرس 1:</b> عمارة الإلكترونات</a>، مقاطع بصوت أ. أفنان وألعاب.</li>'+
+      '<li><a href="'+L('lesson2.html')+'" target="_blank" rel="noopener"><b>الدرس 2:</b> وين يسكن الإلكترون؟</a> لعبة الإسكان.</li>'+
+      '<li><a href="'+L('lesson3.html')+'" target="_blank" rel="noopener"><b>الدرس 3:</b> سوبرماركت العناصر</a> + الواقع المعزّز 📱.</li>'+
+      '<li><a href="#" class="hayyBot"><b>Afnan I 🤖</b></a>: المساعدة الذكية، تجاوب من الكتاب وبنك الأسئلة بلهجتنا.</li>'+
+      '<li><a href="#project" class="hayyPF"><b>📁 ملف المشروع</b></a>: الفيديوهات والعرض التقديمي والنتائج، آخر الصفحة.</li></ol>'+
       '<p>🎯 ما تحتاجون تعرفون كيمياء: جرّبوا أي إجابة، والموقع يصحح ويشجع بصوت المعلمة.</p>'+
       '<div class="row"><a class="main" href="'+L('lesson1.html')+'" target="_blank" rel="noopener">ابدأوا بالدرس 1 ←</a><a href="'+L('lesson2.html')+'" target="_blank" rel="noopener">الدرس 2</a><a href="'+L('lesson3.html')+'" target="_blank" rel="noopener">الدرس 3</a><a class="hayyPF" href="#project">📁 ملف المشروع</a></div>';
   }
@@ -861,12 +861,38 @@ fix();new MutationObserver(fix).observe(document.documentElement,{childList:true
 </script><script>/* التنقّل داخل الصفحة: يحرّك الموقع بس (مو صفحة قوقل اللي فوقه) ويوقف تحت القائمة بالضبط */
 (function(){
   function hdr(){ var h=document.querySelector('header.nav'); return h?h.getBoundingClientRect().height:0; }
+  function tallFrame(){ try{ return window.self!==window.top && window.innerHeight > ((screen.availHeight||900)+40); }catch(_){ return true; } }
+  window.hayyTall=tallFrame;
   function go(id,smooth){
     var t=document.getElementById(id); if(!t) return false;
+    if(tallFrame()){ t.scrollIntoView({behavior:smooth?'smooth':'auto',block:'start'}); return true; }
     var y=t.getBoundingClientRect().top+window.pageYOffset-hdr()-10;
     window.scrollTo({top:Math.max(0,y),behavior:smooth?'smooth':'auto'}); return true;
   }
   window.hayyGo=go;
+  (function(){
+    if(!('IntersectionObserver' in window)) return;
+    var vis=null;
+    function place(){
+      var ov=document.querySelector('#hayyJ .ov'); if(!ov) return;
+      if(!tallFrame()||!vis){ ov.style.top=''; ov.style.bottom=''; ov.style.height=''; return; }
+      ov.style.top=Math.max(0,vis.top)+'px'; ov.style.height=Math.max(200,vis.height)+'px'; ov.style.bottom='auto';
+    }
+    var th=[]; for(var i=0;i<=100;i++) th.push(i/100);
+    var io=new IntersectionObserver(function(es){ var r=es[0].intersectionRect; vis={top:r.top,height:r.height}; place(); },{threshold:th});
+    function start(){ io.observe(document.body); place(); }
+    if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+    document.addEventListener('click',function(){ setTimeout(place,0); },true);
+    var mo=new MutationObserver(function(){ place(); }); 
+    document.addEventListener('DOMContentLoaded',function(){ mo.observe(document.body,{childList:true,subtree:false,attributes:false}); });
+  })();
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('#hayyJ a.hayyHear, #hayyJ a.hayyBot'); if(!a) return;
+    e.preventDefault();
+    var ov=document.querySelector('#hayyJ .ov'); if(ov) ov.hidden=true; var p=document.querySelector('#hayyJ .pill'); if(p)p.setAttribute('aria-expanded','false');
+    if(a.classList.contains('hayyHear')){ window.scrollTo({top:0,behavior:'smooth'}); var h=document.getElementById('hear'); if(h){ h.click(); h.focus&&h.focus({preventScroll:true}); } }
+    else { var b=document.getElementById('bot'); if(b){ if(b.href) window.open(b.href,'_blank','noopener'); else b.click(); } }
+  },true);
   document.addEventListener('click',function(e){
     var a=e.target.closest&&e.target.closest('a[href^="#"]'); if(!a) return;
     var id=a.getAttribute('href').slice(1); if(!id||!document.getElementById(id)) return;
