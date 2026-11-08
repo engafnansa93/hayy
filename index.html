@@ -468,6 +468,15 @@ const CONFIG = {
   var numEl=document.getElementById('magNum');
   var N=+(numEl&&numEl.textContent.split('/')[1])||9, book=null, wrap=host.parentNode;
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
+  /* فويس المديرة: يطلع زره لما تنفتح صفحة 10 (ساحة الأصوات) */
+  var vAud=new Audio('voice-principal.mp3'); vAud.preload='none';
+  var vBtn=document.createElement('button'); vBtn.type='button'; vBtn.className='btn main'; vBtn.style.display='none';
+  var vIdle='🔊 اسمعوا المديرة أ. شيماء الجنديل';
+  vBtn.textContent=vIdle;
+  vBtn.onclick=function(){ if(vAud.paused){ vAud.play(); vBtn.textContent='⏸ إيقاف'; } else { vAud.pause(); vBtn.textContent=vIdle; } };
+  vAud.addEventListener('ended',function(){ vAud.currentTime=0; vBtn.textContent=vIdle; });
+  numEl.parentNode.insertAdjacentElement('afterend',vBtn); vBtn.style.alignSelf='center';
+  function showVoice(on){ vBtn.style.display=on?'':'none'; if(!on&&!vAud.paused){ vAud.pause(); vBtn.textContent=vIdle; } }
   var PAD=(N%2===0)?1:0; // عدد زوجي من السلايدات = نضيف صفحة داخلية عشان الغلاف يبدأ مسكّر
   function slideOf(k){ return k<=PAD?0:N+1+PAD-k; }
   function label(k){
@@ -476,6 +485,7 @@ const CONFIG = {
     if(k===0){ numEl.textContent='النهاية'; return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
     var arr=[s1,s2].filter(function(x){return x>0&&x<=N;}).sort(function(a,b){return a-b;});
     numEl.textContent=arr.length?(arr.join('–')+' / '+N):('النهاية');
+    showVoice(arr.indexOf(10)>-1);
   }
   /* لما المجلة مسكّرة (الغلاف أو الغلاف الخلفي) نخليها بالنص بدل ما يطلع نص أبيض */
   function center(k){
