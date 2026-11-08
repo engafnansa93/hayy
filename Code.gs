@@ -107,7 +107,7 @@ function setup() {
      ['lessons', 'https://sites.google.com/view/hayy-chemistry'],
      ['booking', ''],
      ['chatWebhook', ''],
-     ['geminiModel', 'gemini-flash-latest'],
+     ['geminiModel', 'gemini-flash-lite-latest'],
      ['audio:الأعداد الكمية', ''], ['audio:مبدأ أوفباو', ''], ['audio:الترتيب الإلكتروني', ''], ['audio:الجدول الدوري', '']
     ].forEach(function (r) { append_('Settings', { key: r[0], value: r[1] }); });
   }
@@ -346,7 +346,7 @@ function postChat_(text) {
 function gemini_(prompt, asJson) {
   var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
   if (!key) return { ok: false, error: 'no key' };
-  var model = String(settings_().geminiModel || 'gemini-flash-latest');
+  var model = String(settings_().geminiModel || 'gemini-flash-lite-latest');
   var body = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: 0.6, maxOutputTokens: 800 } };
   if (asJson) body.generationConfig.responseMimeType = 'application/json';
   var res = UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
@@ -355,7 +355,7 @@ function gemini_(prompt, asJson) {
   if (res.getResponseCode() !== 200) return { ok: false, error: res.getContentText().slice(0, 300) };
   var d = JSON.parse(res.getContentText());
   var text = (((d.candidates || [])[0] || {}).content || {}).parts;
-  text = text ? text.map(function (p) { return p.text || ''; }).join('') : '';
+  text = text ? text.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('') : '';
   return text ? { ok: true, text: text.trim() } : { ok: false, error: 'empty' };
 }
 
@@ -654,6 +654,8 @@ function seedDemo() {
   var me = Session.getEffectiveUser().getEmail().toLowerCase();
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
   if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
+  var gm = rows_('Settings').filter(function (r) { return r.key === 'geminiModel'; })[0];
+  if (gm) update_('Settings', gm._row, { value: 'gemini-flash-lite-latest' });
   Logger.log('✅ انضافت شعبة تجريبية 10/6 (8 طالبات بدون إيميلات).');
 }
 
