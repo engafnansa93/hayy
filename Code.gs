@@ -152,7 +152,11 @@ function buildState_(user, set) {
   var ok = function (sid) { return !allowed || allowed.indexOf(String(sid)) >= 0; };
 
   var subjects = {};
-  rows_('Subjects').forEach(function (s) {
+  var mine = String(user.subjects || '').split(',').map(function (x) { return x.split(':')[0].trim(); }).filter(String);
+  rows_('Subjects').sort(function (a, b) {
+    var ia = mine.indexOf(a.id), ib = mine.indexOf(b.id);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  }).forEach(function (s) {
     subjects[s.id] = { name: s.name, teacher: s.teacher, skills: String(s.skills || '').split('|').filter(String) };
   });
   var students = rows_('Students').filter(function (s) { return ok(s.id); }).map(function (s) {
@@ -565,4 +569,104 @@ function installTriggers() {
   ScriptApp.newTrigger('dailySync').timeBased().everyDays(1).atHour(6).inTimezone(TZ).create();
   ScriptApp.newTrigger('sendDigests').timeBased().everyDays(1).atHour(19).inTimezone(TZ).create();
   Logger.log('✅ المزامنة 6 الصبح، والتقارير 7 المسا (اليومية كل يوم، والأسبوعية الخميس).');
+}
+
+/* ===================== بيانات تجريبية (للعرض والفيديو) =====================
+ * seedDemo  ← يضيف شعبة تجريبية (رموزها تبدأ بـ d) بدون أي إيميلات، فما ينرسل شي لأحد.
+ * clearDemo ← يمسح كل الصفوف التجريبية ويرجّع الحساب معلمة فقط.
+ */
+function seedDemo() {
+  clearDemo();
+  var names = ['سارة', 'نورة', 'دانة', 'ريم', 'هيا', 'لطيفة', 'مها', 'جود'];
+  var meta = [
+    { abs: 1, hw: 0, goal: 'أرفع درجة الكيمياء', term: { chem: 74, phys: 88, math: 85, bio: 90, arabic: 82, eng: 86, social: 80 }, interests: { research: 5, social: 4, practical: 3, creative: 2, leading: 3, organizing: 3 } },
+    { abs: 0, hw: 0, goal: 'أشارك في أولمبياد الكيمياء', term: { chem: 98, phys: 97, math: 96, bio: 95, arabic: 90, eng: 94, social: 88 }, interests: { research: 5, practical: 4, creative: 2, social: 3, leading: 3, organizing: 2 } },
+    { abs: 0, hw: 0, goal: 'أكتشف مجال التصميم', term: { chem: 92, phys: 94, math: 96, bio: 85, arabic: 78, eng: 84, social: 76 }, interests: { creative: 5, social: 4, research: 2, practical: 3, leading: 2, organizing: 2 } },
+    { abs: 2, hw: 1, goal: '', term: { chem: 68, phys: 72 }, interests: null },
+    { abs: 0, hw: 2, goal: '', term: { chem: 75, phys: 66, math: 70, bio: 78, arabic: 85, eng: 80, social: 84 }, interests: { social: 5, leading: 4, organizing: 3, creative: 3, research: 2, practical: 2 } },
+    { abs: 4, hw: 1, goal: '', term: { chem: 70, phys: 74, math: 72, bio: 76, arabic: 88, eng: 79, social: 90 }, interests: { social: 4, creative: 4, organizing: 3, research: 2, practical: 2, leading: 3 } },
+    { abs: 0, hw: 0, goal: '', term: { chem: 84, phys: 82, math: 80, bio: 86, arabic: 83, eng: 88, social: 82 }, interests: { organizing: 5, leading: 4, research: 3, social: 3, practical: 2, creative: 2 } },
+    { abs: 1, hw: 0, goal: '', term: { chem: 78, phys: 80, math: 83, bio: 79, arabic: 81, eng: 77, social: 80 }, interests: { practical: 5, research: 4, creative: 3, organizing: 2, social: 2, leading: 2 } }
+  ];
+  var sh = sheet_('Students'), rows = [];
+  names.forEach(function (n, i) {
+    var m = meta[i];
+    rows.push(['d' + (i + 1), n, '10-6', '', '', 'ولي أمر ' + n, m.abs, m.hw, m.goal, JSON.stringify(m.term), m.interests ? JSON.stringify(m.interests) : '', 'weekly']);
+  });
+  sh.getRange(sh.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+
+  var ind = [], add = function (sid, subj, skill, levels, w0) {
+    levels.forEach(function (l, i) { ind.push([sid, subj, skill, l, w0 + Math.floor(i / 2), (i % 2) ? 3 : 1, subj === 'chem' ? 'أ. أفنان سامي' : 'معلمة الفيزياء', new Date()]); });
+  };
+  add('d1', 'chem', 'الأعداد الكمية', ['m', 'm'], 3); add('d1', 'chem', 'الترتيب الإلكتروني', ['m', 'p'], 5); add('d1', 'phys', 'تحويل الوحدات', ['m', 'm', 'm'], 3);
+  add('d2', 'chem', 'الأعداد الكمية', ['m', 'm'], 3); add('d2', 'chem', 'الترتيب الإلكتروني', ['m', 'm'], 5); add('d2', 'chem', 'مبدأ أوفباو', ['m'], 6); add('d2', 'phys', 'تحويل الوحدات', ['m', 'm'], 3);
+  add('d3', 'chem', 'الأعداد الكمية', ['m', 'm'], 3); add('d3', 'chem', 'الترتيب الإلكتروني', ['m'], 5); add('d3', 'phys', 'تحويل الوحدات', ['m', 'm'], 3);
+  add('d4', 'chem', 'الأعداد الكمية', ['p'], 3);
+  add('d5', 'chem', 'الأعداد الكمية', ['m', 'p', 'm'], 3); add('d5', 'chem', 'مبدأ أوفباو', ['p'], 6); add('d5', 'phys', 'تحويل الوحدات', ['p', 'm'], 3);
+  add('d6', 'chem', 'الأعداد الكمية', ['p', 'm'], 3); add('d6', 'chem', 'مبدأ أوفباو', ['p'], 6); add('d6', 'phys', 'تحويل الوحدات', ['m'], 3);
+  add('d7', 'chem', 'الأعداد الكمية', ['m', 'm'], 3); add('d7', 'chem', 'مبدأ أوفباو', ['m'], 6); add('d7', 'phys', 'تحويل الوحدات', ['m', 'm'], 3);
+  add('d8', 'chem', 'الأعداد الكمية', ['m', 'p', 'm'], 3); add('d8', 'chem', 'مبدأ أوفباو', ['p'], 6); add('d8', 'phys', 'الحركة في خط مستقيم', ['m', 'p'], 4);
+  var si = sheet_('Indicators'); si.getRange(si.getLastRow() + 1, 1, ind.length, ind[0].length).setValues(ind);
+
+  var A = [['da1', 'chem', '10-6', 'قصير 1 — الأعداد الكمية', 10, 'الأعداد الكمية', 3, 'published'],
+           ['da2', 'chem', '10-6', 'قصير 2 — الترتيب الإلكتروني', 10, 'الترتيب الإلكتروني', 6, 'draft'],
+           ['dp1', 'phys', '10-6', 'قصير 1 — تحويل الوحدات', 10, 'تحويل الوحدات', 3, 'published'],
+           ['dp2', 'phys', '10-6', 'قصير 2 — الحركة', 10, 'الحركة في خط مستقيم', 5, 'published']];
+  var sa = sheet_('Assessments'); sa.getRange(sa.getLastRow() + 1, 1, A.length, A[0].length).setValues(A);
+  var G = { da1: [8, 10, 9, 6, 7, 'absent', 8, 7], da2: [5, 9.5, 9, 'ungraded', 'missing', 6, 8, 7], dp1: [9, 10, 10, 7, 6, 7, 8, 8], dp2: [9, 9.5, 9.5, 7, 5, 7, 8, 7] }, g = [];
+  Object.keys(G).forEach(function (aid) { G[aid].forEach(function (v, i) { g.push([aid, 'd' + (i + 1), typeof v === 'number' ? v : '', typeof v === 'number' ? 'ok' : v, new Date()]); }); });
+  var sg = sheet_('Grades'); sg.getRange(sg.getLastRow() + 1, 1, g.length, g[0].length).setValues(g);
+
+  var today = new Date().getDay(), P = [], n = 0;
+  names.forEach(function (x, i) {
+    var sid = 'd' + (i + 1);
+    [['phys', '', 'مراجعة درس الحركة وحل 3 مسائل', 'عندك تقرير مختبر الثلاثاء، والمراجعة اليوم تخفف الضغط.', 20, today, '16:30', 'study'],
+     ['math', '', 'واجب الرياضيات', 'موعد التسليم الأربعاء.', 30, today, '17:30', 'study'],
+     ['chem', '', 'قراءة درس مبدأ أوفباو قبل الحصة', 'قصير 3 الأحد القادم عن هذا الدرس.', 15, (today + 1) % 7, '17:00', 'study'],
+     ['eng', '', 'قراءة قصة الأسبوع', 'هدف أسبوعي ثابت في خطتك.', 20, (today + 2) % 7, '18:00', 'study'],
+     ['chem', 'مبدأ أوفباو', '🫧 مراجعة سريعة قبل قصير 3', 'قبل الاختبار بيومين: لعبة قصيرة وتصيرين جاهزة.', 10, 5, '17:00', 'practice']
+    ].forEach(function (t) {
+      P.push(['dt' + (++n), sid, t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], (sid === 'd2' && t[2] === 'واجب الرياضيات') ? 'done' : 'todo', '', t[1] ? 'تقويم الشعبة' : 'الكوتش', '', new Date()]);
+    });
+  });
+  var sp = sheet_('Plans'); sp.getRange(sp.getLastRow() + 1, 1, P.length, P[0].length).setValues(P);
+
+  var ago = function (d) { return new Date(Date.now() - d * 864e5).toISOString(); };
+  var games = { 'الأعداد الكمية': 'سكّني الإلكترونات', 'مبدأ أوفباو': 'رتّبي الطوابق', 'الترتيب الإلكتروني': 'فقاعات الترتيب' };
+  var pr = function (sid, skill, score, mist, keys, sec, d) {
+    return [sid, 'chem', skill, games[skill], score, 5, JSON.stringify(keys.map(function (k) { return { k: k.replace('!', ''), ok: k.charAt(0) !== '!' }; })), JSON.stringify(mist), sec, ago(d)];
+  };
+  var PR = [pr('d1', 'الأعداد الكمية', 5, [], ['orb-N', 'orb-O', 'orb-C', 'orb-Mn', 'orb-Fe'], 240, 3),
+            pr('d1', 'مبدأ أوفباو', 4, ['ترتيب 4s و 3d'], ['ord-2', '!ord-1', 'ord-5', 'ord-6', 'ord-3'], 310, 2),
+            pr('d2', 'الأعداد الكمية', 5, [], ['orb-N', 'orb-O', 'orb-C', 'orb-Mn', 'orb-F'], 150, 4),
+            pr('d2', 'مبدأ أوفباو', 5, [], ['ord-1', 'ord-2', 'ord-3', 'ord-4', 'ord-5'], 140, 3),
+            pr('d2', 'الترتيب الإلكتروني', 5, [], ['cfg-Na', 'cfg-K', 'cfg-Fe', 'cfg-S', 'cfg-Cl'], 200, 1),
+            pr('d5', 'الأعداد الكمية', 3, ['ازدواج قبل ملء الأفلاك منفردة', 'ازدواج قبل ملء الأفلاك منفردة'], ['orb-N', '!orb-O', 'orb-C', '!orb-Fe', 'orb-Mn'], 420, 2)];
+  var sr = sheet_('Practice'); sr.getRange(sr.getLastRow() + 1, 1, PR.length, PR[0].length).setValues(PR);
+
+  var nd = function (dow) { var d = new Date(); d.setDate(d.getDate() + (((dow - d.getDay() + 7) % 7) || 7)); return Utilities.formatDate(d, TZ, 'yyyy-MM-dd'); };
+  [['10-6', 'chem', 'قصير 3 — مبدأ أوفباو', 'الأحد', nd(0), 'مبدأ أوفباو'],
+   ['10-6', 'phys', 'تسليم تقرير المختبر', 'الثلاثاء', nd(2), ''],
+   ['10-6', 'math', 'اختبار قصير', 'الأربعاء', nd(3), '']].forEach(function (u) {
+    append_('Upcoming', { cls: u[0], subj: u[1], title: u[2], when: u[3], date: "'" + u[4], skill: u[5], eventId: 'demo' });
+  });
+
+  var me = Session.getEffectiveUser().getEmail().toLowerCase();
+  var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
+  if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
+  Logger.log('✅ انضافت شعبة تجريبية 10/6 (8 طالبات بدون إيميلات).');
+}
+
+function clearDemo() {
+  ['Students', 'Indicators', 'Grades', 'Plans', 'Practice', 'Requests', 'Reviews', 'Alerts'].forEach(function (n) {
+    var col = n === 'Students' ? 'id' : n === 'Alerts' ? 'sid' : 'sid';
+    if (n === 'Grades') col = 'sid';
+    rows_(n).filter(function (r) { return /^d\d+$/.test(String(r[col])); }).reverse().forEach(function (r) { sheet_(n).deleteRow(r._row); });
+  });
+  rows_('Assessments').filter(function (r) { return /^d[ap]\d+$/.test(String(r.id)); }).reverse().forEach(function (r) { sheet_('Assessments').deleteRow(r._row); });
+  rows_('Upcoming').filter(function (r) { return r.eventId === 'demo'; }).reverse().forEach(function (r) { sheet_('Upcoming').deleteRow(r._row); });
+  var me = Session.getEffectiveUser().getEmail().toLowerCase();
+  var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
+  if (u && u.studentId === 'd1') update_('Users', u._row, { roles: 'teacher,admin,counselor', studentId: '', children: '' });
+  Logger.log('🧹 انمسحت البيانات التجريبية.');
 }
