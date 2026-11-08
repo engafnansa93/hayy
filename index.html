@@ -421,7 +421,7 @@ const CONFIG = {
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'ai.mp4',   // فيديو الذكاء الاصطناعي
     slides:  ((function(){ try{ if(/[?&#]preview\b/.test(location.href)) localStorage.setItem('hayy.preview','1'); if(/[?&]student\b/.test(location.search)) localStorage.removeItem('hayy.preview'); return localStorage.getItem('hayy.preview')==='1'; }catch(e){ return /[?&#]preview\b/.test(location.href); } })()?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
-    slidesCount: 11,
+    slidesCount: 12,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
@@ -468,7 +468,7 @@ const CONFIG = {
   var numEl=document.getElementById('magNum');
   var N=+(numEl&&numEl.textContent.split('/')[1])||9, book=null, wrap=host.parentNode;
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
-  /* فويس المديرة: يطلع زره لما تنفتح صفحة 10 (ساحة الأصوات) */
+  /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
   var vAud=new Audio('voice-principal.mp3'); vAud.preload='none';
   var vBtn=document.createElement('button'); vBtn.type='button'; vBtn.className='btn main'; vBtn.style.display='none';
   var vIdle='🔊 اسمعوا المديرة أ. شيماء الجنديل';
@@ -485,7 +485,7 @@ const CONFIG = {
     if(k===0){ numEl.textContent='النهاية'; return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
     var arr=[s1,s2].filter(function(x){return x>0&&x<=N;}).sort(function(a,b){return a-b;});
     numEl.textContent=arr.length?(arr.join('–')+' / '+N):('النهاية');
-    showVoice(arr.indexOf(10)>-1);
+    showVoice(arr.indexOf(11)>-1);
   }
   /* لما المجلة مسكّرة (الغلاف أو الغلاف الخلفي) نخليها بالنص بدل ما يطلع نص أبيض */
   function center(k){
