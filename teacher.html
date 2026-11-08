@@ -130,6 +130,7 @@ header.top .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;paddi
 .day b{display:block;font-size:13px}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--soft);margin-bottom:8px}
 .legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:-1px;background:var(--c)}
+.aq{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}.aq:last-child{border-bottom:0}.aq small{display:block;color:var(--soft);font-size:12.5px}.tag.ask{background:#FFF0E0;color:#9A4A12}
 .foot{color:var(--soft);font-size:12.5px;text-align:center;margin-top:26px}
 .hidden{display:none !important}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-left-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
@@ -187,6 +188,12 @@ header.top .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;paddi
     </div>
 
     <div class="card">
+      <h2>🤖 شنو يسألون Afnan I؟</h2>
+      <p class="sub">الأسئلة اللي كتبنها بصندوق «اسألي Afnan I» قبل ما يروحن للبوت، مصنّفة حسب الموضوع.</p>
+      <div class="grid2" style="gap:18px"><div id="askTopics"></div><div id="askList"></div></div>
+    </div>
+
+    <div class="card">
       <h2>👩‍🎓 الطالبات</h2>
       <p class="sub">اضغطي على أي طالبة تشوفين ملفها: نقاط القوة والضعف، متى دخلت، وشنو كتبت.</p>
       <div class="scroll"><table class="tbl" id="tbl"></table></div>
@@ -223,6 +230,23 @@ const fmtWhen = iso => { if (!iso) return '—'; const d = new Date(iso), now = 
   return fmtDay(d) + ' ' + t; };
 const colorFor = p => p == null ? '#CFC6D2' : p >= 80 ? 'var(--ok)' : p >= 55 ? 'var(--warn)' : 'var(--bad)';
 const LESSON_NAME = { 1:'الدرس 1', 2:'الدرس 2', 3:'الدرس 3' };
+
+const TOPICS = [
+  ['4s و 3d (شواذ الترتيب)', /4s|3d|4 s|3 d/],
+  ['أعداد الكم', /اعداد الكم|عدد الكم|كمي|المغزلي|المغناطيسي|الثانوي|الرئيسي|quantum/],
+  ['قاعدة هوند ومبدأ باولي', /هوند|hund|باولي|pauli|مزدوج|منفرد|سبين|spin|اسهم ب|السهم فوق|تحت السهم/],
+  ['الترتيب الإلكتروني وأوفباو', /ترتيب|توزيع|اوفباو|اوف باو|aufbau|مادلنج|madelung|n\s*\+\s*l|سهم|اسهم|يتعب|تعبئ|امتلاء|نسكن|يسكن/],
+  ['الأفلاك', /فلك|افلاك|اوربيتال|orbital|غرف/],
+  ['العائلات', /عائل|هالوجين|نبيل|نبيله|قلوي|اقلاء|ارضي/],
+  ['فلزات ولافلزات وأشباهها', /فلز|اشباه/],
+  ['مندليف وموزلي', /مندليف|موزلي|عدد ذري|العدد الذري|كتله/],
+  ['الجدول الدوري: الدورات والمجموعات', /جدول|دوره|دورات|مجموعه|مجموعات|عنوان/],
+  ['مستويات وتحت مستويات الطاقة', /مستوي|مستويات|\b[spdf]\b|شقه|شقق|(^|\s)(ال)?دور(\s|$)|ادوار|عماره|طاقه/],
+  ['الاختبار والمراجعة', /اختبار|امتحان|مراجع|درج|يجي ب/],
+];
+const normQ = s => String(s || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[ًٌٍَُِّْـ]/g, '');
+const topicOf = q => { const t = normQ(q); const m = TOPICS.find(([, re]) => re.test(t)); return m ? m[0] : 'أسئلة عامة'; };
+const countTopics = list => { const m = new Map(); list.forEach(a => m.set(a.topic, (m.get(a.topic) || 0) + 1)); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
 
 let RAW = [], META = {}, DEMO = false, sortKey = 'flag', sortDir = -1;
 
@@ -261,17 +285,17 @@ function start(){
 function build(){
   const fSec = $('#fSec').value, fL = $('#fLesson').value, fT = +$('#fTime').value, noJ = $('#fJudge').checked;
   const since = fT ? (() => { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - (fT - 1)); return d; })() : null;
-  const ev = RAW.filter(e => e.name && (!noJ || !e.mode || e.mode === 'student') && (!fSec || normSec(e.sec) === fSec) && (!fL || String(e.lesson) === fL) && (!since || new Date(e.ts) >= since));
+  const ev = RAW.filter(e => e.name && (!noJ || !e.mode || e.mode === 'student') && (!fSec || normSec(e.sec) === fSec) && (!fL || String(e.lesson) === fL || (e.type === 'ask' && String(e.lesson) === '0')) && (!since || new Date(e.ts) >= since));
   const seen = new Set(), list = [];
   ev.forEach(e => { if (e.id && seen.has(e.id)) return; seen.add(e.id); list.push(e); });
   list.sort((a, b) => a.ts < b.ts ? -1 : 1);
 
   const S = new Map();
   const stu = e => { const k = normName(e.name) + '|' + normSec(e.sec);
-    if (!S.has(k)) S.set(k, { key:k, name:e.name.trim(), sec:normSec(e.sec), items:new Map(), active:0, pauses:[], rewinds:0, replays:0, hints:0, comments:[], days:new Map(), last:'', first:'', lessons:new Set(), finished:new Set(), tests:{} });
+    if (!S.has(k)) S.set(k, { key:k, name:e.name.trim(), sec:normSec(e.sec), items:new Map(), active:0, pauses:[], rewinds:0, replays:0, hints:0, comments:[], days:new Map(), last:'', first:'', lessons:new Set(), finished:new Set(), tests:{}, asks:[] });
     return S.get(k); };
   list.forEach(e => {
-    const s = stu(e); s.last = e.ts; s.first = s.first || e.ts; s.lessons.add(+e.lesson);
+    const s = stu(e); s.last = e.ts; s.first = s.first || e.ts; if (+e.lesson) s.lessons.add(+e.lesson);
     const dk = e.ts.slice(0, 10), day = s.days.get(dk) || { secs:0, lessons:new Set(), date:new Date(e.ts) }; day.lessons.add(+e.lesson); s.days.set(dk, day);
     switch (e.type){
       case 'active': s.active += +e.value || 0; day.secs += +e.value || 0; break;
@@ -286,6 +310,7 @@ function build(){
       case 'comment': s.comments.push(e); break;
       case 'finish': s.finished.add(+e.lesson); break;
       case 'test': s.tests[e.item] = e.value; break;
+      case 'ask': if (e.text) s.asks.push({ q:e.text, ts:e.ts, where:e.where, lesson:+e.lesson, topic:topicOf(e.text) }); break;
     }
   });
   const students = [...S.values()].map(s => {
@@ -300,6 +325,7 @@ function build(){
     s.weak = s.skills.filter(x => x.p < 60).sort((a, b) => a.p - b.p || b.tries - a.tries);
     s.weakKinds = [...new Set(its.map(i => i.weak).filter(Boolean).flatMap(w => w.split('، ')))];
     s.pauseN = s.pauses.filter(p => p.type === 'pause').length;
+    s.askTopics = countTopics(s.asks);
     s.flag = flagOf(s);
     return s;
   });
@@ -319,7 +345,7 @@ function flagOf(s){
 function render(){
   const { list, students } = build();
   window.__model = { list, students };
-  renderKpis(students, list); renderSkills(students); renderMoments(list); renderTable(students); renderComments(students);
+  renderKpis(students, list); renderSkills(students); renderMoments(list); renderAsks(students); renderTable(students); renderComments(students);
   $('#foot').textContent = (DEMO ? 'بيانات تجريبية' : 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-KW', { hour:'numeric', minute:'2-digit' })) + ' · ' + list.length + ' حدث';
 }
 function renderKpis(st, list){
@@ -355,10 +381,18 @@ function renderMoments(list){
   $('#moments').innerHTML = rows.length ? rows.map(y => `<div class="mo"><span class="tm"><bdi>${mmss(y.b)}–${mmss(y.b + 10)}</bdi></span><div class="tx">${esc(y.where)}<small>${LESSON_NAME[y.lesson]} · <bdi class="n">${y.who.size}</bdi> طالبة</small></div><div class="ct">${[y.pause && `⏸ ${y.pause}`, y.rewind && `↩ ${y.rewind}`, y.replay && `↺ ${y.replay}`].filter(Boolean).join(' · ')}</div></div>`).join('')
     : '<div class="empty">للحين ما فيه توقفات مسجّلة.</div>';
 }
+function renderAsks(st){
+  const all = st.flatMap(s => s.asks.map(a => ({ ...a, s }))).sort((a, b) => a.ts < b.ts ? 1 : -1);
+  if (!all.length){ $('#askTopics').innerHTML = '<div class="empty">للحين ما فيه أسئلة. أول ما تسأل الطالبات Afnan I من الموقع تطلع هني.</div>'; $('#askList').innerHTML = ''; return; }
+  const tops = countTopics(all), max = tops[0][1];
+  $('#askTopics').innerHTML = `<div style="font-size:13px;color:var(--soft);margin-bottom:4px"><bdi class="n">${all.length}</bdi> سؤال من <bdi class="n">${new Set(all.map(a => a.s.key)).size}</bdi> طالبة</div>` + tops.map(([t, n]) => { const who = new Set(all.filter(a => a.topic === t).map(a => a.s.key)).size;
+    return `<div class="sk"><div class="nm">${esc(t)}<small><bdi class="n">${who}</bdi> طالبة</small></div><div class="bar"><i style="width:${Math.round(n / max * 100)}%;background:var(--brand)"></i></div><div class="pc"><bdi class="n">${n}</bdi></div></div>`; }).join('');
+  $('#askList').innerHTML = '<div style="font-size:13px;color:var(--soft);margin-bottom:4px">آخر الأسئلة</div>' + all.slice(0, 10).map(a => `<div class="aq">«${esc(a.q)}»<small><b style="color:var(--ink)">${esc(a.s.name)}</b> · شعبة ${esc(a.s.sec)} · <span class="tag ask">${esc(a.topic)}</span> · ${fmtWhen(a.ts)}</small></div>`).join('');
+}
 function barCell(p, c){ return p == null ? '<span class="tag grey">—</span>' : `<div class="mini-bar"><div class="bar"><i style="width:${p}%;background:${c}"></i></div><bdi class="n">${p}%</bdi></div>`; }
 function renderTable(st){
-  const cols = [['name','الطالبة'],['last','آخر دخول'],['active','الوقت'],['th','نظري'],['pr','تطبيقي'],['vid','الفيديو'],['cm','💬'],['flag','الحالة']];
-  const val = (s, k) => k === 'name' ? s.name : k === 'last' ? s.last : k === 'active' ? s.active : k === 'th' ? (s.th ?? -1) : k === 'pr' ? (s.pr ?? -1) : k === 'vid' ? s.pauseN + s.rewinds + s.replays : k === 'cm' ? s.comments.length : s.flag.score;
+  const cols = [['name','الطالبة'],['last','آخر دخول'],['active','الوقت'],['th','نظري'],['pr','تطبيقي'],['vid','الفيديو'],['ask','🤖 أسئلة'],['cm','💬'],['flag','الحالة']];
+  const val = (s, k) => k === 'name' ? s.name : k === 'last' ? s.last : k === 'active' ? s.active : k === 'th' ? (s.th ?? -1) : k === 'pr' ? (s.pr ?? -1) : k === 'vid' ? s.pauseN + s.rewinds + s.replays : k === 'cm' ? s.comments.length : k === 'ask' ? s.asks.length : s.flag.score;
   const rows = [...st].sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x > y ? 1 : x < y ? -1 : 0) * sortDir || a.name.localeCompare(b.name, 'ar'); });
   $('#tbl').innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th data-k="${k}">${l}${sortKey === k ? (sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('')}</tr></thead><tbody>${rows.map(s => `
     <tr class="st" data-k="${esc(s.key)}">
@@ -368,9 +402,10 @@ function renderTable(st){
       <td>${barCell(s.th, 'var(--theory)')}</td>
       <td>${barCell(s.pr, 'var(--prac)')}</td>
       <td style="white-space:nowrap;font-size:13px">⏸ <bdi class="n">${s.pauseN}</bdi> · ↩ <bdi class="n">${s.rewinds + s.replays}</bdi></td>
+      <td>${s.asks.length ? `<span class="tag ask" title="${esc(s.askTopics.slice(0, 2).map(x => x[0]).join('، '))}">${s.asks.length}</span>` : ''}</td>
       <td>${s.comments.length ? `<span class="tag warn">${s.comments.length}</span>` : ''}</td>
       <td><span class="tag ${s.flag.level}" title="${esc(s.flag.why.join('، '))}">${s.flag.label}</span></td>
-    </tr>`).join('') || `<tr><td colspan="8" class="empty">ما فيه طالبات بهالفلتر.</td></tr>`}</tbody>`;
+    </tr>`).join('') || `<tr><td colspan="9" class="empty">ما فيه طالبات بهالفلتر.</td></tr>`}</tbody>`;
   $('#tbl').querySelectorAll('th').forEach(th => th.onclick = () => { const k = th.dataset.k; if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } renderTable(st); });
   $('#tbl').querySelectorAll('tr.st').forEach(tr => tr.onclick = () => openStudent(st.find(s => s.key === tr.dataset.k)));
 }
@@ -395,6 +430,7 @@ function summary(s){
   const vid = s.rewinds + s.replays;
   if (vid >= 4){ const top = topMoment(s); parts.push(`رجعت للفيديو ${vid} مرات${top ? '، أكثرها عند <b>' + esc(top) + '</b>' : ''}.`); }
   if (s.hints) parts.push(`استخدمت «شوفي اللقطة» ${s.hints} ${s.hints === 1 ? 'مرة' : 'مرات'} بعد ما غلطت، يعني ترجع تراجع بنفسها 👍`);
+  if (s.asks.length){ const t = s.askTopics[0]; parts.push(`سألت Afnan I ${s.asks.length} ${s.asks.length === 1 ? 'سؤال' : s.asks.length <= 10 ? 'أسئلة' : 'سؤال'}${t && t[1] > 1 ? '، أكثرها عن <b>' + esc(t[0]) + '</b>' : ''}.`); }
   if (!parts.length) parts.push('للحين ما فيه بيانات كافية.');
   return parts.join(' ');
 }
@@ -419,6 +455,7 @@ function openStudent(s){
       <div class="box" style="margin-top:12px"><h4>📅 متى تدخل</h4><div class="days">${days.map(([k, d]) => `<div class="day"><b>${fmtDay(d.date)}</b>${[...d.lessons].sort().map(l => 'د' + l).join('، ')} · ${mins(d.secs)}</div>`).join('') || '<span class="empty">—</span>'}</div><div style="font-size:13px;color:var(--soft);margin-top:6px">المجموع: ${mins(s.active)} وقت فعلي</div></div>
       <div class="box" style="margin-top:12px"><h4>🎬 الفيديو</h4>${vids.length ? vids.map(p => `<div class="qrow"><span class="ic">${p.type === 'pause' ? '⏸' : p.type === 'replay' ? '↺' : '↩'}</span><div class="tx">${p.type === 'pause' ? 'وقفت عند' : p.type === 'replay' ? 'أعادت المقطع من' : 'رجعت من'} <bdi>${mmss(p.t)}</bdi>${p.type === 'rewind' && p.t2 !== '' ? ' إلى <bdi>' + mmss(p.t2) + '</bdi>' : ''}${p.kind === 'hint' ? ' <span class="tag warn">بعد غلطة</span>' : ''}<small>${esc(p.where)} · ${fmtWhen(p.ts)}</small></div></div>`).join('') : '<div class="empty">ما وقفت ولا رجعت 🙂</div>'}</div>
       <div class="box" style="margin-top:12px"><h4>📝 الأسئلة</h4>${its.length ? its.map(i => `<div class="qrow"><span class="ic">${i.first ? '✅' : '🔁'}</span><div class="tx">${esc(i.q || i.skill)}<small>${LESSON_NAME[i.lesson]} · ${esc(i.where)} · <span class="tag ${i.kind === 'نظري' ? 'th' : 'pr'}">${esc(i.kind)}</span>${i.first ? '' : ' · ' + (i.tries === 2 ? 'محاولتين' : i.tries + ' محاولات')}${i.replays ? ' · رجعت للفيديو ' + i.replays : ''}${i.weak ? ' · ' + esc(i.weak) : ''}</small></div></div>`).join('') : '<div class="empty">للحين ما جاوبت</div>'}</div>
+      <div class="box" style="margin-top:12px"><h4>🤖 أسئلتها لـ Afnan I</h4>${s.asks.length ? `<div style="margin-bottom:8px">${s.askTopics.map(([t, n]) => `<div class="tp" style="grid-template-columns:minmax(110px,1.4fr) 1fr 64px"><span>${esc(t)}</span><div class="bar"><i style="width:${Math.round(n / s.asks.length * 100)}%;background:var(--brand)"></i></div><b><bdi class="n">${n}</bdi> · ${Math.round(n / s.asks.length * 100)}%</b></div>`).join('')}</div>${s.asks.slice().reverse().map(a => `<div class="qrow"><span class="ic">❓</span><div class="tx">${esc(a.q)}<small>${esc(a.topic)} · ${esc(a.where || '')} · ${fmtWhen(a.ts)}</small></div></div>`).join('')}` : '<div class="empty">ما سألت للحين</div>'}</div>
       <div class="box" style="margin-top:12px"><h4>💬 تعليقاتها</h4>${s.comments.length ? s.comments.map(c => `<div class="cm"><div class="h"><span>${esc(c.where)}</span><span>${fmtWhen(c.ts)}</span></div><p>${esc(c.text)}</p></div>`).join('') : '<div class="empty">ما كتبت شي</div>'}</div>
     </div>`;
   document.body.classList.add('open');
@@ -431,8 +468,8 @@ addEventListener('keydown', e => { if (e.key === 'Escape') closeStudent(); });
 /* ---------------- csv ---------------- */
 $('#btnCsv').onclick = () => {
   const { students } = window.__model || { students: [] };
-  const head = ['الطالبة','الشعبة','آخر دخول','الوقت (دقائق)','نظري %','تطبيقي %','توقف','رجوع/إعادة','نقاط القوة','تحتاج دعم','الحالة','تعليقات'];
-  const lines = [head].concat(students.map(s => [s.name, s.sec, s.last ? new Date(s.last).toLocaleString('en-GB') : '', Math.round(s.active / 60), s.th ?? '', s.pr ?? '', s.pauseN, s.rewinds + s.replays, s.strong.map(x => x.skill).join(' / '), s.weak.map(x => x.skill).join(' / '), s.flag.label, s.comments.map(c => c.text).join(' | ')]));
+  const head = ['الطالبة','الشعبة','آخر دخول','الوقت (دقائق)','نظري %','تطبيقي %','توقف','رجوع/إعادة','نقاط القوة','تحتاج دعم','الحالة','أسئلة Afnan I','مواضيع أسئلتها','تعليقات'];
+  const lines = [head].concat(students.map(s => [s.name, s.sec, s.last ? new Date(s.last).toLocaleString('en-GB') : '', Math.round(s.active / 60), s.th ?? '', s.pr ?? '', s.pauseN, s.rewinds + s.replays, s.strong.map(x => x.skill).join(' / '), s.weak.map(x => x.skill).join(' / '), s.flag.label, s.asks.length, s.askTopics.map(([t, n]) => t + ' (' + n + ')').join(' / '), s.comments.map(c => c.text).join(' | ')]));
   const csv = '﻿' + lines.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' })); a.download = 'متابعة-حي-الكيمياء.csv'; a.click();
 };
@@ -484,6 +521,9 @@ function demo(){
       const nMin = 9 + Math.floor(rnd() * 14) + (prof === 'weak' ? 6 : 0);
       for (let m = 0; m < nMin; m++) push({ ...base, ts: step(5), type:'active', value: 60 });
       if (rnd() < .85) push({ ...base, ts: step(10), type:'finish', where:'خلصت الدرس ' + ln });
+      const ASKS = { 1:['شنو الفرق بين المستوى وتحت المستوى؟','ليش الدور الأول فيه شقة وحدة بس؟','كم فلك في تحت المستوى d؟','شنو يعني فلك؟','ليش الأفلاك أعداد فردية؟'], 2:['ليش 4s تتعبّى قبل 3d؟','شلون أعرف ترتيب التعبئة بدون الأسهم؟','شنو قاعدة n+l؟','الكالسيوم ليش آخره 4s2 مو 3d2؟','كم إلكترون يستوعب p؟','شنو أعداد الكم الأربعة؟','عدد الكم المغناطيسي شنو يعني؟'], 3:['شلون أعرف المجموعة من الترتيب؟','الهالوجينات وين بالجدول؟','ليش الغازات النبيلة ما تتفاعل؟','الفرق بين الدورة والمجموعة؟','منو رتّب الجدول حسب العدد الذري؟','هل الهيدروجين من الأقلاء؟'] };
+      const na = Math.floor(rnd() * (prof === 'weak' || prof === 'practice' ? 4 : 2.2));
+      for (let a = 0; a < na; a++) push({ ...base, ts: step(40), type:'ask', where:'الدرس ' + ln, text: pick(ASKS[ln]) });
       if (rnd() < .22) push({ ...base, ts: step(30), type:'comment', where:'آخر الدرس ' + ln, text: pick(COMMENTS) });
       if (ln === 3) { push({ ...base, ts: step(5), type:'test', item:'pre', value: (3 + Math.floor(rnd() * 3)) + '/8' }); push({ ...base, ts: step(5), type:'test', item:'post', value: (5 + Math.floor(rnd() * 4)) + '/8' }); }
       day -= 1 + Math.floor(rnd() * 3); if (day < 0) day = 0;

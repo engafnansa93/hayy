@@ -11,7 +11,7 @@
   var VERSION = 1;
 
   var LESSON = /lesson3/.test(location.pathname) ? 3 : /lesson2/.test(location.pathname) ? 2 : /lesson1/.test(location.pathname) ? 1 : 0;
-  if (!LESSON) return;
+  if (window.hayyTrack) return; // مرة وحدة بس
 
   var ls = {
     g: function (k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
@@ -70,14 +70,14 @@
     try { if (LESSON < 3 && typeof st !== 'undefined' && st.playing) return true; } catch (e) {}
     return !!document.querySelector('.vplay') && /إيقاف/.test((document.querySelector('.vplay') || {}).textContent || '');
   }
-  setInterval(function () {
+  if (LESSON) setInterval(function () {
     if (document.visibilityState !== 'visible') return;
     if (Date.now() - lastAct < 120000 || playingNow()) activeAcc += 10;
     if (activeAcc >= 60) { emit('active', { value: activeAcc }); activeAcc = 0; }
   }, 10000);
   addEventListener('pagehide', function () { if (activeAcc) { emit('active', { value: activeAcc }); activeAcc = 0; } });
 
-  emit('open', { where: location.hash || '', text: navigator.userAgent.indexOf('iPhone') >= 0 ? 'iPhone' : /Android/.test(navigator.userAgent) ? 'Android' : 'جهاز' });
+  if (LESSON) emit('open', { where: location.hash || '', text: navigator.userAgent.indexOf('iPhone') >= 0 ? 'iPhone' : /Android/.test(navigator.userAgent) ? 'Android' : 'جهاز' });
 
   /* ---------- الدرس 1 و 2 (نفس المشغّل) ---------- */
   function hookL12() {
@@ -229,6 +229,64 @@
     v.appendChild(commentBox(location.hash === '#games' ? 'صفحة الألعاب · الدرس 3' : 'بطاقة الخروج · الدرس 3'));
   }
 
-  try { if (LESSON === 3) hookL3(); else hookL12(); } catch (e) {}
+  try { if (LESSON === 3) hookL3(); else if (LESSON) hookL12(); } catch (e) {}
+
+  /* ---------- «اسألي Afnan I»: نحفظ سؤالها، ننسخه، ونفتح الـ Notebook ---------- */
+  var BOT = 'https://notebook.google.com/notebook/b3dd47a5-818a-4102-b794-5bc359812ef3';
+  var ACSS = '.hy-ask{position:fixed;inset:0;z-index:100000;background:rgba(42,35,70,.45);display:flex;align-items:flex-end;justify-content:center;padding:16px;direction:rtl;font-family:"Readex Pro",Tajawal,sans-serif}' +
+    '@media(min-width:640px){.hy-ask{align-items:center}}' +
+    '.hy-ask .p{background:#fff;border-radius:22px;max-width:440px;width:100%;padding:18px 18px 16px;box-shadow:0 20px 50px rgba(0,0,0,.25);color:#2A2346;text-align:right}' +
+    '.hy-ask h3{margin:0 0 4px;font-size:19px;color:#8B3428}.hy-ask .s{margin:0 0 10px;font-size:13.5px;color:#7A6B75}' +
+    '.hy-ask textarea,.hy-ask input{width:100%;box-sizing:border-box;border:1.5px solid #E7D5CF;border-radius:14px;padding:10px 12px;font:inherit;font-size:16px;background:#FFFCFA}' +
+    '.hy-ask textarea{min-height:92px;resize:vertical}.hy-ask .two{display:flex;gap:8px;margin-bottom:8px}.hy-ask .two input{flex:1}' +
+    '.hy-ask .r{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}' +
+    '.hy-ask .go{border:0;border-radius:99px;padding:10px 18px;background:#C64C39;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:15px}' +
+    '.hy-ask .go[disabled]{opacity:.45;cursor:default}.hy-ask .skip{background:none;border:0;color:#8A6660;font:inherit;font-size:13.5px;cursor:pointer;text-decoration:underline}' +
+    '.hy-ask .n{font-size:12.5px;color:#8A6660;margin-top:10px;background:#FFF5EF;border-radius:10px;padding:6px 10px}';
+  function askBox(href) {
+    if (document.querySelector('.hy-ask')) return;
+    if (!document.getElementById('hy-ask-css')) { var c = document.createElement('style'); c.id = 'hy-ask-css'; c.textContent = ACSS; document.head.appendChild(c); }
+    var name = ls.g('omara.name').trim(), sec = ls.g('omara.sec').trim(), first = name.split(/\s+/)[0] || '';
+    var d = document.createElement('div'); d.className = 'hy-ask'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'اسألي Afnan I');
+    d.innerHTML = '<div class="p"><h3>🤖 اسألي Afnan I' + (first ? '، يا ' + first.replace(/[<>&"]/g, '') : '') + '</h3>' +
+      '<p class="s">اكتبي سؤالج هني، وأنا أنسخه لج وأفتح Afnan I، وإنتي بس الصقيه هناك.</p>' +
+      (name ? '' : '<div class="two"><input class="nm" placeholder="اسمج" autocomplete="off"><input class="sc" placeholder="الشعبة" autocomplete="off" style="max-width:110px"></div>') +
+      '<textarea class="q" placeholder="مثلًا: ليش 4s تتعبّى قبل 3d؟" aria-label="سؤالج"></textarea>' +
+      '<div class="r"><button type="button" class="go" disabled>انسخي وافتحي Afnan I ←</button><button type="button" class="skip">افتحيه بدون سؤال</button></div>' +
+      '<div class="n">🤍 أ. أفنان تشوف سؤالج عشان تساعدج أكثر.</div></div>';
+    document.body.appendChild(d);
+    var q = d.querySelector('.q'), go = d.querySelector('.go');
+    var close = function () { d.remove(); removeEventListener('keydown', esc, true); };
+    var esc = function (e) { if (e.key === 'Escape') close(); };
+    addEventListener('keydown', esc, true);
+    d.addEventListener('click', function (e) { if (e.target === d) close(); });
+    q.addEventListener('input', function () { go.disabled = !q.value.trim(); });
+    setTimeout(function () { q.focus(); }, 60);
+    d.querySelector('.skip').onclick = function () { window.open(href, '_blank', 'noopener'); emit('ask', { where: 'Afnan I', text: '', value: 'skip' }); close(); };
+    go.onclick = function () {
+      var v = q.value.trim(); if (!v) return;
+      var nm = d.querySelector('.nm'), sc = d.querySelector('.sc');
+      if (nm && nm.value.trim()) ls.s('omara.name', nm.value.trim());
+      if (sc && sc.value.trim()) ls.s('omara.sec', sc.value.trim());
+      var n1 = (ls.g('omara.name').trim().split(/\s+/)[0] || '');
+      var msg = (n1 ? 'أنا ' + n1 + '، ' : '') + v;
+      var w = window.open(href, '_blank'); try { if (w) w.opener = null; } catch (e) {}
+      try { navigator.clipboard.writeText(msg); } catch (e) {}
+      emit('ask', { where: LESSON ? 'الدرس ' + LESSON : 'الرئيسية', text: v, q: v });
+      flush(false);
+      d.querySelector('.p').innerHTML = '<h3>✅ نسخت سؤالج</h3><p class="s" style="font-size:15px">بصفحة Afnan I اضغطي على مربع الكتابة ← <b>لصق</b> (أو Ctrl+V) ← إرسال.</p>' +
+        (w ? '' : '<div class="r"><a class="go" style="text-decoration:none" target="_blank" rel="noopener" href="' + href + '">افتحي Afnan I ←</a></div>') +
+        '<div class="r"><button type="button" class="skip">سكّري</button></div>';
+      d.querySelector('.skip').onclick = close;
+    };
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('#afbot, #bot, a[href*="notebook.google.com/notebook/"]');
+    if (!a || a.closest('.hy-ask')) return;
+    var href = a.getAttribute('href') || BOT;
+    if (!/notebook\.google\.com/.test(href)) return; // لو الزر للحين بدون رابط، نخليه على حاله
+    e.preventDefault(); e.stopImmediatePropagation();
+    askBox(href);
+  }, true);
   window.hayyTrack = { emit: emit, flush: flush, queue: function () { return queue.slice(); } };
 })();
