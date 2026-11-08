@@ -7,7 +7,7 @@
    ما يغيّر أي شي بالدرس. وإذا ما فيه رابط (ENDPOINT) يخزّن الأحداث بالجهاز لين ينحط الرابط. */
 (function () {
   'use strict';
-  var ENDPOINT = ''; // ← رابط تطبيق الويب من Apps Script (…/exec)
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzIgzRY5q417e_Deh7B0lUN984XR6AYWMQynkbww1B1DthYT1tO0KwDtsBTRu2DbT7H/exec'; // ← رابط تطبيق الويب من Apps Script (…/exec)
   var VERSION = 1;
 
   var LESSON = /lesson3/.test(location.pathname) ? 3 : /lesson2/.test(location.pathname) ? 2 : /lesson1/.test(location.pathname) ? 1 : 0;

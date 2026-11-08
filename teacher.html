@@ -205,7 +205,7 @@ header.top .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;paddi
 
 <script>
 'use strict';
-const API = ''; // ← رابط تطبيق الويب من Apps Script (…/exec)
+const API = 'https://script.google.com/macros/s/AKfycbzIgzRY5q417e_Deh7B0lUN984XR6AYWMQynkbww1B1DthYT1tO0KwDtsBTRu2DbT7H/exec'; // ← رابط تطبيق الويب من Apps Script (…/exec)
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const ls = { g: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, s: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, d: k => { try { localStorage.removeItem(k); } catch (e) {} } };
