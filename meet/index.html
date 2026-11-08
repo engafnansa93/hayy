@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حجز الاجتماع الفني — فريق الابتكار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#4285F4;--red:#EA4335;--yellow:#FBBC05;--green:#34A853;--ink:#202124;--sub:#5F6368;--line:#E3E6EA;--bg:#F6F8FB;--card:#fff;--tint:#E8F0FE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Readex Pro',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;padding:8px 0 18px}
+.dots{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.dots i{width:12px;height:12px;border-radius:50%;display:block}
+h1{font-size:26px;font-weight:700;line-height:1.35}
+h1 b{color:var(--blue)}
+header p{color:var(--sub);font-size:15px;margin-top:6px;line-height:1.6}
+.card{background:var(--card);border-radius:22px;box-shadow:0 1px 3px rgba(32,33,36,.08),0 6px 20px rgba(32,33,36,.05);padding:18px;margin-bottom:16px}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mhead h2{font-size:20px;font-weight:600}
+.nav{width:42px;height:42px;border-radius:50%;border:0;background:var(--tint);color:var(--blue);font-size:22px;cursor:pointer;font-family:inherit;display:grid;place-items:center}
+.nav:disabled{opacity:.3;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.wd{text-align:center;font-size:13px;color:var(--sub);font-weight:500;padding-bottom:4px}
+.day{aspect-ratio:1;border-radius:16px;border:1.5px solid var(--line);background:#fff;font-family:inherit;font-size:18px;font-weight:600;color:var(--ink);cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:.15s}
+.day:hover:not(:disabled){border-color:var(--blue)}
+.day:disabled{color:#BDC1C6;background:#FAFBFC;border-color:#F0F2F4;cursor:default}
+.day.empty{visibility:hidden}
+.day.today{border-color:var(--yellow)}
+.day.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.day .b{display:flex;gap:3px;height:6px}
+.day .b i{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.day.sel .b i{background:#fff}
+.legend{display:flex;gap:16px;justify-content:center;margin-top:14px;font-size:13px;color:var(--sub)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:block}
+.step{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:4px}
+.card h3{font-size:18px;font-weight:600;margin-bottom:12px}
+.periods{display:grid;gap:8px}
+.per{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;font-family:inherit;text-align:right;width:100%;color:var(--ink)}
+.per:hover{border-color:var(--blue)}
+.per.sel{border-color:var(--blue);background:var(--tint)}
+.per .n{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;flex:none}
+.per .t{flex:1}
+.per .t b{display:block;font-size:16px;font-weight:600}
+.per .t small{color:var(--sub);font-size:13px}
+.per .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.per .tags em{font-style:normal;font-size:11px;background:#E6F4EA;color:#137333;padding:2px 8px;border-radius:20px}
+label{display:block;font-size:14px;font-weight:500;margin:12px 0 6px}
+input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:70px}
+.summary{background:var(--tint);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.7;margin-bottom:4px}
+.summary b{color:var(--blue)}
+.btn{width:100%;margin-top:18px;border:0;border-radius:999px;padding:15px;font-family:inherit;font-size:17px;font-weight:600;background:var(--blue);color:#fff;cursor:pointer}
+.btn:disabled{background:#AECBFA;cursor:default}
+.btn.ghost{background:var(--tint);color:var(--blue);margin-top:10px}
+.note{font-size:13px;color:var(--sub);text-align:center;margin-top:10px;line-height:1.6}
+.err{color:var(--red);font-size:14px;text-align:center;margin-top:10px}
+.done{text-align:center;padding:28px 18px}
+.done .ok{width:76px;height:76px;border-radius:50%;background:#E6F4EA;color:var(--green);display:grid;place-items:center;margin:0 auto 14px}
+.done h3{font-size:22px;margin-bottom:8px}
+.done p{color:var(--sub);line-height:1.7}
+.hide{display:none!important}
+footer{text-align:center;color:var(--sub);font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="dots"><i style="background:var(--blue)"></i><i style="background:var(--red)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i></div>
+    <h1>احجزي موعد <b>الاجتماع الفني</b></h1>
+    <p>اختاري اليوم والحصة، وبنحضر كفريق ابتكار<br>نساعد معلمات قسمج باختبار شهادة Gemini</p>
+  </header>
+
+  <section id="calCard" class="card">
+    <div class="step">١ — اختاري اليوم</div>
+    <div class="mhead">
+      <button class="nav" id="prev" aria-label="الشهر اللي قبل">›</button>
+      <h2 id="mtitle"></h2>
+      <button class="nav" id="next" aria-label="الشهر الجاي">‹</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="legend">
+      <span><i style="background:var(--green)"></i>فيه حجز (تقدرين تحجزين معاه)</span>
+      <span><i style="background:var(--yellow)"></i>اليوم</span>
+    </div>
+  </section>
+
+  <section id="perCard" class="card hide">
+    <div class="step">٢ — اختاري الحصة</div>
+    <h3 id="dayTitle"></h3>
+    <div class="periods" id="periods"></div>
+  </section>
+
+  <section id="formCard" class="card hide">
+    <div class="step">٣ — بيانات القسم</div>
+    <div class="summary" id="summary"></div>
+    <label for="dept">القسم</label>
+    <select id="dept">
+      <option value="">اختاري القسم…</option>
+    </select>
+    <input id="deptOther" class="hide" placeholder="اكتبي اسم القسم" style="margin-top:8px">
+    <label for="head">اسم رئيسة القسم</label>
+    <input id="head" autocomplete="name" placeholder="مثال: أ. نورة">
+    <label for="count">عدد المعلمات تقريبًا (اختياري)</label>
+    <input id="count" inputmode="numeric" placeholder="مثال: 8">
+    <label for="notes">ملاحظات (اختياري)</label>
+    <textarea id="notes" placeholder="مكان الاجتماع، أو أي شي تبين نعرفه"></textarea>
+    <button class="btn" id="submit">احجزي الموعد</button>
+    <p class="err hide" id="err"></p>
+    <p class="note" id="offline"></p>
+  </section>
+
+  <section id="doneCard" class="card done hide">
+    <div class="ok"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h3>تم الحجز 🤍</h3>
+    <p id="doneText"></p>
+    <button class="btn ghost" id="again">حجز موعد ثاني</button>
+  </section>
+
+  <footer>فريق الابتكار · مدرسة أم حبيب · Google for Education</footer>
+</div>
+
+<script>
+// رابط Apps Script بعد النشر
+const API = '';
+
+const PERIODS = [
+  ['الحصة الأولى','7:55','8:40'],['الحصة الثانية','8:45','9:30'],['الحصة الثالثة','9:35','10:20'],
+  ['الحصة الرابعة','10:35','11:20'],['الحصة الخامسة','11:25','12:10'],['الحصة السادسة','12:20','1:05'],
+  ['الحصة السابعة','1:10','1:55']];
+const COLORS = ['#4285F4','#EA4335','#FBBC05','#34A853','#4285F4','#EA4335','#FBBC05'];
+const DEPTS = ['اللغة العربية','اللغة الإنجليزية','الرياضيات','الكيمياء والفيزياء','الأحياء والجيولوجيا','الحاسوب',
+  'التربية الإسلامية','الاجتماعيات','اللغة الفرنسية','التربية البدنية','التربية الفنية','الاقتصاد المنزلي','الفلسفة وعلم النفس','أخرى'];
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const WD = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'];
+
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,'0');
+const iso = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today = new Date(); today.setHours(0,0,0,0);
+const firstMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+let view = new Date(firstMonth), selDate = null, selPer = null, bookings = [];
+
+DEPTS.forEach(d => { const o = document.createElement('option'); o.value = o.textContent = d; $('dept').appendChild(o); });
+$('dept').onchange = () => $('deptOther').classList.toggle('hide', $('dept').value !== 'أخرى');
+
+function byDate(ds){ return bookings.filter(b => b.date === ds); }
+function niceDate(ds){ const d = new Date(ds+'T12:00:00'); return WD[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()]; }
+
+function renderCal(){
+  $('mtitle').textContent = MONTHS[view.getMonth()]+' '+view.getFullYear();
+  $('prev').disabled = view <= firstMonth;
+  const g = $('grid'); g.innerHTML = '';
+  WD.forEach(w => { const e = document.createElement('div'); e.className='wd'; e.textContent=w; g.appendChild(e); });
+  const y = view.getFullYear(), m = view.getMonth(), last = new Date(y, m+1, 0).getDate();
+  let started = false;
+  for (let i = 1; i <= last; i++){
+    const d = new Date(y, m, i), wd = d.getDay();
+    if (wd > 4) continue; // الجمعة والسبت
+    if (!started){ for (let k = 0; k < wd; k++){ const e=document.createElement('div'); e.className='day empty'; g.appendChild(e);} started = true; }
+    const ds = iso(d), b = document.createElement('button');
+    b.className = 'day' + (+d === +today ? ' today' : '') + (ds === selDate ? ' sel' : '');
+    b.disabled = d < today;
+    const n = byDate(ds).length;
+    b.innerHTML = '<span>'+i+'</span><span class="b">'+'<i></i>'.repeat(Math.min(n,3))+'</span>';
+    b.onclick = () => pickDay(ds);
+    g.appendChild(b);
+  }
+}
+
+function pickDay(ds){
+  selDate = ds; selPer = null; renderCal();
+  $('dayTitle').textContent = niceDate(ds);
+  const box = $('periods'); box.innerHTML = '';
+  PERIODS.forEach((p, i) => {
+    const taken = byDate(ds).filter(b => b.period === i+1);
+    const el = document.createElement('button'); el.className = 'per';
+    el.innerHTML = '<span class="n" style="background:'+COLORS[i]+'">'+(i+1)+'</span><span class="t"><b>'+p[0]+'</b><small>من '+p[1]+' إلى '+p[2]+'</small>'+
+      (taken.length ? '<span class="tags">'+taken.map(t => '<em></em>').join('')+'</span>' : '')+'</span>';
+    taken.forEach((t, k) => el.querySelectorAll('em')[k].textContent = 'محجوزة: '+t.dept);
+    el.onclick = () => pickPer(i+1, el);
+    box.appendChild(el);
+  });
+  $('perCard').classList.remove('hide'); $('formCard').classList.add('hide');
+  $('perCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function pickPer(n, el){
+  selPer = n;
+  document.querySelectorAll('.per').forEach(x => x.classList.remove('sel')); el.classList.add('sel');
+  const p = PERIODS[n-1];
+  $('summary').innerHTML = '<b></b><br><span></span>';
+  $('summary').querySelector('b').textContent = niceDate(selDate);
+  $('summary').querySelector('span').textContent = p[0]+' — من '+p[1]+' إلى '+p[2];
+  $('formCard').classList.remove('hide'); $('err').classList.add('hide');
+  $('formCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+$('prev').onclick = () => { view.setMonth(view.getMonth()-1); renderCal(); };
+$('next').onclick = () => { view.setMonth(view.getMonth()+1); renderCal(); };
+
+function showErr(t){ $('err').textContent = t; $('err').classList.remove('hide'); }
+
+$('submit').onclick = async () => {
+  const dept = $('dept').value === 'أخرى' ? $('deptOther').value.trim() : $('dept').value;
+  const head = $('head').value.trim();
+  if (!dept) return showErr('اختاري القسم');
+  if (!head) return showErr('اكتبي اسم رئيسة القسم');
+  if (!API) return showErr('الحجز يفتح قريبًا');
+  $('submit').disabled = true; $('submit').textContent = 'جاري الحجز…'; $('err').classList.add('hide');
+  const data = {date:selDate, period:selPer, dept, head, count:$('count').value.trim(), notes:$('notes').value.trim()};
+  try {
+    const r = await fetch(API, {method:'POST', body: JSON.stringify(data)});
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || '');
+    bookings.push({date:selDate, period:selPer, dept});
+    const p = PERIODS[selPer-1];
+    $('doneText').textContent = 'موعد قسم '+dept+' يوم '+niceDate(selDate)+'، '+p[0]+' من '+p[1]+' إلى '+p[2]+'. بنتواصل معاج قبل الموعد.';
+    ['calCard','perCard','formCard'].forEach(id => $(id).classList.add('hide'));
+    $('doneCard').classList.remove('hide'); window.scrollTo({top:0, behavior:'smooth'});
+  } catch(e) {
+    showErr('ما انحفظ الحجز، جربي مرة ثانية أو تواصلي معنا بالواتساب');
+  } finally {
+    $('submit').disabled = false; $('submit').textContent = 'احجزي الموعد';
+  }
+};
+
+$('again').onclick = () => {
+  selDate = selPer = null; ['head','count','notes','deptOther'].forEach(id => $(id).value=''); $('dept').value='';
+  $('doneCard').classList.add('hide'); $('calCard').classList.remove('hide');
+  $('perCard').classList.add('hide'); $('formCard').classList.add('hide'); renderCal();
+};
+
+async function load(){
+  if (!API){ $('offline').textContent = 'الحجز بيفتح قريبًا'; return; }
+  try { const r = await fetch(API); const j = await r.json(); if (j.ok) bookings = j.bookings || []; } catch(e) {}
+  renderCal();
+}
+renderCal(); load();
+</script>
+</body>
+</html>
