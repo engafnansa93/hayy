@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>لوحة المعلمة · حيّ الكيمياء</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF6F1; --card:#fff; --ink:#2A2346; --soft:#6E6688; --line:#EADFD8;
+  --brand:#C64C39; --brand-d:#8B3428; --brand-l:#FBE3DD;
+  --ok:#0F8A6E; --ok-l:#DDF3EC; --warn:#C27C0E; --warn-l:#FCEFD6; --bad:#C2364A; --bad-l:#FBE1E5;
+  --theory:#5B4BC4; --theory-l:#E9E5FB; --prac:#0F8A6E; --prac-l:#DDF3EC;
+  --r:18px; --sh:0 6px 22px rgba(42,35,70,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 'Readex Pro',Tahoma,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+bdi.n{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 60px}
+header.top{background:var(--ink);color:#fff}
+header.top .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo i{width:36px;height:36px;border-radius:12px;background:var(--brand);display:grid;place-items:center;font-style:normal;font-size:19px}
+.logo small{display:block;font-weight:300;font-size:12px;opacity:.75}
+.top .sp{flex:1}
+.who{font-size:13px;opacity:.85}
+.btn{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;cursor:pointer;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--brand)}
+.btn.main{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+.btn.sm{padding:4px 12px;font-size:13px}
+
+/* login */
+.login{max-width:440px;margin:56px auto;background:#fff;border-radius:24px;box-shadow:var(--sh);padding:28px 26px;text-align:center}
+.login h1{margin:6px 0 4px;font-size:24px}
+.login p{color:var(--soft);margin:0 0 18px}
+.login input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-size:17px;letter-spacing:.5px;direction:ltr}
+.login .row{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.login .err{color:var(--bad);min-height:24px;margin-top:8px;font-size:14px}
+.login .note{font-size:12.5px;color:var(--soft);margin-top:16px;line-height:1.7}
+
+.demo{background:var(--warn-l);color:#7A4E07;border:1px solid #F1D49B;border-radius:14px;padding:9px 14px;margin:16px 0 0;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 6px}
+.filters label{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:6px}
+.filters select{border:1.5px solid var(--line);border-radius:12px;padding:6px 10px;background:#fff}
+.chk{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--soft);cursor:pointer}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px}
+.kpi .l{font-size:13px;color:var(--soft)}
+.kpi .v{font-size:28px;font-weight:700;line-height:1.2;margin-top:2px}
+.kpi .s{font-size:12.5px;color:var(--soft)}
+.split{display:flex;gap:10px;align-items:baseline}
+.split .v{font-size:24px}
+.t-th{color:var(--theory)} .t-pr{color:var(--prac)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:880px){.grid2{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:16px 18px;margin-top:14px;min-width:0}
+.card h2{font-size:17px;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.card .sub{font-size:13px;color:var(--soft);margin:0 0 12px}
+.empty{color:var(--soft);font-size:14px;padding:10px 0}
+
+.tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:99px;padding:1px 9px;white-space:nowrap}
+.tag.th{background:var(--theory-l);color:var(--theory)} .tag.pr{background:var(--prac-l);color:var(--prac)}
+.tag.ok{background:var(--ok-l);color:var(--ok)} .tag.bad{background:var(--bad-l);color:var(--bad)} .tag.warn{background:var(--warn-l);color:#8A5A0A}
+.tag.grey{background:#F1ECF0;color:var(--soft)}
+
+/* skill bars */
+.sk{display:grid;grid-template-columns:minmax(120px,1.2fr) 2fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.sk:last-child{border-bottom:0}
+.sk .nm{font-size:14px;line-height:1.35}
+.sk .nm small{display:block;color:var(--soft);font-size:12px}
+.bar{height:12px;background:#F3EEF2;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px}
+.sk .pc{font-weight:700;font-size:14px;min-width:46px;text-align:left}
+
+/* stuck moments */
+.mo{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.mo:last-child{border-bottom:0}
+.mo .tm{background:var(--brand-l);color:var(--brand-d);border-radius:12px;padding:4px 10px;font-weight:700;font-size:13px;direction:ltr;white-space:nowrap}
+.mo .tx{flex:1;font-size:14px;line-height:1.4}
+.mo .tx small{display:block;color:var(--soft);font-size:12.5px}
+.mo .ct{font-size:13px;color:var(--soft);white-space:nowrap;text-align:left}
+
+/* students table */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-size:12.5px;color:var(--soft);font-weight:600;text-align:right;padding:8px 8px;border-bottom:2px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--ink)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.st{cursor:pointer}
+.tbl tr.st:hover td{background:#FFF8F4}
+.tbl .nm b{display:block}
+.tbl .nm small{color:var(--soft)}
+.mini-bar{display:flex;align-items:center;gap:6px}
+.mini-bar .bar{width:64px;height:8px}
+.scroll{overflow-x:auto}
+
+/* comments */
+.cm{border-right:3px solid var(--brand);background:#FFF8F4;border-radius:10px;padding:8px 12px;margin:8px 0}
+.cm .h{font-size:12.5px;color:var(--soft);display:flex;gap:8px;flex-wrap:wrap}
+.cm .h b{color:var(--ink)}
+.cm p{margin:4px 0 0;font-size:14.5px;white-space:pre-wrap}
+
+/* drawer */
+.dim{position:fixed;inset:0;background:rgba(42,35,70,.35);z-index:50;display:none}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(560px,100%);background:var(--bg);z-index:51;overflow-y:auto;transform:translateX(-102%);transition:transform .25s ease;box-shadow:10px 0 40px rgba(0,0,0,.15)}
+.open .dim{display:block} .open .drawer{transform:none}
+.drawer .hd{position:sticky;top:0;background:var(--ink);color:#fff;padding:16px 18px;display:flex;gap:10px;align-items:center;z-index:2}
+.drawer .hd h3{margin:0;font-size:19px;flex:1}
+.drawer .hd small{display:block;font-weight:300;opacity:.8;font-size:13px}
+.drawer .bd{padding:4px 16px 30px}
+.sum{background:#fff;border-radius:16px;padding:12px 14px;margin-top:14px;box-shadow:var(--sh);font-size:14.5px;line-height:1.8}
+.sum b{color:var(--brand-d)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.box{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:var(--sh)}
+.box h4{margin:0 0 6px;font-size:14px}
+.box ul{margin:0;padding:0 18px 0 0;font-size:13.5px}
+.box li{margin:3px 0}
+.tp{display:grid;grid-template-columns:70px 1fr 44px;gap:8px;align-items:center;font-size:13.5px;margin:6px 0}
+.qrow{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.qrow .ic{width:24px;text-align:center;flex:none}
+.qrow .tx{flex:1;line-height:1.45}
+.qrow .tx small{display:block;color:var(--soft)}
+.days{display:flex;flex-wrap:wrap;gap:6px}
+.day{background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px 10px;font-size:12.5px}
+.day b{display:block;font-size:13px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--soft);margin-bottom:8px}
+.legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:-1px;background:var(--c)}
+.foot{color:var(--soft);font-size:12.5px;text-align:center;margin-top:26px}
+.hidden{display:none !important}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-left-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(-360deg)}}
+@media (max-width:600px){.kpi .v{font-size:24px}.two{grid-template-columns:1fr}.sk{grid-template-columns:1fr auto}.sk .bar{grid-column:1/-1;order:3}}
+@media print{header.top,.filters,.demo .btn,#btnCsv{display:none}.card,.kpi{box-shadow:none;border:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="logo"><i>⚗️</i><div>لوحة المعلمة<small>حيّ الكيمياء · متابعة تعلّم الطالبات</small></div></div>
+  <span class="sp"></span>
+  <span class="who" id="who"></span>
+  <button class="btn ghost sm hidden" id="btnRefresh">↻ تحديث</button>
+  <button class="btn ghost sm hidden" id="btnOut">خروج</button>
+</div></header>
+
+<main class="wrap">
+  <section id="vLogin" class="login">
+    <div style="font-size:40px">👩‍🏫</div>
+    <h1>أهلًا يا أستاذة</h1>
+    <p>اكتبي رمزج السري عشان تشوفين طالبات شعبج.</p>
+    <input id="inKey" autocomplete="off" placeholder="hayy-xxxxxx" aria-label="الرمز السري">
+    <div class="row"><button class="btn main" id="btnIn">دخول</button><button class="btn" id="btnDemo">جرّبي ببيانات تجريبية</button></div>
+    <div class="err" id="err"></div>
+    <div class="note">كل معلمة تشوف شعبها بس. البيانات محفوظة بـ Google Sheet، والطالبات ما يقدرن يشوفنها.<br>ما عندج رمز؟ اطلبيه من أ. أفنان سامي.</div>
+  </section>
+
+  <section id="vDash" class="hidden">
+    <div class="demo hidden" id="demoBar">🧪 <b>بيانات تجريبية</b> للعرض بس، مو طالبات حقيقيات. <button class="btn sm" id="btnDemoOut">خروج من التجربة</button></div>
+
+    <div class="filters">
+      <label>الشعبة <select id="fSec"></select></label>
+      <label>الدرس <select id="fLesson"><option value="">كل الدروس</option><option value="1">الدرس 1: عمارة الإلكترونات</option><option value="2">الدرس 2: الترتيب الإلكتروني</option><option value="3">الدرس 3: الجدول الدوري</option></select></label>
+      <label>الفترة <select id="fTime"><option value="">كل الوقت</option><option value="1">اليوم</option><option value="7">آخر 7 أيام</option><option value="30">آخر 30 يوم</option></select></label>
+      <label class="chk"><input type="checkbox" id="fJudge" checked> بدون الحكام وعرض المعلمة</label>
+      <span style="flex:1"></span>
+      <button class="btn sm" id="btnCsv">⬇︎ تصدير Excel</button>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>🧩 وين تعلق الشعبة؟</h2>
+        <p class="sub">نسبة الطالبات اللي جاوبن صح من أول محاولة، من الأصعب للأسهل.</p>
+        <div class="legend"><span style="--c:var(--theory)">نظري: أسئلة الفهم داخل الفيديو والمحطات</span><span style="--c:var(--prac)">تطبيقي: أوراق العمل والألعاب</span></div>
+        <div id="skills"></div>
+      </div>
+      <div class="card">
+        <h2>⏸️ لحظات الفيديو اللي يوقفن عندها</h2>
+        <p class="sub">توقف وإعادة ورجوع لورا، مجمّعة كل 10 ثواني. هذي أكثر لحظات تحتاج شرح ثاني بالحصة.</p>
+        <div id="moments"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>👩‍🎓 الطالبات</h2>
+      <p class="sub">اضغطي على أي طالبة تشوفين ملفها: نقاط القوة والضعف، متى دخلت، وشنو كتبت.</p>
+      <div class="scroll"><table class="tbl" id="tbl"></table></div>
+    </div>
+
+    <div class="card">
+      <h2>💬 تعليقات الطالبات</h2>
+      <p class="sub">اللي كتبنه آخر كل درس.</p>
+      <div id="comments"></div>
+    </div>
+    <p class="foot" id="foot"></p>
+  </section>
+</main>
+
+<div id="drawerHost"><div class="dim" id="dim"></div><aside class="drawer" id="drawer" aria-label="ملف الطالبة"></aside></div>
+
+<script>
+'use strict';
+const API = ''; // ← رابط تطبيق الويب من Apps Script (…/exec)
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const ls = { g: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, s: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, d: k => { try { localStorage.removeItem(k); } catch (e) {} } };
+const normSec = s => { s = String(s || '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); const m = s.match(/\d+/g); return m ? m[m.length - 1] : s.trim(); };
+const normName = s => String(s || '').replace(/[أإآ]/g, 'ا').replace(/ة\b/g, 'ه').replace(/ى\b/g, 'ي').replace(/\s+/g, ' ').trim();
+const pct = (a, b) => b ? Math.round(a / b * 100) : null;
+const mmss = s => { s = Math.max(0, Math.round(+s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const mins = s => { const m = Math.round((s || 0) / 60); return m < 60 ? m + ' د' : Math.floor(m / 60) + ' س ' + (m % 60) + ' د'; };
+const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const fmtDay = d => DAYS[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1);
+const fmtWhen = iso => { if (!iso) return '—'; const d = new Date(iso), now = new Date(), diff = (now - d) / 864e5;
+  const t = d.toLocaleTimeString('ar-KW', { hour:'numeric', minute:'2-digit' });
+  if (d.toDateString() === now.toDateString()) return 'اليوم ' + t;
+  if (diff < 2 && new Date(now - 864e5).toDateString() === d.toDateString()) return 'أمس ' + t;
+  return fmtDay(d) + ' ' + t; };
+const colorFor = p => p == null ? '#CFC6D2' : p >= 80 ? 'var(--ok)' : p >= 55 ? 'var(--warn)' : 'var(--bad)';
+const LESSON_NAME = { 1:'الدرس 1', 2:'الدرس 2', 3:'الدرس 3' };
+
+let RAW = [], META = {}, DEMO = false, sortKey = 'flag', sortDir = -1;
+
+/* ---------------- loading ---------------- */
+function jsonp(url){ return new Promise((res, rej) => { const cb = 'hy' + Date.now(); const s = document.createElement('script'); window[cb] = d => { res(d); delete window[cb]; s.remove(); }; s.onerror = () => { rej(new Error('net')); s.remove(); }; s.src = url + '&callback=' + cb; document.head.appendChild(s); setTimeout(() => rej(new Error('timeout')), 25000); }); }
+async function fetchData(key){
+  const url = API + '?key=' + encodeURIComponent(key);
+  try { const r = await fetch(url); return await r.json(); } catch (e) { return await jsonp(url); }
+}
+async function login(key, quiet){
+  if (!API){ $('#err').textContent = 'اللوحة للحين مو مربوطة بالشيت. جرّبي البيانات التجريبية.'; return; }
+  $('#err').innerHTML = quiet ? '' : '<span class="spin"></span> لحظة…';
+  try {
+    const d = await fetchData(key);
+    if (!d.ok){ $('#err').textContent = d.error || 'الرمز غير صحيح'; ls.d('hayy.tkey'); showLogin(); return; }
+    ls.s('hayy.tkey', key); DEMO = false;
+    META = { teacher: d.teacher, all: d.all, secs: d.secs, now: d.now };
+    RAW = d.rows.map(r => Object.fromEntries(d.cols.map((c, i) => [c, r[i]])));
+    start();
+  } catch (e){ $('#err').textContent = 'ما قدرت أوصل للشيت. تأكدي من الإنترنت وجربي مرة ثانية.'; showLogin(); }
+}
+function showLogin(){ $('#vLogin').classList.remove('hidden'); $('#vDash').classList.add('hidden'); ['#btnOut','#btnRefresh'].forEach(s => $(s).classList.add('hidden')); $('#who').textContent = ''; }
+function start(){
+  $('#vLogin').classList.add('hidden'); $('#vDash').classList.remove('hidden');
+  $('#btnOut').classList.remove('hidden'); $('#btnRefresh').classList.toggle('hidden', DEMO);
+  $('#demoBar').classList.toggle('hidden', !DEMO);
+  $('#who').textContent = META.teacher ? META.teacher + (META.all ? ' · كل الشعب' : ' · الشعب: ' + META.secs) : '';
+  const secs = [...new Set(RAW.map(e => normSec(e.sec)).filter(Boolean))].sort((a, b) => a - b);
+  const keep = $('#fSec').value;
+  $('#fSec').innerHTML = '<option value="">كل الشعب</option>' + secs.map(s => `<option value="${esc(s)}">شعبة ${esc(s)}</option>`).join('');
+  if (secs.includes(keep)) $('#fSec').value = keep;
+  render();
+}
+
+/* ---------------- model ---------------- */
+function build(){
+  const fSec = $('#fSec').value, fL = $('#fLesson').value, fT = +$('#fTime').value, noJ = $('#fJudge').checked;
+  const since = fT ? (() => { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - (fT - 1)); return d; })() : null;
+  const ev = RAW.filter(e => e.name && (!noJ || !e.mode || e.mode === 'student') && (!fSec || normSec(e.sec) === fSec) && (!fL || String(e.lesson) === fL) && (!since || new Date(e.ts) >= since));
+  const seen = new Set(), list = [];
+  ev.forEach(e => { if (e.id && seen.has(e.id)) return; seen.add(e.id); list.push(e); });
+  list.sort((a, b) => a.ts < b.ts ? -1 : 1);
+
+  const S = new Map();
+  const stu = e => { const k = normName(e.name) + '|' + normSec(e.sec);
+    if (!S.has(k)) S.set(k, { key:k, name:e.name.trim(), sec:normSec(e.sec), items:new Map(), active:0, pauses:[], rewinds:0, replays:0, hints:0, comments:[], days:new Map(), last:'', first:'', lessons:new Set(), finished:new Set(), tests:{} });
+    return S.get(k); };
+  list.forEach(e => {
+    const s = stu(e); s.last = e.ts; s.first = s.first || e.ts; s.lessons.add(+e.lesson);
+    const dk = e.ts.slice(0, 10), day = s.days.get(dk) || { secs:0, lessons:new Set(), date:new Date(e.ts) }; day.lessons.add(+e.lesson); s.days.set(dk, day);
+    switch (e.type){
+      case 'active': s.active += +e.value || 0; day.secs += +e.value || 0; break;
+      case 'answer': {
+        const prev = s.items.get(e.item);
+        const rec = { item:e.item, q:e.q, where:e.where, kind:e.kind, skill:e.skill, lesson:+e.lesson, first:String(e.first) === '1', tries:+e.tries || 1, replays:+e.value || 0, weak:e.text, ts:e.ts };
+        if (prev && prev.first === false) rec.first = false; // أول محاولة غلط تظل غلط
+        s.items.set(e.item, rec); break; }
+      case 'pause': s.pauses.push(e); break;
+      case 'rewind': s.rewinds++; if (e.kind === 'hint') s.hints++; s.pauses.push(e); break;
+      case 'replay': s.replays++; s.pauses.push(e); break;
+      case 'comment': s.comments.push(e); break;
+      case 'finish': s.finished.add(+e.lesson); break;
+      case 'test': s.tests[e.item] = e.value; break;
+    }
+  });
+  const students = [...S.values()].map(s => {
+    const its = [...s.items.values()];
+    const th = its.filter(i => i.kind === 'نظري'), pr = its.filter(i => i.kind === 'تطبيقي');
+    s.th = pct(th.filter(i => i.first).length, th.length); s.thN = th.length;
+    s.pr = pct(pr.filter(i => i.first).length, pr.length); s.prN = pr.length;
+    s.all = pct(its.filter(i => i.first).length, its.length);
+    const sk = new Map(); its.forEach(i => { const k = i.skill || i.where; const x = sk.get(k) || { skill:k, kind:i.kind, lesson:i.lesson, n:0, ok:0, tries:0 }; x.n++; if (i.first) x.ok++; x.tries += i.tries; sk.set(k, x); });
+    s.skills = [...sk.values()].map(x => ({ ...x, p: pct(x.ok, x.n) }));
+    s.strong = s.skills.filter(x => x.p >= 80).sort((a, b) => b.p - a.p || b.n - a.n);
+    s.weak = s.skills.filter(x => x.p < 60).sort((a, b) => a.p - b.p || b.tries - a.tries);
+    s.weakKinds = [...new Set(its.map(i => i.weak).filter(Boolean).flatMap(w => w.split('، ')))];
+    s.pauseN = s.pauses.filter(p => p.type === 'pause').length;
+    s.flag = flagOf(s);
+    return s;
+  });
+  return { list, students };
+}
+function flagOf(s){
+  let score = 0; const why = [];
+  if (s.all != null && s.all < 50){ score += 3; why.push('أقل من نص الأسئلة صح من أول مرة'); }
+  else if (s.all != null && s.all < 70){ score += 1; }
+  if (s.th != null && s.pr != null && Math.abs(s.th - s.pr) >= 30){ score += 1; why.push(s.th > s.pr ? 'النظري أقوى بوايد من التطبيق' : 'التطبيق أقوى بوايد من النظري'); }
+  if (s.rewinds + s.replays >= 6){ score += 1; why.push('ترجع للفيديو وايد'); }
+  if (s.last && (Date.now() - new Date(s.last)) / 864e5 > 7){ score += 1; why.push('ما دخلت من أكثر من أسبوع'); }
+  return { score, why, level: score >= 3 ? 'bad' : score >= 1 ? 'warn' : 'ok', label: score >= 3 ? 'تحتاج متابعة' : score >= 1 ? 'انتبهي' : 'ماشية زين' };
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const { list, students } = build();
+  window.__model = { list, students };
+  renderKpis(students, list); renderSkills(students); renderMoments(list); renderTable(students); renderComments(students);
+  $('#foot').textContent = (DEMO ? 'بيانات تجريبية' : 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-KW', { hour:'numeric', minute:'2-digit' })) + ' · ' + list.length + ' حدث';
+}
+function renderKpis(st, list){
+  const its = st.flatMap(s => [...s.items.values()]);
+  const th = its.filter(i => i.kind === 'نظري'), pr = its.filter(i => i.kind === 'تطبيقي');
+  const thp = pct(th.filter(i => i.first).length, th.length), prp = pct(pr.filter(i => i.first).length, pr.length);
+  const active = st.reduce((a, s) => a + s.active, 0);
+  const need = st.filter(s => s.flag.level === 'bad').length;
+  const cm = st.reduce((a, s) => a + s.comments.length, 0);
+  const today = new Date().toDateString(), todayN = st.filter(s => s.last && new Date(s.last).toDateString() === today).length;
+  $('#kpis').innerHTML = `
+    <div class="kpi"><div class="l">الطالبات</div><div class="v"><bdi class="n">${st.length}</bdi></div><div class="s">${todayN ? `<bdi class="n">${todayN}</bdi> دخلن اليوم` : 'ولا وحدة دخلت اليوم'}</div></div>
+    <div class="kpi"><div class="l">صح من أول محاولة</div><div class="split"><div><div class="v t-th"><bdi class="n">${thp == null ? '—' : thp + '%'}</bdi></div><div class="s">نظري</div></div><div><div class="v t-pr"><bdi class="n">${prp == null ? '—' : prp + '%'}</bdi></div><div class="s">تطبيقي</div></div></div></div>
+    <div class="kpi"><div class="l">وقت التعلّم الفعلي</div><div class="v"><bdi class="n">${mins(active)}</bdi></div><div class="s">${st.length ? 'بمعدل ' + mins(active / st.length) + ' للطالبة' : ''}</div></div>
+    <div class="kpi"><div class="l">تحتاج متابعة</div><div class="v" style="color:${need ? 'var(--bad)' : 'var(--ok)'}"><bdi class="n">${need}</bdi></div><div class="s">${need ? 'شوفي الجدول تحت' : 'كلهن ماشيات زين 🤍'}</div></div>
+    <div class="kpi"><div class="l">تعليقات</div><div class="v"><bdi class="n">${cm}</bdi></div><div class="s">من الطالبات</div></div>`;
+}
+function renderSkills(st){
+  const m = new Map();
+  st.forEach(s => s.skills.forEach(x => { const k = x.lesson + '|' + x.skill; const y = m.get(k) || { skill:x.skill, kind:x.kind, lesson:x.lesson, n:0, ok:0, who:0 }; y.n += x.n; y.ok += x.ok; y.who++; m.set(k, y); }));
+  const rows = [...m.values()].map(y => ({ ...y, p: pct(y.ok, y.n) })).sort((a, b) => a.p - b.p).slice(0, 12);
+  $('#skills').innerHTML = rows.length ? rows.map(y => `<div class="sk"><div class="nm">${esc(y.skill)} <small>${LESSON_NAME[y.lesson] || ''} · <span class="tag ${y.kind === 'نظري' ? 'th' : 'pr'}">${esc(y.kind)}</span> · <bdi class="n">${y.who}</bdi> طالبة</small></div><div class="bar"><i style="width:${y.p}%;background:${colorFor(y.p)}"></i></div><div class="pc" style="color:${colorFor(y.p)}"><bdi class="n">${y.p}%</bdi></div></div>`).join('')
+    : '<div class="empty">للحين ما فيه إجابات. أول ما تبدأ الطالبات الدروس تطلع هني.</div>';
+}
+function renderMoments(list){
+  const m = new Map();
+  list.filter(e => ['pause','rewind','replay'].includes(e.type) && e.where).forEach(e => {
+    const t = e.type === 'rewind' && e.t2 !== '' ? +e.t2 : +e.t || 0, b = Math.floor(t / 10) * 10;
+    const k = e.lesson + '|' + e.where + '|' + b; const y = m.get(k) || { lesson:+e.lesson, where:e.where, b, pause:0, rewind:0, replay:0, who:new Set() };
+    y[e.type]++; y.who.add(normName(e.name)); m.set(k, y);
+  });
+  const rows = [...m.values()].map(y => ({ ...y, n: y.pause + y.rewind * 2 + y.replay })).sort((a, b) => b.n - a.n).slice(0, 8);
+  $('#moments').innerHTML = rows.length ? rows.map(y => `<div class="mo"><span class="tm"><bdi>${mmss(y.b)}–${mmss(y.b + 10)}</bdi></span><div class="tx">${esc(y.where)}<small>${LESSON_NAME[y.lesson]} · <bdi class="n">${y.who.size}</bdi> طالبة</small></div><div class="ct">${[y.pause && `⏸ ${y.pause}`, y.rewind && `↩ ${y.rewind}`, y.replay && `↺ ${y.replay}`].filter(Boolean).join(' · ')}</div></div>`).join('')
+    : '<div class="empty">للحين ما فيه توقفات مسجّلة.</div>';
+}
+function barCell(p, c){ return p == null ? '<span class="tag grey">—</span>' : `<div class="mini-bar"><div class="bar"><i style="width:${p}%;background:${c}"></i></div><bdi class="n">${p}%</bdi></div>`; }
+function renderTable(st){
+  const cols = [['name','الطالبة'],['last','آخر دخول'],['active','الوقت'],['th','نظري'],['pr','تطبيقي'],['vid','الفيديو'],['cm','💬'],['flag','الحالة']];
+  const val = (s, k) => k === 'name' ? s.name : k === 'last' ? s.last : k === 'active' ? s.active : k === 'th' ? (s.th ?? -1) : k === 'pr' ? (s.pr ?? -1) : k === 'vid' ? s.pauseN + s.rewinds + s.replays : k === 'cm' ? s.comments.length : s.flag.score;
+  const rows = [...st].sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x > y ? 1 : x < y ? -1 : 0) * sortDir || a.name.localeCompare(b.name, 'ar'); });
+  $('#tbl').innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th data-k="${k}">${l}${sortKey === k ? (sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('')}</tr></thead><tbody>${rows.map(s => `
+    <tr class="st" data-k="${esc(s.key)}">
+      <td class="nm"><b>${esc(s.name)}</b><small>شعبة ${esc(s.sec)} · ${[...s.lessons].sort().map(l => (s.finished.has(l) ? '✓' : '') + 'د' + l).join(' ')}</small></td>
+      <td>${fmtWhen(s.last)}</td>
+      <td><bdi class="n">${mins(s.active)}</bdi></td>
+      <td>${barCell(s.th, 'var(--theory)')}</td>
+      <td>${barCell(s.pr, 'var(--prac)')}</td>
+      <td style="white-space:nowrap;font-size:13px">⏸ <bdi class="n">${s.pauseN}</bdi> · ↩ <bdi class="n">${s.rewinds + s.replays}</bdi></td>
+      <td>${s.comments.length ? `<span class="tag warn">${s.comments.length}</span>` : ''}</td>
+      <td><span class="tag ${s.flag.level}" title="${esc(s.flag.why.join('، '))}">${s.flag.label}</span></td>
+    </tr>`).join('') || `<tr><td colspan="8" class="empty">ما فيه طالبات بهالفلتر.</td></tr>`}</tbody>`;
+  $('#tbl').querySelectorAll('th').forEach(th => th.onclick = () => { const k = th.dataset.k; if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } renderTable(st); });
+  $('#tbl').querySelectorAll('tr.st').forEach(tr => tr.onclick = () => openStudent(st.find(s => s.key === tr.dataset.k)));
+}
+function renderComments(st){
+  const all = st.flatMap(s => s.comments.map(c => ({ ...c, s }))).sort((a, b) => a.ts < b.ts ? 1 : -1);
+  $('#comments').innerHTML = all.length ? all.slice(0, 30).map(c => `<div class="cm"><div class="h"><b>${esc(c.s.name)}</b><span>شعبة ${esc(c.s.sec)}</span><span>${esc(c.where)}</span><span>${fmtWhen(c.ts)}</span></div><p>${esc(c.text)}</p></div>`).join('')
+    : '<div class="empty">ما فيه تعليقات للحين.</div>';
+}
+
+/* ---------------- student drawer ---------------- */
+function summary(s){
+  const fn = s.name.split(' ')[0];
+  const parts = [];
+  if (s.th != null && s.pr != null){
+    if (s.th - s.pr >= 25) parts.push(`${esc(fn)} <b>تفهم الفكرة النظرية</b> (${s.th}%) بس <b>تتعثر بالتطبيق</b> (${s.pr}%)، فتحتاج تمارين حل أكثر.`);
+    else if (s.pr - s.th >= 25) parts.push(`${esc(fn)} <b>تطبّق زين</b> (${s.pr}%) بس <b>المفاهيم النظرية أضعف</b> (${s.th}%)، يمكن تحفظ الخطوات بدون ما تفهم ليش.`);
+    else if (s.all >= 80) parts.push(`${esc(fn)} <b>ماشية زين</b> بالنظري والتطبيقي (${s.all}% صح من أول محاولة).`);
+    else if (s.all != null) parts.push(`${esc(fn)} صح من أول محاولة بـ ${s.all}% من الأسئلة.`);
+  } else if (s.all != null) parts.push(`${esc(fn)} صح من أول محاولة بـ ${s.all}% من الأسئلة.`);
+  if (s.weak.length) parts.push(`أصعب شي عليها: <b>${esc(s.weak.slice(0, 2).map(w => w.skill).join('، '))}</b>.`);
+  if (s.weakKinds.length) parts.push(`الأخطاء المتكررة: ${esc(s.weakKinds.slice(0, 3).join('، '))}.`);
+  const vid = s.rewinds + s.replays;
+  if (vid >= 4){ const top = topMoment(s); parts.push(`رجعت للفيديو ${vid} مرات${top ? '، أكثرها عند <b>' + esc(top) + '</b>' : ''}.`); }
+  if (s.hints) parts.push(`استخدمت «شوفي اللقطة» ${s.hints} ${s.hints === 1 ? 'مرة' : 'مرات'} بعد ما غلطت، يعني ترجع تراجع بنفسها 👍`);
+  if (!parts.length) parts.push('للحين ما فيه بيانات كافية.');
+  return parts.join(' ');
+}
+function topMoment(s){ const m = new Map(); s.pauses.filter(p => p.type !== 'pause').forEach(p => { const t = p.type === 'rewind' && p.t2 !== '' ? +p.t2 : +p.t; const k = p.where + ' · ' + mmss(Math.floor(t / 10) * 10); m.set(k, (m.get(k) || 0) + 1); }); const top = [...m.entries()].sort((a, b) => b[1] - a[1])[0]; return top && top[1] > 1 ? top[0] : ''; }
+function openStudent(s){
+  const its = [...s.items.values()].sort((a, b) => a.lesson - b.lesson || (a.ts < b.ts ? -1 : 1));
+  const days = [...s.days.entries()].sort((a, b) => a[0] < b[0] ? 1 : -1);
+  const vids = s.pauses.slice().reverse().slice(0, 14);
+  $('#drawer').innerHTML = `
+    <div class="hd"><h3>${esc(s.name)}<small>شعبة ${esc(s.sec)} · أول دخول ${fmtWhen(s.first)}</small></h3><span class="tag ${s.flag.level}">${s.flag.label}</span><button class="btn ghost sm" id="dClose" aria-label="إغلاق">✕</button></div>
+    <div class="bd">
+      <div class="sum">🧠 ${summary(s)}</div>
+      <div class="box" style="margin-top:12px">
+        <div class="tp"><span class="t-th">نظري</span><div class="bar"><i style="width:${s.th || 0}%;background:var(--theory)"></i></div><b>${s.th == null ? '—' : s.th + '%'}</b></div>
+        <div class="tp"><span class="t-pr">تطبيقي</span><div class="bar"><i style="width:${s.pr || 0}%;background:var(--prac)"></i></div><b>${s.pr == null ? '—' : s.pr + '%'}</b></div>
+        ${Object.keys(s.tests).length ? `<div style="font-size:13px;color:var(--soft);margin-top:6px">📊 ${s.tests.pre ? 'القبلي ' + esc(s.tests.pre) : ''} ${s.tests.post ? ' · البعدي ' + esc(s.tests.post) : ''}</div>` : ''}
+      </div>
+      <div class="two">
+        <div class="box"><h4>💪 نقاط القوة</h4>${s.strong.length ? `<ul>${s.strong.slice(0, 5).map(x => `<li>${esc(x.skill)} <span class="tag ${x.kind === 'نظري' ? 'th' : 'pr'}">${esc(x.kind)}</span></li>`).join('')}</ul>` : '<div class="empty">للحين ما بانت</div>'}</div>
+        <div class="box"><h4>🎯 تحتاج دعم</h4>${s.weak.length ? `<ul>${s.weak.slice(0, 5).map(x => `<li>${esc(x.skill)} <span class="tag ${x.kind === 'نظري' ? 'th' : 'pr'}">${esc(x.kind)}</span></li>`).join('')}</ul>` : '<div class="empty">ما فيه شي واضح 👏</div>'}</div>
+      </div>
+      <div class="box" style="margin-top:12px"><h4>📅 متى تدخل</h4><div class="days">${days.map(([k, d]) => `<div class="day"><b>${fmtDay(d.date)}</b>${[...d.lessons].sort().map(l => 'د' + l).join('، ')} · ${mins(d.secs)}</div>`).join('') || '<span class="empty">—</span>'}</div><div style="font-size:13px;color:var(--soft);margin-top:6px">المجموع: ${mins(s.active)} وقت فعلي</div></div>
+      <div class="box" style="margin-top:12px"><h4>🎬 الفيديو</h4>${vids.length ? vids.map(p => `<div class="qrow"><span class="ic">${p.type === 'pause' ? '⏸' : p.type === 'replay' ? '↺' : '↩'}</span><div class="tx">${p.type === 'pause' ? 'وقفت عند' : p.type === 'replay' ? 'أعادت المقطع من' : 'رجعت من'} <bdi>${mmss(p.t)}</bdi>${p.type === 'rewind' && p.t2 !== '' ? ' إلى <bdi>' + mmss(p.t2) + '</bdi>' : ''}${p.kind === 'hint' ? ' <span class="tag warn">بعد غلطة</span>' : ''}<small>${esc(p.where)} · ${fmtWhen(p.ts)}</small></div></div>`).join('') : '<div class="empty">ما وقفت ولا رجعت 🙂</div>'}</div>
+      <div class="box" style="margin-top:12px"><h4>📝 الأسئلة</h4>${its.length ? its.map(i => `<div class="qrow"><span class="ic">${i.first ? '✅' : '🔁'}</span><div class="tx">${esc(i.q || i.skill)}<small>${LESSON_NAME[i.lesson]} · ${esc(i.where)} · <span class="tag ${i.kind === 'نظري' ? 'th' : 'pr'}">${esc(i.kind)}</span>${i.first ? '' : ' · ' + (i.tries === 2 ? 'محاولتين' : i.tries + ' محاولات')}${i.replays ? ' · رجعت للفيديو ' + i.replays : ''}${i.weak ? ' · ' + esc(i.weak) : ''}</small></div></div>`).join('') : '<div class="empty">للحين ما جاوبت</div>'}</div>
+      <div class="box" style="margin-top:12px"><h4>💬 تعليقاتها</h4>${s.comments.length ? s.comments.map(c => `<div class="cm"><div class="h"><span>${esc(c.where)}</span><span>${fmtWhen(c.ts)}</span></div><p>${esc(c.text)}</p></div>`).join('') : '<div class="empty">ما كتبت شي</div>'}</div>
+    </div>`;
+  document.body.classList.add('open');
+  $('#dClose').onclick = closeStudent;
+}
+function closeStudent(){ document.body.classList.remove('open'); }
+$('#dim').onclick = closeStudent;
+addEventListener('keydown', e => { if (e.key === 'Escape') closeStudent(); });
+
+/* ---------------- csv ---------------- */
+$('#btnCsv').onclick = () => {
+  const { students } = window.__model || { students: [] };
+  const head = ['الطالبة','الشعبة','آخر دخول','الوقت (دقائق)','نظري %','تطبيقي %','توقف','رجوع/إعادة','نقاط القوة','تحتاج دعم','الحالة','تعليقات'];
+  const lines = [head].concat(students.map(s => [s.name, s.sec, s.last ? new Date(s.last).toLocaleString('en-GB') : '', Math.round(s.active / 60), s.th ?? '', s.pr ?? '', s.pauseN, s.rewinds + s.replays, s.strong.map(x => x.skill).join(' / '), s.weak.map(x => x.skill).join(' / '), s.flag.label, s.comments.map(c => c.text).join(' | ')]));
+  const csv = '﻿' + lines.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' })); a.download = 'متابعة-حي-الكيمياء.csv'; a.click();
+};
+
+/* ---------------- demo data (موسومة) ---------------- */
+function demo(){
+  const NAMES = ['نورة','سارة','فاطمة','مريم','دانة','لولوة','شهد','غلا','ريم','حصة','جنى','العنود','أسيل','رهف','بشاير','دلال','هيا','منيرة','ضي','لطيفة','شيخة','روان','جود','ياسمين'];
+  const LAST = ['العنزي','المطيري','الرشيدي','العجمي','الشمري','الكندري','الصباح','العتيبي','الهاجري','الدوسري','البلوشي','الفضلي'];
+  const L = {
+    1:{ segs:['المقطع 1: من الذرة إلى العمارة','المقطع 2: الشقق ورموز الأدوار','المقطع 3: أسماء الشقق والغرف'], dur:[59,73,80],
+        th:[['L1:s1q','كم دور بنينا؟',0,'من الذرة إلى العمارة',.95],['L1:s2f3','كم شقة نرسم في الدور الثالث؟',1,'الشقق ورموز الأدوار',.85],['L1:s2f7','كم شقة نعرض في الدور السابع في نموذجنا المبسّط؟',1,'الشقق ورموز الأدوار',.55],['L1:s3d','شقة d تبدأ من أي دور؟',2,'أسماء الشقق والغرف',.6],['L1:s3q','الغرفة في عمارتنا تمثّل…',2,'أسماء الشقق والغرف',.7]],
+        pr:[['L1:g0','حطّي رقم كل دور (n) في مكانه بالعمارة.','ترتيب الأدوار',.9],['L1:g1','طابقي رمز كل دور (K إلى Q) مع مكانه.','رموز المستويات',.75],['L1:g2','كمّلي أنواع الشقق في الأدوار الأربعة الأولى.','أنواع تحت المستويات',.55],['L1:g3','طابقي كل نوع شقة مع عدد غرفها.','أعداد الأفلاك',.6],['L1:g5','ورقة العمارة · صفحة 3: كمّلي جدول الأدوار الأربعة الأولى.','جدول الأدوار',.5]] },
+    2:{ segs:['المقطع 1: سعة الشقق','المقطع 2: أوف باو والفلور','المقطع 3: البوتاسيوم و 4s'], dur:[66,95,60],
+        th:[['L2:a1','كم دور عندنا؟ (كم مستوى طاقة رئيسي)',0,'سعة الشقق',.9],['L2:a3','كم إلكترون تستوعب شقة d كحد أقصى؟',0,'سعة الشقق',.6],['L2:b0','بعد 2p… السهم وين يوصل؟',1,'أوف باو والفلور',.55],['L2:b1','وزّعنا 4 من 9 إلكترونات… كم باقي؟',1,'أوف باو والفلور',.75],['L2:c1','وين نسكّن آخر إلكترون؟',2,'البوتاسيوم و 4s',.45]],
+        pr:[['L2:g0','ابني التوزيع خطوة خطوة · النيتروجين (N)','ابني التوزيع خطوة خطوة',.7,'ترتيب التعبئة'],['L2:g1','اكتبي الأرقام الصغيرة · الصوديوم (Na)','اكتبي الأرقام الصغيرة',.55,'السعة القصوى'],['L2:g2','صحّحي الغلط · الكالسيوم (Ca)','صحّحي الغلط',.35,'4s قبل 3d']] },
+    3:{ segs:['المحطة 2: مندليف وموزلي','المحطة 4: المجموعات','المحطة 5: العائلات الأربع','المحطة 8: عنوان العنصر'], dur:[70,60,85,65],
+        th:[['L3:st2:a','مندليف رتّب العناصر حسب…',0,'مندليف وموزلي',.7],['L3:st4:a','العناصر بنفس المجموعة تتشابه في…',1,'المجموعات',.8],['L3:st5:a','الهالوجينات في المجموعة…',2,'العائلات الأربع',.65],['L3:st8:a','عنصر في الدورة 3 والمجموعة 2 هو…',3,'عنوان العنصر',.6]],
+        pr:[['L3:g:addr:1','الدورة 3 · المجموعة 17','وين عنواني؟ (الدورة والمجموعة)',.6],['L3:g:fam:1','الصوديوم','من عائلتي؟ (العائلات)',.75],['L3:g:fam:2','النيون','من عائلتي؟ (العائلات)',.8],['L3:g:fix:1','العناصر في نفس الدورة لها نفس الخواص','صحّحي الخطأ',.4],['L3:g:cmp:1','Mg و Ca: منو بنفس الدورة؟','قارني بين عنصرين',.55]] }
+  };
+  const COMMENTS = ['ما فهمت ليش 4s قبل 3d 😅','الفيديو حلو وايد والعمارة خلتني أفهم','ممكن تعيدين شرح الأفلاك بالحصة؟','اللعبة صعبة شوي بس حلوة','أحب صوتج بالشرح 🤍','ما عرفت الفرق بين المجموعة والدورة','أبي أسئلة أكثر للتدريب','فهمت أخيرًا ترتيب مادلنج!'];
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const out = []; let id = 0;
+  const now = new Date();
+  const push = (e) => out.push({ id:'d' + (id++), mode:'student', where:'', item:'', q:'', ok:'', first:'', tries:'', kind:'', skill:'', t:'', t2:'', value:'', text:'', ...e });
+  const profiles = ['strong','theory','practice','weak','mid','mid','strong','mid'];
+  for (let i = 0; i < 24; i++){
+    const name = NAMES[i] + ' ' + pick(LAST), sec = String(3 + (i % 3)), prof = profiles[i % profiles.length];
+    const thB = { strong:.2, theory:.15, practice:-.3, weak:-.35, mid:-.05 }[prof], prB = { strong:.2, theory:-.35, practice:.15, weak:-.35, mid:-.05 }[prof];
+    const lessons = prof === 'weak' && i % 2 ? [1] : rnd() < .25 ? [1, 2] : [1, 2, 3];
+    let day = 9 + Math.floor(rnd() * 3);
+    lessons.forEach(ln => {
+      const d = new Date(now); d.setDate(d.getDate() - day); d.setHours(16 + Math.floor(rnd() * 5), Math.floor(rnd() * 60)); let ts = +d;
+      const step = s => { ts += s * 1000; return new Date(ts).toISOString(); };
+      const base = { name, sec, lesson: ln };
+      push({ ...base, ts: step(0), type:'open', text: rnd() < .6 ? 'iPhone' : 'جهاز' });
+      const D = L[ln];
+      D.segs.forEach((sg, k) => {
+        const hard = D.th.filter(q => q[2] === k).some(q => q[4] < .65);
+        const np = Math.floor(rnd() * (hard ? 3 : 1.6) + (prof === 'weak' ? 1 : 0));
+        for (let j = 0; j < np; j++){ const t = Math.floor(D.dur[k] * (hard ? .45 + rnd() * .35 : rnd())); push({ ...base, ts: step(20), type:'pause', where: sg, item:'s' + (k + 1), t }); }
+        if (hard && rnd() < (prof === 'weak' || prof === 'practice' ? .8 : .35)){ const t = Math.floor(D.dur[k] * (.55 + rnd() * .3)); push({ ...base, ts: step(15), type:'rewind', where: sg, item:'s' + (k + 1), t, t2: Math.max(0, t - 12 - Math.floor(rnd() * 10)) }); }
+        if (rnd() < (prof === 'weak' ? .4 : .1)) push({ ...base, ts: step(30), type:'replay', where: sg, item:'s' + (k + 1), t: D.dur[k] - 2 });
+        D.th.filter(q => q[2] === k).forEach(q => { const f = rnd() < Math.min(.98, Math.max(.05, q[4] + thB)); push({ ...base, ts: step(25), type:'answer', item:q[0], q:q[1], where: sg, first: f ? 1 : 0, ok:1, tries: f ? 1 : 2 + Math.floor(rnd() * 2), kind:'نظري', skill:q[3] }); });
+      });
+      D.pr.forEach((q, k) => { const f = rnd() < Math.min(.98, Math.max(.05, q[3] + prB)); const rp = f ? 0 : Math.floor(rnd() * 2.5);
+        if (rp){ const sg = D.segs[Math.min(k, D.segs.length - 1)]; push({ ...base, ts: step(20), type:'rewind', kind:'hint', where: sg, t: 40, t2: Math.floor(D.dur[0] * .5) }); }
+        push({ ...base, ts: step(60), type:'answer', item:q[0], q:q[1], where: ln === 3 ? 'لعبة: ' + q[2] : 'ورقة العمل التفاعلية', first: f ? 1 : 0, ok:1, tries: f ? 1 : 2 + Math.floor(rnd() * 2), kind:'تطبيقي', skill:q[2], value: rp, text: !f && q[4] ? q[4] : '' }); });
+      const nMin = 9 + Math.floor(rnd() * 14) + (prof === 'weak' ? 6 : 0);
+      for (let m = 0; m < nMin; m++) push({ ...base, ts: step(5), type:'active', value: 60 });
+      if (rnd() < .85) push({ ...base, ts: step(10), type:'finish', where:'خلصت الدرس ' + ln });
+      if (rnd() < .22) push({ ...base, ts: step(30), type:'comment', where:'آخر الدرس ' + ln, text: pick(COMMENTS) });
+      if (ln === 3) { push({ ...base, ts: step(5), type:'test', item:'pre', value: (3 + Math.floor(rnd() * 3)) + '/8' }); push({ ...base, ts: step(5), type:'test', item:'post', value: (5 + Math.floor(rnd() * 4)) + '/8' }); }
+      day -= 1 + Math.floor(rnd() * 3); if (day < 0) day = 0;
+    });
+  }
+  // a judge visit, hidden by default
+  push({ name:'حكم', sec:'—', lesson:1, ts: new Date().toISOString(), type:'open', mode:'judge' });
+  return out;
+}
+
+/* ---------------- wiring ---------------- */
+$('#btnIn').onclick = () => login($('#inKey').value.trim());
+$('#inKey').onkeydown = e => { if (e.key === 'Enter') $('#btnIn').click(); };
+$('#btnDemo').onclick = () => { DEMO = true; RAW = demo(); META = { teacher:'تجربة', all:true }; start(); };
+$('#btnDemoOut').onclick = () => { DEMO = false; RAW = []; showLogin(); };
+$('#btnOut').onclick = () => { ls.d('hayy.tkey'); RAW = []; DEMO = false; $('#inKey').value = ''; showLogin(); };
+$('#btnRefresh').onclick = () => { const k = ls.g('hayy.tkey'); if (k) login(k, true); };
+['#fSec','#fLesson','#fTime','#fJudge'].forEach(s => $(s).onchange = render);
+(() => {
+  const q = new URLSearchParams(location.search);
+  if (q.has('demo')) return $('#btnDemo').click();
+  const k = q.get('key') || ls.g('hayy.tkey');
+  if (k && API){ $('#inKey').value = k; login(k); }
+})();
+</script>
+</body>
+</html>
