@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>المنصة التعليمية</title>
+<title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
@@ -288,14 +288,41 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
   .t-side{grid-column:2;flex-direction:row;align-items:center;gap:10px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* ===== ثيم مَدار: فضاء ===== */
+:root:root{color-scheme:dark;
+  --bg:#0A0920; --surface:#161338; --sunk:#201C4A; --ink:#EEEBFF; --muted:#A8A2D8; --line:#2F2A66;
+  --accent:#FFC857; --accent-ink:#FFD98A; --accent-soft:#3A3120; --accent-mid:#8A6E2E;
+  --good:#6BE0A8; --good-soft:#163A2E; --warn:#FFB86B; --warn-soft:#3D2C14; --crit:#FF8FA3; --crit-soft:#47202A;
+  --none:#9A93C8; --none-soft:#26214F;
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif}
+:root:root body{background:radial-gradient(ellipse at 20% 0%,#1E1850 0%,#0A0920 55%) fixed,#0A0920}
+:root:root .kid{--k-bg1:#2B2160;--k-bg2:#1A2A55;--k-card:#161338;--k-ring:#2F2A66;--k-t1:#3A2148;--k-t2:#172A55;--k-t3:#2A2160;--k-t4:#123C44}
+:root:root .btn.primary,:root:root .k-play{color:#1A1433}
+:root:root .k-play{box-shadow:0 3px 0 #B8862A,0 0 18px rgba(255,200,87,.25)}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#app{position:relative;z-index:1}
+:root:root .top{background:rgba(16,13,44,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom-color:rgba(255,255,255,.08)}
+:root:root .panel,:root:root .k-card,:root:root .kpi,:root:root .lead,:root:root .path{background:rgba(22,19,56,.86);border-color:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+:root:root .k-card{box-shadow:0 0 0 1px rgba(255,255,255,.05),0 10px 30px rgba(0,0,0,.35)}
+:root:root .k-hero{background:linear-gradient(135deg,#2B2160,#14224A);border:1px solid rgba(255,255,255,.08)}
+:root:root .roles{background:rgba(255,255,255,.06)}
+:root:root .roles button[aria-pressed="true"]{background:var(--accent);color:#1A1433}
+.brand h1{letter-spacing:.5px}
+.brand .sub{color:var(--accent-ink)!important}
+.mark .orb{transform-origin:20px 20px;animation:orb 6s linear infinite}
+.mark .orb2{transform-origin:20px 20px;animation:orb 9s linear infinite reverse}
+@keyframes orb{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.mark .orb,.mark .orb2{animation:none}}
+
 </style>
 
+<canvas id="sky" aria-hidden="true"></canvas>
 <div id="app" dir="rtl">
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M20 6 L25 20 L20 34 L15 20 Z" fill="var(--accent)" opacity=".9"/><circle cx="20" cy="20" r="3" fill="var(--surface)"/></svg>
-        <div><h1 id="appName">المنصة التعليمية</h1><div class="sub" id="schoolName"></div></div>
+        <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="nuc"><stop offset="0" stop-color="#FFE7A8"/><stop offset="1" stop-color="#FFB84D"/></radialGradient></defs><circle cx="20" cy="20" r="5" fill="url(#nuc)"/><g class="orb"><ellipse cx="20" cy="20" rx="17" ry="7" fill="none" stroke="#9B8CFF" stroke-width="1.3"/><circle cx="37" cy="20" r="2.4" fill="#7FB2FF"/></g><g class="orb2"><ellipse cx="20" cy="20" rx="17" ry="7" fill="none" stroke="#FF8FA3" stroke-width="1.1" transform="rotate(60 20 20)" opacity=".8"/></g></svg>
+        <div><h1 id="appName">مَدار</h1><div class="sub" id="schoolName"></div></div>
       </div>
       <span id="modeBadge" class="badge"></span>
       <span class="spacer"></span>
@@ -312,7 +339,8 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 <script>
 /* ============ الإعدادات (تتغير من مكان واحد) ============ */
 const CONFIG = {
-  appName: 'المنصة التعليمية',
+  appName: 'مَدار',
+  tagline: 'لكل بنت مدارها ✨',
   school: 'ثانوية أم حبيب — قسم الكيمياء والفيزياء',
   links: {
     audio: {},           // روابط ملخصات NotebookLM الصوتية لكل مهارة
@@ -712,7 +740,7 @@ function gameClick(a,b){
 
 /* ============ العرض ============ */
 function render(){
-  $('#appName').textContent=CONFIG.appName; $('#schoolName').textContent=CONFIG.school;
+  $('#appName').textContent=CONFIG.appName; $('#schoolName').textContent=(CONFIG.tagline||'')+(CONFIG.school?' · '+CONFIG.school:'');
   const mb=$('#modeBadge');
   mb.className='badge '+(S.mode==='live'?'live':'demo');
   mb.textContent=S.mode==='live'?'متصل بحسابك':'وضع العرض — بيانات وهمية';
@@ -769,6 +797,9 @@ function talent(sid){
   return {score,level:(score>=3||lit.length)?'cand':score>=2?'prom':null,dom,ev,referred,srcs,lit};
 }
 const TLV={cand:['good','مرشّحة للفحص'],prom:['warn','مؤشرات واعدة']};
+function referStudent(sid){const t=talent(sid); if(t.referred) return;
+  saveNom({id:'n'+Date.now(),sid,role:'counselor',by:S.mode==='live'?S.me.name:'المرشدة',domain:t.dom[0]||'acad',traits:[],note:'تحويل للفحص الرسمي',status:'referred',at:new Date().toISOString()});
+  S.audit.unshift({t:nowStr(),who:'المرشدة',what:'حوّلت '+stu(sid).name+' لفحص الموهبة'}); toast('انحوّلت '+stu(sid).name+' للفحص، وبيوصل لولي الأمر');}
 function saveNom(n){(S.nominations=S.nominations||[]).push(n); live('saveNomination',n);}
 function talentRadar(canRefer){
   const rows=S.students.map(s=>({s,t:talent(s.id)})).filter(x=>x.t.level).sort((a,b)=>b.t.score-a.t.score);
@@ -1088,7 +1119,10 @@ const STEPS=[
   {role:'parent',spot:'#preport',t:'ولي الأمر يعرف بالضبط',p:'وين وصلت، والأخطاء اللي تتكرر مثل ترتيب 4s و 3d، وكم دقيقة تدرّبت وأي أيام. ويختار يوصله آخر كل يوم أو كل خميس.',btn:'التالي'},
   {role:'parent',spot:'#psum',t:'وملخص يكتبه Gemini',p:'Gemini يكتب الملخص بلغة بسيطة، ويوصل على Gmail. الدرجات تظهر بعد نشرها فقط.',btn:'اكتب الملخص',async run(){await parentSum('s1');}},
   {role:'admin',spot:'#supports',t:'الإدارة تتابع أثر التدخل',p:'رئيسة القسم والمديرة يشوفون الخطة ونتيجتها، والمهارات اللي يتكرر فيها التعثّر، ويسألون البيانات بالعربي.',btn:'التالي'},
-  {role:'counselor',spot:'#paths',t:'آخر السنة: الميول + الأداء = المسار',p:'نتيجة اختبار الميول تنجمع مع أداء سارة طول السنة، بقواعد معلنة، ثم تراجعها المرشدة وتحدد سارة هدفها والكوتش يبني له خطة.',btn:'إنهاء الجولة',pre(){V.sid='s1';}}
+  {role:'counselor',spot:'#paths',t:'آخر السنة: الميول + الأداء = المسار',p:'نتيجة اختبار الميول تنجمع مع أداء سارة طول السنة، بقواعد معلنة، ثم تراجعها المرشدة وتحدد سارة هدفها والكوتش يبني له خطة.',btn:'التالي',pre(){V.sid='s1';}},
+  {role:'student',spot:'#ktal',t:'🌌 وهذي دانة… موهبة مخفية',p:'درجات دانة مو الأعلى بالشعبة. بس ثلاث عيون شافت فيها نفس الشي: ميولها بالاختبار، وأهلها، ونجمة أضافتها بنفسها «صممت شعار نادي العلوم». فضوت كوكبة التصميم ✨',btn:'التالي',pre(){V.sid='s3';}},
+  {role:'counselor',spot:'#radar',t:'رادار الموهبة: يرشّح، ما يشخّص',p:'المرشدة تشوف كل الترشيحات بمكان واحد مع الدليل، وهي وحدها تقرر. ضغطة وحدة تحوّل دانة للفحص الرسمي بمنصة «موهوب»، ويوصل إيميل لأهلها.',btn:'حوّلي دانة للفحص',pre(){V.sid='s3';},run(){referStudent('s3');}},
+  {role:'parent',spot:'#ptal',t:'وأهلها يعرفون الخطوة الجاية',p:'ولي الأمر يشوف المجال، وكيف ينمّونه بالبيت، وخطة شهر من Gemini. وإذا شاف موهبة ما انتبهت لها المدرسة، يرسلها للمرشدة بنفسه. أربع عيون تشوف، ومختصة وحدة تقرر.',btn:'إنهاء الجولة',pre(){V.sid='s3';}}
 ];
 function renderTour(){
   const s=STEPS[T.i]; const el=$('#tour');
@@ -1229,9 +1263,7 @@ document.addEventListener('click',async e=>{
     const before=talent(sid).lit.length;
     saveNom({id:'n'+Date.now(),sid,role:'self',by:stu(sid).name,domain:$('#snDom').value,traits:[],note,link,status:'new',at:new Date().toISOString()});
     toast(talent(sid).lit.length>before?'✨ اكتملت كوكبة! وصلت للمرشدة':'⭐ نجمة جديدة بسماج'); render();}
-  else if(a==='refer'){const sid=b.dataset.sid, t=talent(sid);
-    saveNom({id:'n'+Date.now(),sid,role:'counselor',by:S.mode==='live'?S.me.name:'المرشدة',domain:t.dom[0]||'acad',traits:[],note:'تحويل للفحص الرسمي',status:'referred',at:new Date().toISOString()});
-    S.audit.unshift({t:nowStr(),who:'المرشدة',what:'حوّلت '+stu(sid).name+' لفحص الموهبة'}); toast('انحوّلت '+stu(sid).name+' للفحص، وبيوصل لولي الأمر'); render();}
+  else if(a==='refer'){referStudent(b.dataset.sid); render();}
   else if(a==='talg'){const sid=b.dataset.sid, t=talent(sid); const k='tal-'+sid+'-'+V.role; V[k]={live:false,text:'⏳ لحظة…'}; render();
     gem('talent',{name:stu(sid).name, domains:t.dom.map(d=>TAL[d].n), evidence:t.ev.map(e=>e.t), who:V.role}).then(r=>{V[k]=r; render();});}
   else if(a==='review'){S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{note:$('#rvNote').value,at:nowStr()}); live('saveReview',V.sid,S.reviews[V.sid]); render(); toast('حُفظت المراجعة');}
@@ -1281,6 +1313,34 @@ function boot(){
     }).catch(e=>{console.error("boot",e);});
   } else { S=demoState(); render(); }
 }
+
+/* ============ سماء مَدار: نجوم تلمع، شهب، وكواكب ============ */
+(function(){
+  const c=document.getElementById('sky'); if(!c||!c.getContext) return; const x=c.getContext('2d');
+  const still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W,H,dpr,stars=[],shoot=null,next=0,t0=performance.now();
+  const planets=[{fx:.9,fy:.82,r:46,c1:'#7B5CFF',c2:'#2A1E6B',ring:true},{fx:.08,fy:.3,r:16,c1:'#FF8FA3',c2:'#5A2342'},{fx:.62,fy:.12,r:8,c1:'#7FD8FF',c2:'#1C4A66'}];
+  function size(){dpr=Math.min(2,window.devicePixelRatio||1); W=innerWidth; H=innerHeight; c.width=W*dpr; c.height=H*dpr; x.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.round(W*H/5200); stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.2,p:Math.random()*6.28,s:.6+Math.random()*1.8,h:Math.random()<.12?'#FFD98A':Math.random()<.2?'#A9C8FF':'#FFFFFF'}));}
+  function planet(p,t){const px=p.fx*W, py=p.fy*H+Math.sin(t/4000+p.r)*4;
+    const g=x.createRadialGradient(px-p.r*.35,py-p.r*.35,p.r*.1,px,py,p.r); g.addColorStop(0,p.c1); g.addColorStop(1,p.c2);
+    x.globalAlpha=.9; x.fillStyle=g; x.beginPath(); x.arc(px,py,p.r,0,6.283); x.fill();
+    if(p.ring){x.globalAlpha=.55; x.strokeStyle='#FFC857'; x.lineWidth=2; x.beginPath(); x.ellipse(px,py,p.r*1.8,p.r*.45,-.35,0,6.283); x.stroke();}
+    x.globalAlpha=1;}
+  function frame(now){const t=now-t0; x.clearRect(0,0,W,H);
+    for(const s of stars){const a=still?.7:.35+.65*Math.abs(Math.sin(s.p+t/1000*s.s)); x.globalAlpha=a; x.fillStyle=s.h; x.beginPath(); x.arc(s.x,s.y,s.r,0,6.283); x.fill();
+      if(s.r>1.25&&a>.85){x.globalAlpha=a*.5; x.fillRect(s.x-4,s.y-.3,8,.6); x.fillRect(s.x-.3,s.y-4,.6,8);}}
+    x.globalAlpha=1; planets.forEach(p=>planet(p,t));
+    if(!still){
+      if(!shoot&&t>next){const sx=Math.random()*W*.7+W*.2; shoot={x:sx,y:Math.random()*H*.35,vx:-(6+Math.random()*4),vy:3+Math.random()*2,l:0}; next=t+4500+Math.random()*5000;}
+      if(shoot){shoot.x+=shoot.vx; shoot.y+=shoot.vy; shoot.l++;
+        const gr=x.createLinearGradient(shoot.x,shoot.y,shoot.x-shoot.vx*14,shoot.y-shoot.vy*14); gr.addColorStop(0,'rgba(255,255,255,.95)'); gr.addColorStop(1,'rgba(255,200,87,0)');
+        x.strokeStyle=gr; x.lineWidth=2; x.beginPath(); x.moveTo(shoot.x,shoot.y); x.lineTo(shoot.x-shoot.vx*14,shoot.y-shoot.vy*14); x.stroke();
+        if(shoot.l>70||shoot.x<-50||shoot.y>H+50) shoot=null;}
+      requestAnimationFrame(frame);}
+  }
+  size(); addEventListener('resize',size); requestAnimationFrame(frame);
+})();
 boot();
 </script>
 

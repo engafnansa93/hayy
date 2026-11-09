@@ -1,5 +1,5 @@
 /**
- * المنصة التعليمية — الخادم (Google Apps Script)
+ * مَدار — لكل بنت مدارها ✨ — الخادم (Google Apps Script)
  * ثانوية أم حبيب — قسم الكيمياء والفيزياء
  *
  * التشغيل لأول مرة:
@@ -72,6 +72,11 @@ function settings_() {
   rows_('Settings').forEach(function (r) { o[String(r.key).trim()] = r.value; });
   return o;
 }
+// الاسم: «مَدار». إذا ورقة Settings فيها الاسم القديم، نعتبره مَدار.
+function appName_() {
+  var n = String(settings_().appName || '').trim();
+  return (!n || n === 'المنصة التعليمية') ? 'مَدار' : n;
+}
 function now_() { return Utilities.formatDate(new Date(), TZ, 'dd/MM HH:mm'); }
 function me_() { return (Session.getActiveUser().getEmail() || '').toLowerCase(); }
 function lock_(fn) {
@@ -101,7 +106,8 @@ function setup() {
     append_('Subjects', { id: 'phys', name: 'الفيزياء', teacher: 'معلمة الفيزياء', teacherEmail: '', skills: 'تحويل الوحدات|الحركة في خط مستقيم|المتجهات' });
   }
   if (!rows_('Settings').length) {
-    [['appName', 'المنصة التعليمية'],
+    [['appName', 'مَدار'],
+     ['tagline', 'لكل بنت مدارها ✨'],
      ['school', 'ثانوية أم حبيب — قسم الكيمياء والفيزياء'],
      ['week', 6],
      ['chemHelper', 'https://notebook.google.com/notebook/b3dd47a5-818a-4102-b794-5bc359812ef3'],
@@ -119,7 +125,7 @@ function setup() {
 /* ===================== الصفحة ===================== */
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('index')
-    .setTitle(String(settings_().appName || 'المنصة التعليمية'))
+    .setTitle(appName_())
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -129,7 +135,7 @@ function getBootstrap() {
   var audio = {};
   Object.keys(set).forEach(function (k) { if (k.indexOf('audio:') === 0 && set[k]) audio[k.slice(6)] = set[k]; });
   var config = {
-    appName: set.appName || 'المنصة التعليمية', school: set.school || '',
+    appName: appName_(), tagline: set.tagline || 'لكل بنت مدارها ✨', school: set.school || '',
     links: { audio: audio, chemHelper: set.chemHelper || '', lessons: set.lessons || '', booking: set.booking || '' }
   };
   var gemini = !!PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
@@ -329,7 +335,7 @@ function saveNomination(n) {
   var to = rows_('Users').filter(function (x) { return /counselor/.test(String(x.roles)); }).map(function (x) { return x.email; }).filter(String);
   if (n.status !== 'referred' && to.length) safeMail_(to.join(','), '🌟 ترشيح موهبة — ' + (st ? st.name : n.sid), (u.name || '') + ' رشّح ' + (st ? st.name : n.sid) + ' بمجال: ' + n.domain + '\n' + (n.note || ''));
   if (n.status === 'referred' && st && st.parentEmail) safeMail_(st.parentEmail, '🌟 ' + st.name + ' — ترشيح لفحص الموهبة',
-    'السلام عليكم،\nعند ' + st.name + ' مؤشرات تميّز لاحظناها خلال السنة، ورشّحتها المرشدة للفحص الرسمي للموهبة. بنتواصل معكم بالخطوات والموعد.\nمع التحية — ' + (settings_().appName || 'المنصة التعليمية'));
+    'السلام عليكم،\nعند ' + st.name + ' مؤشرات تميّز لاحظناها خلال السنة، ورشّحتها المرشدة للفحص الرسمي للموهبة. بنتواصل معكم بالخطوات والموعد.\nمع التحية — ' + appName_());
   return true;
 }
 
@@ -370,7 +376,7 @@ function notifyAlert(a) {
   });
 }
 function safeMail_(to, subject, body) {
-  try { if (to) MailApp.sendEmail({ to: to, subject: subject, body: body, name: String(settings_().appName || 'المنصة التعليمية') }); }
+  try { if (to) MailApp.sendEmail({ to: to, subject: subject, body: body, name: appName_() }); }
   catch (e) { console.warn('mail', e); }
 }
 function postChat_(text) {
@@ -457,7 +463,7 @@ function taskEvent_(t, guest) {
   try {
     var s = nextDay_(Number(t.day), t.time), e = new Date(s.getTime() + (Number(t.min) || 15) * 60000);
     var ev = CalendarApp.getDefaultCalendar().createEvent((SUBJ_ICON[t.subj] || '') + ' ' + t.title, s, e,
-      { description: t.why + '\n— من خطة الكوتش في ' + (settings_().appName || 'المنصة التعليمية'), guests: guest, sendInvites: true });
+      { description: t.why + '\n— من خطة الكوتش في ' + appName_(), guests: guest, sendInvites: true });
     if (SUBJ_GC[t.subj]) ev.setColor(SUBJ_GC[t.subj]);
     ev.addPopupReminder(15);
     return ev.getId();
@@ -495,7 +501,7 @@ function createQuiz(skill, items) {
   var u = who_();
   var form = FormApp.create('اختبار قصير — ' + skill);
   form.setIsQuiz(true).setCollectEmail(true).setLimitOneResponsePerUser(true).setShuffleQuestions(true)
-    .setDescription('اختبار يصحح نفسه، والنتيجة توصل للمعلمة تلقائيًا في ' + (settings_().appName || 'المنصة التعليمية') + '.');
+    .setDescription('اختبار يصحح نفسه، والنتيجة توصل للمعلمة تلقائيًا في ' + appName_() + '.');
   (items || []).forEach(function (it) {
     var q = form.addMultipleChoiceItem().setTitle(it.q).setPoints(1).setRequired(true);
     q.setChoices(it.choices.map(function (c) { return q.createChoice(c, c === it.correct); }));
@@ -590,14 +596,14 @@ function sendParentSummary(sid, text) {
   var st = rows_('Students').filter(function (s) { return String(s.id) === String(sid); })[0];
   if (!st) return false;
   var to = st.parentEmail || u.email;
-  safeMail_(to, '📬 ملخص ' + st.name + ' — ' + (settings_().appName || 'المنصة التعليمية'), text || parentSummary_(st));
+  safeMail_(to, '📬 ملخص ' + st.name + ' — ' + appName_(), text || parentSummary_(st));
   return true;
 }
 function sendDigests() {
   var thursday = Number(Utilities.formatDate(new Date(), TZ, 'u')) === 4;
   rows_('Students').forEach(function (st) {
     if (!st.parentEmail) return;
-    if (st.digest === 'daily' || thursday) safeMail_(st.parentEmail, '📬 ملخص ' + st.name + ' — ' + (settings_().appName || 'المنصة التعليمية'), parentSummary_(st));
+    if (st.digest === 'daily' || thursday) safeMail_(st.parentEmail, '📬 ملخص ' + st.name + ' — ' + appName_(), parentSummary_(st));
   });
 }
 function dailySync() {
