@@ -308,6 +308,19 @@ function saveReview(sid, data) {
   return true;
 }
 
+function saveInterests(sid, r) {
+  var u = who_();
+  var staff = /teacher|admin|counselor|head|principal/.test(String(u.roles));
+  if (!staff && String(u.studentId) !== String(sid)) throw new Error('غير مسموح.');
+  var st = rows_('Students').filter(function (s) { return String(s.id) === String(sid); })[0];
+  if (!st) return false;
+  var clean = {};
+  ['research', 'practical', 'creative', 'social', 'leading', 'organizing'].forEach(function (k) { clean[k] = Math.max(1, Math.min(5, Math.round(Number(r && r[k]) || 1))); });
+  update_('Students', st._row, { interests: JSON.stringify(clean) });
+  audit_(u.name, 'نتيجة اختبار الميول: ' + (st.name || sid));
+  return true;
+}
+
 function setDigest(sid, mode) {
   who_();
   var st = rows_('Students').filter(function (s) { return String(s.id) === String(sid); })[0];

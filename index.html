@@ -834,7 +834,10 @@ function vStudent(){
     '<form class="chat-in" data-act="coachf"><input type="text" id="coachIn" placeholder="اكتبي للكوتش…" aria-label="رسالة للكوتش"><button class="k-play" aria-label="إرسال">➤</button></form></section>';
   const prog=Object.keys(res).map(k=>{const r=res[k];const cls=r.d>0.02?'up':r.d<-0.02?'down':'flat';
     return '<span>'+(SUBJ_ICON[k]||'')+' '+S.subjects[k].name+'</span><div class="bar"><i style="width:'+Math.round(r.c.r*100)+'%"></i></div><span class="num trend '+cls+'">'+fmt(r.c.v)+'/'+r.c.max+' '+(cls==='up'?'▲':cls==='down'?'▼':'')+'</span>';}).join('');
-  const side='<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
+  const itCard=(st.interests?(()=>{const r=st.interests, top=Object.keys(r).sort((x,y)=>r[y]-r[x]).slice(0,2);
+      return '<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 ميولي</h3><span class="spacer"></span><button class="k-link" data-act="itest" style="border:0">↻ أعيديه</button></div><div class="k-tags">'+top.map(d=>'<span class="pill acc">'+DIM_ICON[d]+' '+DIMS[d]+'</span>').join('')+'</div><p class="k-note">توصل للمرشدة، ومسارج يتحدد آخر السنة 🤍</p></section>';})()
+    :'<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 اكتشفي ميولج</h3></div><p class="small">18 سؤال سريع بالإيموجي، ٣ دقايق، وتعرفين شنو يشبهج 🌟</p><button class="k-play" data-act="itest">▶ ابدئي</button></section>');
+  const side=itCard+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
     '<section class="k-card"><div class="k-h"><h3>📈 تقدّمي</h3></div>'+(prog?'<div class="prog">'+prog+'</div>':'<div class="k-empty">ما في درجات بعد</div>')+
     '<div class="k-tags">'+strong.map(s=>'<span class="pill good">💪 '+esc(s)+'</span>').join('')+need.map(s=>'<span class="pill warn">🎯 '+esc(s)+'</span>').join('')+'</div></section>'+
     '<section class="k-card"><div class="k-h"><h3>⏳ القادم</h3></div>'+S.upcoming.map(u=>'<div class="k-up"><span class="k-ic sm" style="box-shadow:inset 0 -3px 0 '+((SUBJ_COLOR[u.subj]||{}).hex||'transparent')+'">'+(SUBJ_ICON[u.subj]||'📌')+'</span><span>'+esc(u.title)+'</span><span class="spacer"></span><span class="k-sub">'+esc(u.when)+'</span>'+(u.date?'<a class="k-link" href="'+upLink(u)+'" target="_blank" rel="noopener" title="أضيفيه لتقويم جوجل">＋</a>':'')+'</div>').join('')+'</section>'+
@@ -1014,11 +1017,68 @@ async function gtool(kind){
   render();
 }
 
+
+/* ============ اختبار الميول (الطالبة تحله بنفسها) ============ */
+// مبني على نموذج هولاند للميول المهنية (RIASEC): 6 أبعاد × 3 عبارات
+const ITEMS=[
+  ['research','أحب أفهم ليش الأشياء تصير، مو بس شنو تصير 🔬'],
+  ['practical','أستمتع لما أركّب شي بيدي أو أصلّحه 🔧'],
+  ['creative','أحب أرسم أو أصمم أو أكتب أفكار جديدة 🎨'],
+  ['social','أفرح لما أشرح لصديقتي شي ما فهمته 🤝'],
+  ['leading','أحب أقود الفريق وأقسّم المهام ⭐'],
+  ['organizing','أرتاح لما أرتب أغراضي وجدولي بدقة 🗂️'],
+  ['research','أحب التجارب بالمختبر وأسجل النتائج 🧪'],
+  ['practical','أفضّل أتعلم بالتطبيق أكثر من القراءة 🛠️'],
+  ['creative','أحب أعبّر عن نفسي بطريقتي الخاصة ✍️'],
+  ['social','الناس يجوني لما يبون أحد يسمعهم 💬'],
+  ['leading','أحب أقنع الناس بفكرتي وأدافع عنها 🎤'],
+  ['organizing','أحب الأرقام والجداول والقوائم المرتبة 📊'],
+  ['research','أدوّر على المعلومة بنفسي لين أوصل لها 🔎'],
+  ['practical','أحب أشتغل بأجهزة أو برامج تقنية 💻'],
+  ['creative','أفكر بحلول غير اللي الكل يفكر فيها 💡'],
+  ['social','أتمنى شغلي يساعد الناس بشكل مباشر 🌱'],
+  ['leading','أحب أبدأ مشروع خاص فيني وأتابعه 🚀'],
+  ['organizing','أحب أخطط قبل لا أبدأ أي شغلة 📝']
+];
+const DIM_ICON={research:'🔬',practical:'🔧',creative:'🎨',social:'🤝',leading:'⭐',organizing:'🗂️'};
+const FACES=[['😐','ما يشبهني'],['🙂','شوي'],['😊','نص نص'],['😄','يشبهني'],['😍','هذي أنا!']];
+let IT=null;
+function openInterest(sid){IT={sid,i:0,ans:[]}; $('#game').hidden=false; document.body.style.overflow='hidden'; renderInterest();}
+function closeInterest(){IT=null; $('#game').hidden=true; document.body.style.overflow=''; render();}
+function renderInterest(){
+  const el=$('#game');
+  if(IT.done){const r=IT.done, top=Object.keys(r).sort((a,b)=>r[b]-r[a]).slice(0,2);
+    el.innerHTML='<div class="g-card" role="dialog" aria-label="نتيجة اختبار الميول"><div class="g-top"><b>🧭 ميولج</b><span class="spacer"></span><button class="btn sm ghost" data-act="it-close">إغلاق</button></div>'+
+      '<div class="g-end"><div class="g-stars">'+top.map(d=>'<span class="on">'+DIM_ICON[d]+'</span>').join(' ')+'</div><h3>أقوى ميولج: '+top.map(d=>DIMS[d]).join(' و')+'</h3>'+
+      '<p class="small muted">النتيجة توصل للمرشدة، وتنجمع مع أدائج طول السنة. والمسار ما يتحدد إلا آخر السنة، بعد ما تتناقشين مع المرشدة وأهلج.</p></div>'+
+      Object.keys(DIMS).sort((a,b)=>r[b]-r[a]).map(k=>'<div class="dim"><span>'+DIM_ICON[k]+' '+DIMS[k]+'</span><span class="pips">'+[1,2,3,4,5].map(n=>'<i class="'+(n<=r[k]?'on':'')+'"></i>').join('')+'</span></div>').join('')+
+      '<button class="k-play" data-act="it-close">تم 🌸</button></div>';
+    return;}
+  const it=ITEMS[IT.i];
+  el.innerHTML='<div class="g-card" role="dialog" aria-label="اختبار الميول"><div class="g-top"><div><b>🧭 اكتشفي ميولج</b><div class="small muted">ما فيه جواب صح وغلط، اختاري اللي يشبهج</div></div><span class="spacer"></span><button class="btn sm ghost" data-act="it-close">إغلاق</button></div>'+
+    '<div class="bar"><i style="width:'+Math.round(IT.i/ITEMS.length*100)+'%"></i></div><div class="small muted num" style="text-align:center">'+(IT.i+1)+' / '+ITEMS.length+'</div>'+
+    '<p class="g-q"><b>'+esc(it[1])+'</b></p>'+
+    '<div class="g-opts" style="grid-template-columns:repeat(5,1fr)">'+FACES.map((f,n)=>'<button class="btn" data-act="it-ans" data-v="'+(n+1)+'" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px"><span style="font-size:1.8rem">'+f[0]+'</span><span class="small">'+f[1]+'</span></button>').join('')+'</div>'+
+    (IT.i?'<button class="btn sm ghost" data-act="it-back">→ رجوع</button>':'')+'</div>';
+}
+function interestClick(a,b){
+  if(a==='it-close'){closeInterest();return;}
+  if(a==='it-back'){IT.i=Math.max(0,IT.i-1); IT.ans.pop(); renderInterest(); return;}
+  if(a==='it-ans'){IT.ans[IT.i]=Number(b.dataset.v);
+    if(IT.i<ITEMS.length-1){IT.i++; renderInterest(); return;}
+    const sum={},cnt={}; ITEMS.forEach((x,i)=>{sum[x[0]]=(sum[x[0]]||0)+IT.ans[i]; cnt[x[0]]=(cnt[x[0]]||0)+1;});
+    const r={}; Object.keys(sum).forEach(k=>r[k]=Math.round(sum[k]/cnt[k]));
+    const st=stu(IT.sid); if(st) st.interests=r; live('saveInterests',IT.sid,r);
+    IT.done=r; renderInterest();}
+}
+
 /* ============ ربط الأحداث ============ */
 document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-act]'); if(!b || b.tagName==='SELECT' || b.tagName==='FORM' || b.tagName==='INPUT') return;
   const a=b.dataset.act;
   if(G && a.startsWith('g-')){gameClick(a,b);return;}
+  if(IT && a.startsWith('it-')){interestClick(a,b);return;}
+  if(a==='itest'){openInterest(S.mode==='live'&&V.role==='student'?S.me.self:V.sid);return;}
   if(a==='play'){openGame(S.mode==='live'&&V.role==='student'?S.me.self:V.sid,b.dataset.skill,b.dataset.id||null);return;}
   if(a==='gform'||a==='gclass'||a==='gcal'){gtool(a);return;}
   if(a==='role'){V.role=b.dataset.v; V.gout=null; render(); window.scrollTo(0,0);}
@@ -1065,7 +1125,7 @@ document.addEventListener('submit',e=>{
     gem('admin',{q, topSkill:rows[0]?rows[0].sk:'—', topCount:rows[0]?rows[0].bad:0, alertCount:new Set(al.map(a=>a.sid)).size, skills:rows.slice(0,6)}).then(r=>{V.adminAns=r; render();});}
 });
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&G) closeGame();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&G) closeGame(); else if(e.key==='Escape'&&IT) closeInterest();});
 /* ============ التشغيل ============ */
 function boot(){
   document.documentElement.lang='ar'; document.documentElement.dir='rtl';
