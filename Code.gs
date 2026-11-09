@@ -108,7 +108,7 @@ function setup() {
   if (!rows_('Settings').length) {
     [['appName', 'مَدار'],
      ['tagline', 'لكل بنت مدارها ✨'],
-     ['school', 'ثانوية أم حبيب — قسم الكيمياء والفيزياء'],
+     ['school', 'ثانوية أم حبيب — الصف العاشر'],
      ['week', 6],
      ['chemHelper', 'https://notebook.google.com/notebook/b3dd47a5-818a-4102-b794-5bc359812ef3'],
      ['lessons', 'https://sites.google.com/view/hayy-chemistry'],
@@ -135,7 +135,7 @@ function getBootstrap() {
   var audio = {};
   Object.keys(set).forEach(function (k) { if (k.indexOf('audio:') === 0 && set[k]) audio[k.slice(6)] = set[k]; });
   var config = {
-    appName: appName_(), tagline: set.tagline || 'لكل بنت مدارها ✨', school: set.school || '',
+    appName: appName_(), tagline: set.tagline || 'لكل بنت مدارها ✨', school: String(set.school || '').replace('قسم الكيمياء والفيزياء', 'الصف العاشر'),
     links: { audio: audio, chemHelper: set.chemHelper || '', lessons: set.lessons || '', booking: set.booking || '' }
   };
   var gemini = !!PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
@@ -638,6 +638,8 @@ function seedDemo() {
     { abs: 0, hw: 0, goal: '', term: { chem: 84, phys: 82, math: 80, bio: 86, arabic: 83, eng: 88, social: 82 }, interests: { organizing: 5, leading: 4, research: 3, social: 3, practical: 2, creative: 2 } },
     { abs: 1, hw: 0, goal: '', term: { chem: 78, phys: 80, math: 83, bio: 79, arabic: 81, eng: 77, social: 80 }, interests: { practical: 5, research: 4, creative: 3, organizing: 2, social: 2, leading: 2 } }
   ];
+  var terms = {};
+  meta.forEach(function (m, i) { var t = m.term; if (t.arabic != null && t.islamic == null) t.islamic = Math.min(99, t.arabic + 4); if (t.math != null && t.eng != null && t.it == null) t.it = Math.round((t.math + t.eng) / 2); terms['d' + (i + 1)] = t; });
   var sh = sheet_('Students'), rows = [];
   names.forEach(function (n, i) {
     var m = meta[i];
@@ -704,6 +706,7 @@ function seedDemo() {
   var me = Session.getEffectiveUser().getEmail().toLowerCase();
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
   if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
+  seedG10_(terms);
   append_('Nominations', { id: 'dn1', sid: 'd3', role: 'parent', by: 'ولي أمر دانة', domain: 'art', traits: '[]', note: 'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn2', sid: 'd2', role: 'teacher', by: 'أ. أفنان سامي', domain: 'sci', traits: JSON.stringify(['فضول وأسئلة عميقة', 'تتعلّم بسرعة', 'أفكار أصلية']), note: 'تحل أسئلة الأولمبياد بطرق ما درّسناها.', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn3', sid: 'd2', role: 'self', by: 'نورة', domain: 'sci', traits: '[]', note: 'شاركت بأولمبياد الكيمياء المدرسي ووصلت للنهائي', status: 'new', at: new Date() });
@@ -714,13 +717,52 @@ function seedDemo() {
   Logger.log('✅ انضافت شعبة تجريبية 10/6 (8 طالبات بدون إيميلات).');
 }
 
+
+/* ===== كل مواد الصف العاشر للشعبة التجريبية ===== */
+var G10 = {
+  islamic: { n: 'التربية الإسلامية', t: 'أ. منيرة (اسم تجريبي)', sk: ['التلاوة والتجويد', 'الحديث الشريف', 'الفقه', 'العقيدة'] },
+  arabic: { n: 'اللغة العربية', t: 'أ. هيا (اسم تجريبي)', sk: ['النحو', 'البلاغة', 'التعبير الكتابي', 'القراءة والنصوص'] },
+  eng: { n: 'اللغة الإنجليزية', t: 'Ms. Sara (demo)', sk: ['Reading', 'Grammar', 'Writing', 'Vocabulary'] },
+  math: { n: 'الرياضيات', t: 'أ. فاطمة (اسم تجريبي)', sk: ['المعادلات والمتباينات', 'الدوال', 'الهندسة التحليلية', 'الإحصاء'] },
+  bio: { n: 'الأحياء', t: 'أ. مرام السعيدي', sk: ['الخلية', 'الأنسجة', 'التنوع الحيوي'] },
+  social: { n: 'التاريخ', t: 'أ. خلود (اسم تجريبي)', sk: ['الحضارات القديمة', 'التاريخ الإسلامي', 'تاريخ الكويت'] },
+  it: { n: 'تقنية المعلومات', t: 'أ. زينب الشمري', sk: ['أساسيات البرمجة', 'قواعد البيانات', 'الأمن الرقمي'] }
+};
+function hash01_(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return ((h >>> 0) % 1000) / 1000; }
+function seedG10_(terms) {
+  var subs = rows_('Subjects').map(function (r) { return r.id; });
+  var ind = [], A = [], g = [], P = [], n = 1000, today = new Date().getDay();
+  Object.keys(G10).forEach(function (k) {
+    if (subs.indexOf(k) < 0) append_('Subjects', { id: k, name: G10[k].n, teacher: G10[k].t, teacherEmail: '', skills: G10[k].sk.join('|') });
+    var sk = G10[k].sk;
+    [[0, 4, 'قصير 1 — '], [1, 6, 'قصير 2 — ']].forEach(function (x, ai) {
+      var aid = 'dx' + k + (ai + 1);
+      A.push([aid, k, '10-6', x[2] + sk[x[0]], 10, sk[x[0]], x[1], 'published']);
+      Object.keys(terms).forEach(function (sid) { var v = terms[sid][k]; if (v == null) return;
+        var j = hash01_(sid + k + ai) - 0.5; g.push([aid, sid, Math.max(0, Math.min(10, Math.round((v / 10 + j * 0.8) * 2) / 2)), 'ok', new Date()]); });
+    });
+    Object.keys(terms).forEach(function (sid) { var v = terms[sid][k]; if (v == null) return;
+      [0, 1].forEach(function (si) { (si ? [5] : [4, 5]).forEach(function (wk, o) { var r = v + (hash01_(sid + k + si + wk) - 0.5) * 8;
+        ind.push([sid, k, sk[si], r >= 77 ? 'm' : r >= 67 ? 'p' : 'h', wk, o ? 3 : 1, G10[k].t, new Date()]); }); }); });
+  });
+  var tt = [['islamic', 'تسميع سورة الأسبوع', 'تسميع يوم الخميس، ١٠ دقايق مراجعة يوميًا تكفي.', 10, '19:30'], ['arabic', 'مسودة التعبير الكتابي', 'التسليم الخميس، اكتبي المقدمة اليوم بس.', 25, '18:30'],
+    ['bio', 'رسم الخلية وتسمية أجزائها', 'نشاط الكتاب، يساعدج بقصير الأحياء.', 20, '17:00'], ['social', 'قراءة درس الحضارات القديمة', 'نقاش بالحصة الجاية.', 15, '20:00'], ['it', 'تمرين برمجة قصير', 'مشروع الحاسوب يبدأ الأسبوع الجاي.', 20, '16:00']];
+  Object.keys(terms).forEach(function (sid) { tt.forEach(function (x, i) {
+    P.push(['dg' + (++n), sid, x[0], '', x[1], x[2], x[3], (today + i + (i > 1 ? 1 : 0)) % 7, x[4], 'study', hash01_(sid + x[0]) > 0.7 ? 'done' : 'todo', '', 'الكوتش', '', new Date()]); }); });
+  var put = function (name, rows) { if (!rows.length) return; var sh = sheet_(name); sh.getRange(sh.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows); };
+  put('Assessments', A); put('Grades', g); put('Indicators', ind); put('Plans', P);
+  var nd = function (dow) { var d = new Date(); d.setDate(d.getDate() + (((dow - d.getDay() + 7) % 7) || 7)); return Utilities.formatDate(d, TZ, 'yyyy-MM-dd'); };
+  [['islamic', 'تسميع سورة', 'الخميس', nd(4)], ['arabic', 'تسليم التعبير الكتابي', 'الخميس', nd(4)], ['it', 'بداية مشروع البرمجة', 'الأحد', nd(0)]].forEach(function (u) {
+    append_('Upcoming', { cls: '10-6', subj: u[0], title: u[1], when: u[2], date: "'" + u[3], skill: '', eventId: 'demo' }); });
+}
+
 function clearDemo() {
   ['Students', 'Indicators', 'Grades', 'Plans', 'Practice', 'Requests', 'Reviews', 'Alerts', 'Nominations'].forEach(function (n) {
     var col = n === 'Students' ? 'id' : n === 'Alerts' ? 'sid' : 'sid';
     if (n === 'Grades') col = 'sid';
     rows_(n).filter(function (r) { return /^d\d+$/.test(String(r[col])); }).reverse().forEach(function (r) { sheet_(n).deleteRow(r._row); });
   });
-  rows_('Assessments').filter(function (r) { return /^d[ap]\d+$/.test(String(r.id)); }).reverse().forEach(function (r) { sheet_('Assessments').deleteRow(r._row); });
+  rows_('Assessments').filter(function (r) { return /^d([ap]\d+|x[a-z]+\d)$/.test(String(r.id)); }).reverse().forEach(function (r) { sheet_('Assessments').deleteRow(r._row); });
   rows_('Upcoming').filter(function (r) { return r.eventId === 'demo'; }).reverse().forEach(function (r) { sheet_('Upcoming').deleteRow(r._row); });
   var me = Session.getEffectiveUser().getEmail().toLowerCase();
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];

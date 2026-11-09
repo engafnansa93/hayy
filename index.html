@@ -341,7 +341,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 const CONFIG = {
   appName: 'مَدار',
   tagline: 'لكل بنت مدارها ✨',
-  school: 'ثانوية أم حبيب — قسم الكيمياء والفيزياء',
+  school: 'ثانوية أم حبيب — الصف العاشر',
   links: {
     audio: {},           // روابط ملخصات NotebookLM الصوتية لكل مهارة
     chemHelper: 'https://notebook.google.com/notebook/b3dd47a5-818a-4102-b794-5bc359812ef3', // Afnan I
@@ -361,11 +361,11 @@ const LV = {m:{t:'أتقنت',s:'✓ أتقنت',c:'good'}, p:{t:'تحتاج ت�
 const GST = {ok:'درجة', absent:'غائبة', exempt:'معفاة', missing:'لم تسلّم', ungraded:'لم تُقيَّم'};
 const AST = {draft:{t:'مسودة',c:'none'}, approved:{t:'معتمدة',c:'warn'}, published:{t:'منشورة',c:'good'}};
 const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-const TERM = {chem:'الكيمياء',phys:'الفيزياء',math:'الرياضيات',bio:'الأحياء',arabic:'اللغة العربية',eng:'اللغة الإنجليزية',social:'الاجتماعيات'};
+const TERM = {islamic:'التربية الإسلامية',arabic:'اللغة العربية',eng:'اللغة الإنجليزية',math:'الرياضيات',chem:'الكيمياء',phys:'الفيزياء',bio:'الأحياء',social:'التاريخ',it:'تقنية المعلومات'};
 const DIMS = {research:'بحثي علمي',practical:'عملي تطبيقي',creative:'إبداعي فني',social:'اجتماعي',leading:'قيادي ريادي',organizing:'تنظيمي'};
 const PATHS = [
   {id:'health', name:'العلوم الصحية', desc:'مسار علمي يتجه للطب والصيدلة والتمريض والعلوم الطبية.', subj:['chem','bio'], dims:['research','social'], explore:'زيارة مختبر المدرسة ومقابلة قصيرة مع صيدلانية أو طبيبة.'},
-  {id:'eng', name:'الهندسة والتقنية', desc:'مسار علمي يتجه للهندسة والحاسوب والتقنية.', subj:['math','phys'], dims:['practical','research'], explore:'مشروع صغير في البرمجة أو تصميم دائرة كهربائية.'},
+  {id:'eng', name:'الهندسة والتقنية', desc:'مسار علمي يتجه للهندسة والحاسوب والتقنية.', subj:['math','phys','it'], dims:['practical','research'], explore:'مشروع صغير في البرمجة أو تصميم دائرة كهربائية.'},
   {id:'biz', name:'الأعمال والإدارة', desc:'يتجه للإدارة والاقتصاد وريادة الأعمال.', subj:['math','eng'], dims:['leading','organizing'], explore:'المشاركة في تنظيم فعالية مدرسية بميزانية بسيطة.'},
   {id:'hum', name:'العلوم الإنسانية والإعلام', desc:'يتجه للإعلام والتربية والقانون والعلوم الاجتماعية.', subj:['arabic','social'], dims:['social','creative'], explore:'كتابة مقال للإذاعة المدرسية أو إجراء مقابلة.'},
   {id:'art', name:'التصميم والفنون التطبيقية', desc:'يتجه للتصميم الجرافيكي والعمارة الداخلية والإنتاج الرقمي.', subj:['math','arabic'], dims:['creative','practical'], explore:'تصميم ملصق لنشاط المدرسة بأداة رقمية.'}
@@ -374,10 +374,42 @@ const ROLE = {teacher:'المعلمة', student:'الطالبة', parent:'ولي
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
 
 /* ============ ألوان المواد في Google Calendar ============ */
-const SUBJ_COLOR={chem:{hex:'#D50000',gc:'11',n:'أحمر'},phys:{hex:'#3F51B5',gc:'9',n:'أزرق'},math:{hex:'#F6BF26',gc:'5',n:'أصفر'},bio:{hex:'#33B679',gc:'2',n:'أخضر'},arabic:{hex:'#8E24AA',gc:'3',n:'بنفسجي'},eng:{hex:'#039BE5',gc:'7',n:'سماوي'},social:{hex:'#F4511E',gc:'6',n:'برتقالي'}};
+const SUBJ_COLOR={chem:{hex:'#D50000',gc:'11',n:'أحمر'},phys:{hex:'#3F51B5',gc:'9',n:'أزرق'},math:{hex:'#F6BF26',gc:'5',n:'أصفر'},bio:{hex:'#33B679',gc:'2',n:'أخضر'},arabic:{hex:'#8E24AA',gc:'3',n:'بنفسجي'},eng:{hex:'#039BE5',gc:'7',n:'سماوي'},social:{hex:'#F4511E',gc:'6',n:'برتقالي'},islamic:{hex:'#0B8043',gc:'10',n:'أخضر غامق'},it:{hex:'#9E9E9E',gc:'8',n:'رمادي'}};
 function nextDate(dow){const d=new Date(); d.setDate(d.getDate()+(((dow-d.getDay()+7)%7)||7)); return d.toISOString().slice(0,10);}
 function upLink(u){const d=u.date.replace(/-/g,''); const e=new Date(Date.parse(u.date)+864e5).toISOString().slice(0,10).replace(/-/g,'');
   return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent((SUBJ_ICON[u.subj]||'')+' '+u.title)+'&dates='+d+'/'+e+'&ctz=Asia/Kuwait';}
+
+
+/* ============ كل مواد الصف العاشر (بيانات تجريبية واقعية) ============ */
+// المهارات هنا عناوين تقريبية للعرض؛ تتبدل من كتب الوزارة بورقة Subjects.
+const G10={
+  islamic:{t:'أ. منيرة (اسم تجريبي)',sk:['التلاوة والتجويد','الحديث الشريف','الفقه','العقيدة']},
+  arabic:{t:'أ. هيا (اسم تجريبي)',sk:['النحو','البلاغة','التعبير الكتابي','القراءة والنصوص']},
+  eng:{t:'Ms. Sara (demo)',sk:['Reading','Grammar','Writing','Vocabulary']},
+  math:{t:'أ. فاطمة (اسم تجريبي)',sk:['المعادلات والمتباينات','الدوال','الهندسة التحليلية','الإحصاء']},
+  bio:{t:'أ. مرام السعيدي',sk:['الخلية','الأنسجة','التنوع الحيوي']},
+  social:{t:'أ. خلود (اسم تجريبي)',sk:['الحضارات القديمة','التاريخ الإسلامي','تاريخ الكويت']},
+  it:{t:'أ. زينب الشمري',sk:['أساسيات البرمجة','قواعد البيانات','الأمن الرقمي']}
+};
+function hash01(str){let h=2166136261; for(const c of str){h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return ((h>>>0)%1000)/1000;}
+function extendG10(S,today){
+  S.students.forEach(st=>{const t=st.term||{}; if(t.arabic!=null&&t.islamic==null) t.islamic=Math.min(99,t.arabic+4); if(t.math!=null&&t.eng!=null&&t.it==null) t.it=Math.round((t.math+t.eng)/2);});
+  Object.keys(G10).forEach((k,ki)=>{
+    if(!S.subjects[k]) S.subjects[k]={name:TERM[k],teacher:G10[k].t,skills:G10[k].sk.slice()};
+    const sk=S.subjects[k].skills;
+    [[0,4,'قصير 1 — '],[1,6,'قصير 2 — ']].forEach(([si,wk,ttl],ai)=>{
+      const g={}; S.students.forEach(st=>{const v=(st.term||{})[k]; if(v==null) return; const j=hash01(st.id+k+ai)-0.5;
+        g[st.id]={v:Math.max(0,Math.min(10,Math.round((v/10+j*0.8)*2)/2)),s:'ok'};});
+      S.assessments.push({id:'x'+k+(ai+1),subj:k,title:ttl+sk[si],max:10,skill:sk[si],week:wk,status:'published',grades:g});});
+    S.students.forEach(st=>{const v=(st.term||{})[k]; if(v==null) return;
+      [0,1].forEach(si=>(si?[5]:[4,5]).forEach((wk,o)=>{const r=v+(hash01(st.id+k+si+wk)-0.5)*8;
+        S.indicators.push({sid:st.id,subj:k,skill:sk[si],level:r>=77?'m':r>=67?'p':'h',week:wk,period:o?3:1,by:S.subjects[k].teacher});}));});
+  });
+  let n=1000; const tt=[['islamic','تسميع سورة الأسبوع','تسميع يوم الخميس، ١٠ دقايق مراجعة يوميًا تكفي.',10,'19:30'],['arabic','مسودة التعبير الكتابي','التسليم الخميس، اكتبي المقدمة اليوم بس.',25,'18:30'],
+    ['bio','رسم الخلية وتسمية أجزائها','نشاط الكتاب ص ٢٤، يساعدج بقصير الأحياء.',20,'17:00'],['social','قراءة درس الحضارات القديمة','نقاش بالحصة الجاية.',15,'20:00'],['it','تمرين برمجة قصير','مشروع الحاسوب يبدأ الأسبوع الجاي.',20,'16:00']];
+  S.students.forEach(st=>tt.forEach((x,i)=>S.plans.push({id:'g'+(++n),sid:st.id,subj:x[0],title:x[1],why:x[2],min:x[3],day:(today+i+(i>1?1:0))%7,time:x[4],kind:'study',status:hash01(st.id+x[0])>0.7?'done':'todo',result:null,src:'الكوتش'})));
+  S.upcoming.push({subj:'islamic',title:'تسميع سورة',when:'الخميس',date:nextDate(4)},{subj:'arabic',title:'تسليم التعبير الكتابي',when:'الخميس',date:nextDate(4)},{subj:'it',title:'بداية مشروع البرمجة',when:'الأحد',date:nextDate(0)});
+}
 
 /* ============ بيانات العرض (وهمية) ============ */
 function demoState(){
@@ -439,6 +471,7 @@ function demoState(){
   pr('s1','مبدأ أوفباو',4,['ترتيب 4s و 3d'],['ord-2','!ord-1','ord-5','ord-6','ord-3'],310,2);
   pr('s2','الأعداد الكمية',5,[],['orb-N','orb-O','orb-C','orb-Mn','orb-F'],150,4); pr('s2','مبدأ أوفباو',5,[],['ord-1','ord-2','ord-3','ord-4','ord-5'],140,3); pr('s2','الترتيب الإلكتروني',5,[],['cfg-Na','cfg-K','cfg-Fe','cfg-S','cfg-Cl'],200,1);
   pr('s5','الأعداد الكمية',3,['ازدواج قبل ملء الأفلاك منفردة','ازدواج قبل ملء الأفلاك منفردة'],['orb-N','!orb-O','orb-C','!orb-Fe','orb-Mn'],420,2);
+  extendG10(S,today);
   S.students.forEach(st=>st.digest='weekly');
   S.nominations=[
     {id:'n1',sid:'s3',role:'parent',by:'ولي أمر دانة',domain:'art',traits:[],note:'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.',status:'new',at:ago(2)},
@@ -945,7 +978,7 @@ function studentSummary(sid){
   const strong=Object.keys(bySkill).filter(k=>bySkill[k]==='m'); const need=Object.keys(bySkill).filter(k=>bySkill[k]==='p'||bySkill[k]==='h');
   return {st,res,strong,need};
 }
-const SUBJ_ICON={chem:'🧪',phys:'⚡',math:'➗',bio:'🧬',arabic:'📖',eng:'🔤',social:'🌍'};
+const SUBJ_ICON={chem:'🧪',phys:'⚡',math:'➗',bio:'🧬',arabic:'📖',eng:'🔤',social:'🏛️',islamic:'🕌',it:'💻'};
 const GAME_ICON={'الأعداد الكمية':'🏠','مبدأ أوفباو':'🪜','الترتيب الإلكتروني':'🫧','الجدول الدوري':'🗺️'};
 const GAME_TINT={'الأعداد الكمية':'t1','مبدأ أوفباو':'t2','الترتيب الإلكتروني':'t3','الجدول الدوري':'t4'};
 function vStudent(){
@@ -964,7 +997,7 @@ function vStudent(){
   const week=[0,1,2,3,4,5,6].map(o=>{const d=(today+o)%7, ts=mine.filter(p=>p.day===d), dn=ts.filter(p=>p.status==='done').length;
     return '<div class="k-day'+(o===0?' today':'')+'"><span class="k-dn">'+(o===0?'اليوم':DAYS[d].replace('ال',''))+'</span><span class="k-dots">'+(ts.length?ts.map(p=>'<i class="'+(p.status==='done'?'done':'')+'" title="'+esc(p.title)+'" style="border-bottom:3px solid '+((SUBJ_COLOR[p.subj]||{}).hex||'transparent')+'">'+(SUBJ_ICON[p.subj]||'•')+'</i>').join(''):'<em>🌿</em>')+'</span></div>';}).join('');
   const cal='<section class="k-card" id="kcal"><div class="k-h"><h3>📅 أسبوعي</h3><span class="spacer"></span><a class="k-gcal" href="https://calendar.google.com/calendar/r/week" target="_blank" rel="noopener">افتحي تقويم جوجل ↗</a></div><div class="k-week">'+week+'</div>'+
-    '<div class="k-legend">'+['chem','phys','math','bio','eng'].map(k=>'<span><i style="background:'+SUBJ_COLOR[k].hex+'"></i>'+SUBJ_ICON[k]+'</span>').join('')+'</div>'+
+    '<div class="k-legend">'+Object.keys(S.subjects).filter(k=>SUBJ_COLOR[k]).map(k=>'<span><i style="background:'+SUBJ_COLOR[k].hex+'"></i>'+SUBJ_ICON[k]+'</span>').join('')+'</div>'+
     (S.mode==='live'?'<p class="k-note">✨ مهامج والاختبارات تنزل في تقويمج تلقائيًا، بلون كل مادة، مع تذكير. وقبل كل اختبار بيومين: مراجعة 🫧 تفتح اللعبة مباشرة.</p>':'<p class="k-note">✨ بعد النشر: المهام والاختبارات تنزل في تقويمج تلقائيًا بلون كل مادة، وقبل كل اختبار بيومين مراجعة 🫧 تفتح اللعبة.</p>')+'</section>';
   const task=t=>{const sk=taskSkill(t), g=t.kind==='practice'&&GAMES[sk];
     return '<div class="k-task'+(t.status==='done'?' done':'')+'" id="task-'+t.id+'"><span class="k-ic">'+(g?GAME_ICON[sk]:SUBJ_ICON[t.subj]||'📌')+'</span>'+
@@ -993,7 +1026,7 @@ function vStudent(){
     :'<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 اكتشفي ميولج</h3></div><p class="small">18 سؤال سريع بالإيموجي، ٣ دقايق، وتعرفين شنو يشبهج 🌟</p><button class="k-play" data-act="itest">▶ ابدئي</button></section>');
   const side=itCard+constellation(sid)+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
     '<section class="k-card"><div class="k-h"><h3>📈 تقدّمي</h3></div>'+(prog?'<div class="prog">'+prog+'</div>':'<div class="k-empty">ما في درجات بعد</div>')+
-    '<div class="k-tags">'+strong.map(s=>'<span class="pill good">💪 '+esc(s)+'</span>').join('')+need.map(s=>'<span class="pill warn">🎯 '+esc(s)+'</span>').join('')+'</div></section>'+
+    '<div class="k-tags">'+strong.slice(-4).map(s=>'<span class="pill good">💪 '+esc(s)+'</span>').join('')+(strong.length>4?'<span class="pill none">+'+(strong.length-4)+'</span>':'')+need.map(s=>'<span class="pill warn">🎯 '+esc(s)+'</span>').join('')+'</div></section>'+
     '<section class="k-card"><div class="k-h"><h3>⏳ القادم</h3></div>'+S.upcoming.map(u=>'<div class="k-up"><span class="k-ic sm" style="box-shadow:inset 0 -3px 0 '+((SUBJ_COLOR[u.subj]||{}).hex||'transparent')+'">'+(SUBJ_ICON[u.subj]||'📌')+'</span><span>'+esc(u.title)+'</span><span class="spacer"></span><span class="k-sub">'+esc(u.when)+'</span>'+(u.date?'<a class="k-link" href="'+upLink(u)+'" target="_blank" rel="noopener" title="أضيفيه لتقويم جوجل">＋</a>':'')+'</div>').join('')+'</section>'+
     (sid==='s2'?'<section class="k-card t3"><div class="k-h"><h3>🏆 تحدّي الأسبوع</h3></div><p class="small">مسألة أولمبياد عن الأعداد الكمية لعنصر انتقالي. شاركي حلّج مع المعلمة!</p></section>':'');
   return '<div class="kid">'+hero+'<div class="cols"><div class="c7 kcol">'+plan+cal+pmap+coach+'</div><div class="c5 kcol">'+side+'</div></div></div>';
