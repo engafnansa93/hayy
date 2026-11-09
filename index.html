@@ -414,6 +414,9 @@ function demoState(){
   S.students.forEach(st=>st.digest='weekly');
   S.nominations=[
     {id:'n1',sid:'s3',role:'parent',by:'ولي أمر دانة',domain:'art',traits:[],note:'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.',status:'new',at:ago(2)},
+    {id:'n3',sid:'s2',role:'self',by:'نورة',domain:'sci',traits:[],note:'شاركت بأولمبياد الكيمياء المدرسي ووصلت للنهائي',link:'',status:'new',at:ago(6)},
+    {id:'n4',sid:'s3',role:'self',by:'دانة',domain:'art',traits:[],note:'صممت شعار نادي العلوم وملصقات يوم الكيمياء',link:'',status:'new',at:ago(3)},
+    {id:'n5',sid:'s1',role:'self',by:'سارة',domain:'lead',traits:[],note:'نظّمت فعالية يوم العلوم بالصف',link:'',status:'new',at:ago(1)},
     {id:'n2',sid:'s2',role:'teacher',by:'أ. أفنان سامي',domain:'sci',traits:['فضول وأسئلة عميقة','تتعلّم بسرعة','أفكار أصلية'],note:'تحل أسئلة الأولمبياد بطرق ما درّسناها.',status:'new',at:ago(4)}];
   return S;
 }
@@ -754,12 +757,16 @@ function talent(sid){
   if(full.length>=2){const sec=Math.round(full.reduce((a,p)=>a+(p.sec||0),0)/full.length); if(sec&&sec<=240) add('sci','دقة وسرعة بالتدريب ('+full.length+' ألعاب كاملة، متوسط '+Math.round(sec/60*10)/10+' د)',1);}
   if(st.interests) Object.keys(st.interests).forEach(k=>{if(st.interests[k]>=5&&TAL_DIM[k]) add(TAL_DIM[k],'ميل قوي: '+DIMS[k],0.5);});
   if(/أولمبياد|مسابقة/.test(st.goal||'')) add('sci','هدفها: '+st.goal,0.5);
-  noms(sid).forEach(n=>{if(n.role==='teacher') add(n.domain,'ترشيح '+n.by+(n.traits&&n.traits.length?': '+n.traits.join('، '):''),1.5);
-    else if(n.role==='parent') add(n.domain,'ترشيح ولي الأمر: '+(n.note||TAL[n.domain].n),1);});
-  const score=ev.reduce((a,e)=>a+e.w,0), dm={}; ev.forEach(e=>dm[e.d]=(dm[e.d]||0)+e.w);
-  const dom=Object.keys(dm).sort((a,b)=>dm[b]-dm[a]).filter(d=>d!=='acad'||Object.keys(dm).length===1).slice(0,2);
+  ev.forEach(e=>e.src='data');
+  let selfW=0;
+  noms(sid).forEach(n=>{if(n.role==='teacher'){add(n.domain,'ترشيح '+n.by+(n.traits&&n.traits.length?': '+n.traits.join('، '):''),1.5); ev[ev.length-1].src='teacher';}
+    else if(n.role==='parent'){add(n.domain,'ترشيح ولي الأمر: '+(n.note||TAL[n.domain].n),1); ev[ev.length-1].src='parent';}
+    else if(n.role==='self'){const w=selfW<1?0.5:0; selfW+=0.5; add(n.domain,'نجمة من '+st.name+': '+(n.note||TAL[n.domain].n),w); Object.assign(ev[ev.length-1],{src:'self',link:n.link||''});}});
+  const score=ev.reduce((a,e)=>a+e.w,0), dm={}, srcs={}; ev.forEach(e=>{dm[e.d]=(dm[e.d]||0)+(e.w||0.25); (srcs[e.d]=srcs[e.d]||new Set()).add(e.src);});
+  const lit=Object.keys(srcs).filter(d=>d!=='acad'&&srcs[d].size>=3);
+  const dom=(lit.length?lit:[]).concat(Object.keys(dm).sort((a,b)=>dm[b]-dm[a]).filter(d=>!lit.includes(d)&&(d!=='acad'||Object.keys(dm).length===1))).slice(0,2);
   const referred=noms(sid).some(n=>n.status==='referred');
-  return {score,level:score>=3?'cand':score>=2?'prom':null,dom,ev,referred};
+  return {score,level:(score>=3||lit.length)?'cand':score>=2?'prom':null,dom,ev,referred,srcs,lit};
 }
 const TLV={cand:['good','مرشّحة للفحص'],prom:['warn','مؤشرات واعدة']};
 function saveNom(n){(S.nominations=S.nominations||[]).push(n); live('saveNomination',n);}
@@ -768,7 +775,7 @@ function talentRadar(canRefer){
   const pn=(S.nominations||[]).filter(n=>n.role==='parent');
   return '<section class="panel" id="radar"><div class="panel-h"><h2>🌟 رادار الموهبة</h2><span class="spacer"></span><span class="pill none">يرشّح للفحص، ما يشخّص</span></div>'+
     (rows.length?rows.map(x=>'<article class="alert" style="border-inline-start-color:var(--'+(x.t.level==='cand'?'good':'warn')+')"><div class="row"><b>'+esc(x.s.name)+'</b><span class="pill '+TLV[x.t.level][0]+'">'+TLV[x.t.level][1]+'</span>'+x.t.dom.map(d=>'<span class="pill acc">'+TAL[d].i+' '+TAL[d].n+'</span>').join('')+(x.t.referred?'<span class="pill good">📨 محوّلة للفحص</span>':'')+'</div>'+
-      '<details><summary>الدليل ('+x.t.ev.length+')</summary><ul>'+x.t.ev.map(e=>'<li>'+(TAL[e.d]||{}).i+' '+esc(e.t)+'</li>').join('')+'</ul></details>'+
+      '<details><summary>الدليل ('+x.t.ev.length+')</summary>'+skySVG(x.t)+'<ul>'+x.t.ev.map(e=>'<li><span style="color:'+SRC[e.src].c+'">●</span> '+(TAL[e.d]||{}).i+' '+esc(e.t)+(e.link?' <a href="'+esc(e.link)+'" target="_blank" rel="noopener">🔗</a>':'')+'</li>').join('')+'</ul></details>'+
       (canRefer&&!x.t.referred?'<div class="row"><button class="btn sm primary" data-act="refer" data-sid="'+x.s.id+'">📨 حوّليها للفحص الرسمي</button><a class="btn sm ghost" href="https://mawhoob.moe.edu.kw" target="_blank" rel="noopener">منصة موهوب ↗</a></div>':'')+'</article>').join(''):'<div class="empty">ما في مؤشرات كافية لين الحين.</div>')+
     '<details class="small"><summary>✋ رشّحي طالبة</summary><div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">'+
       '<div class="row"><label class="field">الطالبة<select id="nmSid">'+S.students.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select></label>'+
@@ -778,6 +785,42 @@ function talentRadar(canRefer){
     (canRefer?'<h3 class="small" style="margin-top:6px">👨‍👩‍👧 ترشيحات أولياء الأمور</h3>'+(pn.length?pn.map(n=>'<div class="row small"><span class="pill acc">'+esc((stu(n.sid)||{}).name||n.sid)+'</span>'+TAL[n.domain].i+' '+esc(n.note||TAL[n.domain].n)+'<span class="spacer"></span><span class="muted">'+esc(n.by)+'</span></div>').join(''):'<div class="empty">لا ترشيحات بعد.</div>'):'')+
   '</section>';
 }
+
+/* ---- كوكبتي: كل دليل نجمة، وكل مصدر لون. ثلاث مصادر بنفس المجال = كوكبة تضوي ---- */
+const SRC={data:{c:'#7FB2FF',n:'📊 أداؤج'},teacher:{c:'#FF8F7E',n:'👩‍🏫 معلمة'},parent:{c:'#6BCB9C',n:'👨‍👩‍👧 أهلج'},self:{c:'#FFD166',n:'🙋‍♀️ إنتي'}};
+const SKYPOS={sci:[70,62],math:[170,48],tech:[270,64],art:[80,150],lead:[180,138],lang:[280,150],social:[130,100],acad:[230,104]};
+function skySVG(t,small){
+  const by={}; t.ev.forEach(e=>(by[e.d]=by[e.d]||[]).push(e));
+  const W=340,H=190; let g='';
+  for(let i=0;i<40;i++){const x=(i*73)%W, y=(i*41+i*i)%H; g+='<circle cx="'+x+'" cy="'+y+'" r="'+(i%3?0.6:1)+'" fill="#fff" opacity="'+(0.25+(i%4)*0.12)+'"/>';}
+  Object.keys(by).forEach(d=>{const [cx,cy]=SKYPOS[d]||[170,95], list=by[d], on=(t.lit||[]).includes(d);
+    const n=list.length, R=n<2?0:Math.min(26,10+n*2.5);
+    const pts=list.map((e,i)=>{const a=-Math.PI/2+i*2*Math.PI/n, r=R*(i%2?0.72:1); return [cx+Math.cos(a)*r, cy+Math.sin(a)*r*0.75, e];});
+    if(n>1) g+='<'+(n>2?'polygon':'polyline')+' points="'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'" fill="'+(on?'#FFD166':'none')+'" fill-opacity="'+(on?0.08:0)+'" stroke="'+(on?'#FFD166':'#ffffff')+'" stroke-opacity="'+(on?0.9:0.35)+'" stroke-width="'+(on?1.4:1)+'" stroke-dasharray="'+(on?'0':'3 3')+'"/>';
+    if(on) g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(R+16)+'" fill="url(#glow)"/>';
+    pts.forEach(p=>{const c=SRC[p[2].src].c; g+='<g><circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(on?5:4)+'" fill="'+c+'"><title>'+esc(SRC[p[2].src].n+' · '+p[2].t)+'</title></circle><circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="8" fill="'+c+'" opacity=".18"/></g>';});
+    if(!small) g+='<text x="'+cx+'" y="'+(cy+R*0.75+16).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#fff" opacity="'+(on?1:0.7)+'">'+TAL[d].i+' '+TAL[d].n+(on?' ✨':'')+'</text>';});
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;border-radius:14px;background:radial-gradient(ellipse at 30% 20%,#2B2350,#120E24)" role="img" aria-label="كوكبة التميّز"><defs><radialGradient id="glow"><stop offset="0" stop-color="#FFD166" stop-opacity=".45"/><stop offset="1" stop-color="#FFD166" stop-opacity="0"/></radialGradient></defs>'+g+'</svg>';
+}
+function srcDots(t){return '<span class="row" style="gap:4px">'+Object.keys(SRC).map(k=>{const has=t.ev.some(e=>e.src===k); return '<span title="'+SRC[k].n+'" style="width:10px;height:10px;border-radius:50%;display:inline-block;background:'+(has?SRC[k].c:'transparent')+';border:1.5px solid '+SRC[k].c+'"></span>';}).join('')+'</span>';}
+function constellation(sid){
+  const t=talent(sid), st=stu(sid), mine=noms(sid).filter(n=>n.role==='self'), g=V['tal-'+sid+'-student'];
+  const tips=t.dom.flatMap(d=>TAL[d].tips.slice(0,2).map(x=>TAL[d].i+' '+x));
+  return '<section class="k-card" id="ktal"><div class="k-h"><h3>🌌 كوكبتي</h3><span class="spacer"></span>'+srcDots(t)+'</div>'+
+    (t.ev.length?skySVG(t):'<div style="position:relative">'+skySVG(t)+'<div style="position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:.9rem;text-align:center;padding:0 20px">سماج تنتظر أول نجمة ✨</div></div>')+
+    '<div class="k-legend" style="justify-content:center">'+Object.keys(SRC).map(k=>'<span><i style="background:'+SRC[k].c+';border-radius:50%"></i>'+SRC[k].n+'</span>').join('')+'</div>'+
+    '<p class="k-note">كل شي تفتخرين فيه = نجمة. ولما ثلاث عيون مختلفة تشوف نفس الشي فيج، تضوي الكوكبة ✨</p>'+
+    (t.lit.length?'<div class="ai-out"><b>✨ اكتملت كوكبة '+t.lit.map(d=>TAL[d].n).join(' و')+'!</b><span class="small">المرشدة بتجلس معاج تخططون كيف تكبّرينها 🤍</span></div>':'')+
+    (tips.length?'<div style="display:flex;flex-direction:column;gap:6px">'+tips.map(x=>'<div class="k-up small">'+esc(x)+'</div>').join('')+'</div>'+
+      (g?'<div class="ai-out">'+aiTag(g.live)+'<p>'+esc(g.text)+'</p></div>':'<button class="k-soft" data-act="talg" data-sid="'+sid+'">✦ خطة تنمية من Gemini</button>'):'')+
+    '<details'+(t.ev.length?'':' open')+'><summary class="k-sub">⭐ أضيفي نجمة: شي سويتيه وتفتخرين فيه</summary><div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">'+
+      '<select id="snDom" aria-label="المجال">'+Object.keys(TAL).filter(k=>k!=='acad').map(k=>'<option value="'+k+'">'+TAL[k].i+' '+TAL[k].n+'</option>').join('')+'</select>'+
+      '<input type="text" id="snNote" maxlength="140" placeholder="مثال: صممت شعار نادي العلوم، برمجت لعبة، كتبت قصة…">'+
+      '<input type="text" id="snLink" placeholder="🔗 رابط صورة أو ملف من Drive (اختياري)">'+
+      '<button class="k-play" data-act="nomS" data-sid="'+sid+'">✨ أطلقي النجمة</button></div></details>'+
+    (mine.length?'<div class="k-tags">'+mine.map(n=>'<span class="pill acc">'+TAL[n.domain].i+' '+esc(n.note||TAL[n.domain].n)+(n.link?' <a href="'+esc(n.link)+'" target="_blank" rel="noopener">🔗</a>':'')+'</span>').join('')+'</div>':'')+'</section>';
+}
+
 function talentFor(sid,who){
   const t=talent(sid), st=stu(sid), key='tal-'+sid+'-'+who, g=V[key];
   const tips=t.dom.flatMap(d=>TAL[d].tips.slice(0,2).map(x=>TAL[d].i+' '+x));
@@ -917,7 +960,7 @@ function vStudent(){
   const itCard=(st.interests?(()=>{const r=st.interests, top=Object.keys(r).sort((x,y)=>r[y]-r[x]).slice(0,2);
       return '<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 ميولي</h3><span class="spacer"></span><button class="k-link" data-act="itest" style="border:0">↻ أعيديه</button></div><div class="k-tags">'+top.map(d=>'<span class="pill acc">'+DIM_ICON[d]+' '+DIMS[d]+'</span>').join('')+'</div><p class="k-note">توصل للمرشدة، ومسارج يتحدد آخر السنة 🤍</p></section>';})()
     :'<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 اكتشفي ميولج</h3></div><p class="small">18 سؤال سريع بالإيموجي، ٣ دقايق، وتعرفين شنو يشبهج 🌟</p><button class="k-play" data-act="itest">▶ ابدئي</button></section>');
-  const side=itCard+talentFor(sid,'student')+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
+  const side=itCard+constellation(sid)+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
     '<section class="k-card"><div class="k-h"><h3>📈 تقدّمي</h3></div>'+(prog?'<div class="prog">'+prog+'</div>':'<div class="k-empty">ما في درجات بعد</div>')+
     '<div class="k-tags">'+strong.map(s=>'<span class="pill good">💪 '+esc(s)+'</span>').join('')+need.map(s=>'<span class="pill warn">🎯 '+esc(s)+'</span>').join('')+'</div></section>'+
     '<section class="k-card"><div class="k-h"><h3>⏳ القادم</h3></div>'+S.upcoming.map(u=>'<div class="k-up"><span class="k-ic sm" style="box-shadow:inset 0 -3px 0 '+((SUBJ_COLOR[u.subj]||{}).hex||'transparent')+'">'+(SUBJ_ICON[u.subj]||'📌')+'</span><span>'+esc(u.title)+'</span><span class="spacer"></span><span class="k-sub">'+esc(u.when)+'</span>'+(u.date?'<a class="k-link" href="'+upLink(u)+'" target="_blank" rel="noopener" title="أضيفيه لتقويم جوجل">＋</a>':'')+'</div>').join('')+'</section>'+
@@ -1181,6 +1224,11 @@ document.addEventListener('click',async e=>{
   else if(a==='nomP'){const sid=b.dataset.sid;
     saveNom({id:'n'+Date.now(),sid,role:'parent',by:S.mode==='live'?S.me.name:stu(sid).parent,domain:$('#pnDom').value,traits:[],note:$('#pnNote').value.trim(),status:'new',at:new Date().toISOString()});
     toast('شكرًا 🤍 وصلت للمرشدة'); render();}
+  else if(a==='nomS'){const sid=b.dataset.sid, note=$('#snNote').value.trim(); if(!note){toast('اكتبي شنو سويتي ✨');return;}
+    const link=$('#snLink').value.trim(); if(link&&!/^https:\/\//.test(link)){toast('الرابط لازم يبدأ بـ https://');return;}
+    const before=talent(sid).lit.length;
+    saveNom({id:'n'+Date.now(),sid,role:'self',by:stu(sid).name,domain:$('#snDom').value,traits:[],note,link,status:'new',at:new Date().toISOString()});
+    toast(talent(sid).lit.length>before?'✨ اكتملت كوكبة! وصلت للمرشدة':'⭐ نجمة جديدة بسماج'); render();}
   else if(a==='refer'){const sid=b.dataset.sid, t=talent(sid);
     saveNom({id:'n'+Date.now(),sid,role:'counselor',by:S.mode==='live'?S.me.name:'المرشدة',domain:t.dom[0]||'acad',traits:[],note:'تحويل للفحص الرسمي',status:'referred',at:new Date().toISOString()});
     S.audit.unshift({t:nowStr(),who:'المرشدة',what:'حوّلت '+stu(sid).name+' لفحص الموهبة'}); toast('انحوّلت '+stu(sid).name+' للفحص، وبيوصل لولي الأمر'); render();}

@@ -28,7 +28,7 @@ var SHEETS = {
   Reviews:     ['sid', 'data', 'at'],
   Alerts:      ['key', 'sid', 'subj', 'reason', 'at'],
   Quizzes:     ['formId', 'skill', 'url', 'edit', 'at'],
-  Nominations: ['id', 'sid', 'role', 'by', 'domain', 'traits', 'note', 'status', 'at']
+  Nominations: ['id', 'sid', 'role', 'by', 'domain', 'traits', 'note', 'status', 'at', 'link']
 };
 var SKILLS_CHEM = ['الأعداد الكمية', 'الترتيب الإلكتروني', 'مبدأ أوفباو', 'الجدول الدوري'];
 var SUBJ_GC = { chem: '11', phys: '9', math: '5', bio: '2', arabic: '3', eng: '7', social: '6' };
@@ -204,7 +204,7 @@ function buildState_(user, set) {
     requests: staff ? rows_('Requests').slice(-30).reverse().map(function (r) { return { sid: String(r.sid), text: r.text, t: r.t }; }) : [],
     reviews: reviews,
     nominations: rows_('Nominations').filter(function (n) { return ok(n.sid); }).map(function (n) {
-      return { id: String(n.id), sid: String(n.sid), role: n.role, by: n.by, domain: n.domain, traits: json_(n.traits, []), note: n.note || '', status: n.status || 'new',
+      return { id: String(n.id), sid: String(n.sid), role: n.role, by: n.by, domain: n.domain, traits: json_(n.traits, []), note: n.note || '', link: n.link || '', status: n.status || 'new',
         at: n.at instanceof Date ? n.at.toISOString() : String(n.at) };
     }),
     chats: {},
@@ -318,11 +318,13 @@ function saveNomination(n) {
   var roles = String(u.roles);
   var staff = /teacher|admin|counselor|head|principal/.test(roles);
   var kids = String(u.children || '').split(',').map(function (x) { return x.trim(); });
-  if (!staff && kids.indexOf(String(n.sid)) < 0) throw new Error('غير مسموح.');
+  var isSelf = n.role === 'self' && String(u.studentId) === String(n.sid);
+  if (!staff && !isSelf && kids.indexOf(String(n.sid)) < 0) throw new Error('غير مسموح.');
+  var link = /^https:\/\//.test(String(n.link || '')) ? String(n.link).slice(0, 300) : '';
   if (n.status === 'referred' && !/counselor|admin/.test(roles)) throw new Error('التحويل للمرشدة فقط.');
   var st = rows_('Students').filter(function (s) { return String(s.id) === String(n.sid); })[0];
-  append_('Nominations', { id: n.id, sid: n.sid, role: n.role === 'parent' ? (/parent/.test(roles) || !staff ? 'parent' : 'teacher') : (staff ? n.role : 'parent'), by: u.name || n.by, domain: n.domain,
-    traits: JSON.stringify(n.traits || []), note: String(n.note || '').slice(0, 500), status: n.status === 'referred' ? 'referred' : 'new', at: new Date() });
+  append_('Nominations', { id: n.id, sid: n.sid, role: isSelf ? 'self' : n.role === 'parent' ? (/parent/.test(roles) || !staff ? 'parent' : 'teacher') : (staff && n.role !== 'self' ? n.role : 'parent'), by: u.name || n.by, domain: n.domain,
+    traits: JSON.stringify(n.traits || []), note: String(n.note || '').slice(0, 500), status: n.status === 'referred' ? 'referred' : 'new', at: new Date(), link: link });
   audit_(u.name, (n.status === 'referred' ? 'حوّلت للفحص: ' : 'ترشيح موهبة: ') + (st ? st.name : n.sid));
   var to = rows_('Users').filter(function (x) { return /counselor/.test(String(x.roles)); }).map(function (x) { return x.email; }).filter(String);
   if (n.status !== 'referred' && to.length) safeMail_(to.join(','), '🌟 ترشيح موهبة — ' + (st ? st.name : n.sid), (u.name || '') + ' رشّح ' + (st ? st.name : n.sid) + ' بمجال: ' + n.domain + '\n' + (n.note || ''));
@@ -698,6 +700,9 @@ function seedDemo() {
   if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
   append_('Nominations', { id: 'dn1', sid: 'd3', role: 'parent', by: 'ولي أمر دانة', domain: 'art', traits: '[]', note: 'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn2', sid: 'd2', role: 'teacher', by: 'أ. أفنان سامي', domain: 'sci', traits: JSON.stringify(['فضول وأسئلة عميقة', 'تتعلّم بسرعة', 'أفكار أصلية']), note: 'تحل أسئلة الأولمبياد بطرق ما درّسناها.', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn3', sid: 'd2', role: 'self', by: 'نورة', domain: 'sci', traits: '[]', note: 'شاركت بأولمبياد الكيمياء المدرسي ووصلت للنهائي', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn4', sid: 'd3', role: 'self', by: 'دانة', domain: 'art', traits: '[]', note: 'صممت شعار نادي العلوم وملصقات يوم الكيمياء', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn5', sid: 'd1', role: 'self', by: 'سارة', domain: 'lead', traits: '[]', note: 'نظّمت فعالية يوم العلوم بالصف', status: 'new', at: new Date() });
   var gm = rows_('Settings').filter(function (r) { return r.key === 'geminiModel'; })[0];
   if (gm) update_('Settings', gm._row, { value: 'gemini-flash-lite-latest' });
   Logger.log('✅ انضافت شعبة تجريبية 10/6 (8 طالبات بدون إيميلات).');
