@@ -27,7 +27,8 @@ var SHEETS = {
   Requests:    ['sid', 'text', 't'],
   Reviews:     ['sid', 'data', 'at'],
   Alerts:      ['key', 'sid', 'subj', 'reason', 'at'],
-  Quizzes:     ['formId', 'skill', 'url', 'edit', 'at']
+  Quizzes:     ['formId', 'skill', 'url', 'edit', 'at'],
+  Nominations: ['id', 'sid', 'role', 'by', 'domain', 'traits', 'note', 'status', 'at']
 };
 var SKILLS_CHEM = ['الأعداد الكمية', 'الترتيب الإلكتروني', 'مبدأ أوفباو', 'الجدول الدوري'];
 var SUBJ_GC = { chem: '11', phys: '9', math: '5', bio: '2', arabic: '3', eng: '7', social: '6' };
@@ -202,6 +203,10 @@ function buildState_(user, set) {
     audit: staff ? rows_('Audit').slice(-60).reverse().map(function (a) { return { t: a.t, who: a.who, what: a.what }; }) : [],
     requests: staff ? rows_('Requests').slice(-30).reverse().map(function (r) { return { sid: String(r.sid), text: r.text, t: r.t }; }) : [],
     reviews: reviews,
+    nominations: rows_('Nominations').filter(function (n) { return ok(n.sid); }).map(function (n) {
+      return { id: String(n.id), sid: String(n.sid), role: n.role, by: n.by, domain: n.domain, traits: json_(n.traits, []), note: n.note || '', status: n.status || 'new',
+        at: n.at instanceof Date ? n.at.toISOString() : String(n.at) };
+    }),
     chats: {},
     sentAlerts: {},
     upcoming: rows_('Upcoming').filter(function (u) { return staff || !u.cls || clsSet[String(u.cls)]; }).map(function (u) {
@@ -308,6 +313,24 @@ function saveReview(sid, data) {
   return true;
 }
 
+function saveNomination(n) {
+  var u = who_();
+  var roles = String(u.roles);
+  var staff = /teacher|admin|counselor|head|principal/.test(roles);
+  var kids = String(u.children || '').split(',').map(function (x) { return x.trim(); });
+  if (!staff && kids.indexOf(String(n.sid)) < 0) throw new Error('غير مسموح.');
+  if (n.status === 'referred' && !/counselor|admin/.test(roles)) throw new Error('التحويل للمرشدة فقط.');
+  var st = rows_('Students').filter(function (s) { return String(s.id) === String(n.sid); })[0];
+  append_('Nominations', { id: n.id, sid: n.sid, role: n.role === 'parent' ? (/parent/.test(roles) || !staff ? 'parent' : 'teacher') : (staff ? n.role : 'parent'), by: u.name || n.by, domain: n.domain,
+    traits: JSON.stringify(n.traits || []), note: String(n.note || '').slice(0, 500), status: n.status === 'referred' ? 'referred' : 'new', at: new Date() });
+  audit_(u.name, (n.status === 'referred' ? 'حوّلت للفحص: ' : 'ترشيح موهبة: ') + (st ? st.name : n.sid));
+  var to = rows_('Users').filter(function (x) { return /counselor/.test(String(x.roles)); }).map(function (x) { return x.email; }).filter(String);
+  if (n.status !== 'referred' && to.length) safeMail_(to.join(','), '🌟 ترشيح موهبة — ' + (st ? st.name : n.sid), (u.name || '') + ' رشّح ' + (st ? st.name : n.sid) + ' بمجال: ' + n.domain + '\n' + (n.note || ''));
+  if (n.status === 'referred' && st && st.parentEmail) safeMail_(st.parentEmail, '🌟 ' + st.name + ' — ترشيح لفحص الموهبة',
+    'السلام عليكم،\nعند ' + st.name + ' مؤشرات تميّز لاحظناها خلال السنة، ورشّحتها المرشدة للفحص الرسمي للموهبة. بنتواصل معكم بالخطوات والموعد.\nمع التحية — ' + (settings_().appName || 'المنصة التعليمية'));
+  return true;
+}
+
 function saveInterests(sid, r) {
   var u = who_();
   var staff = /teacher|admin|counselor|head|principal/.test(String(u.roles));
@@ -399,6 +422,12 @@ function askGemini(kind, p) {
     prompt = 'أنت «الكوتش»: تنظّم وقت طالبة في الصف العاشر ودراستها وجدولها فقط. لا تشرح المادة؛ إذا سألت عن شرح، حوّلها لـ Afnan I أو المعلمة.\n' +
       'وضعها: ' + p.summary + '. أقوى شي عندها: ' + p.strong + '. القادم: ' + p.next + '.\n' +
       'آخر المحادثة: ' + JSON.stringify(p.history || []) + '\nسؤالها: «' + p.q + '»\nرد بجملتين أو ثلاث، بخطوة عملية واحدة. خاطبها بصيغة المؤنث. ' + STYLE;
+    return gemini_(prompt);
+  }
+  if (kind === 'talent') {
+    prompt = (p.who === 'student' ? 'اكتب لطالبة في الصف العاشر' : 'اكتب لولي أمر طالبة في الصف العاشر') +
+      ' خطة شهر قصيرة (4 أسابيع، سطر لكل أسبوع) لتنمية تميّزها في: ' + (p.domains || []).join(' و') + '.\nالمؤشرات: ' + (p.evidence || []).join('؛ ') +
+      '\nأنشطة عملية متاحة بالمدرسة أو البيت بالكويت. لا تقل إنها «موهوبة» ولا تعد بنتيجة؛ قل «مؤشرات تميّز». ' + (p.who === 'student' ? 'خاطبها بصيغة المؤنث. ' : '') + STYLE;
     return gemini_(prompt);
   }
   if (kind === 'counsel') {
@@ -667,13 +696,15 @@ function seedDemo() {
   var me = Session.getEffectiveUser().getEmail().toLowerCase();
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
   if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
+  append_('Nominations', { id: 'dn1', sid: 'd3', role: 'parent', by: 'ولي أمر دانة', domain: 'art', traits: '[]', note: 'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn2', sid: 'd2', role: 'teacher', by: 'أ. أفنان سامي', domain: 'sci', traits: JSON.stringify(['فضول وأسئلة عميقة', 'تتعلّم بسرعة', 'أفكار أصلية']), note: 'تحل أسئلة الأولمبياد بطرق ما درّسناها.', status: 'new', at: new Date() });
   var gm = rows_('Settings').filter(function (r) { return r.key === 'geminiModel'; })[0];
   if (gm) update_('Settings', gm._row, { value: 'gemini-flash-lite-latest' });
   Logger.log('✅ انضافت شعبة تجريبية 10/6 (8 طالبات بدون إيميلات).');
 }
 
 function clearDemo() {
-  ['Students', 'Indicators', 'Grades', 'Plans', 'Practice', 'Requests', 'Reviews', 'Alerts'].forEach(function (n) {
+  ['Students', 'Indicators', 'Grades', 'Plans', 'Practice', 'Requests', 'Reviews', 'Alerts', 'Nominations'].forEach(function (n) {
     var col = n === 'Students' ? 'id' : n === 'Alerts' ? 'sid' : 'sid';
     if (n === 'Grades') col = 'sid';
     rows_(n).filter(function (r) { return /^d\d+$/.test(String(r[col])); }).reverse().forEach(function (r) { sheet_(n).deleteRow(r._row); });

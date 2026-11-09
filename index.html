@@ -412,6 +412,9 @@ function demoState(){
   pr('s2','الأعداد الكمية',5,[],['orb-N','orb-O','orb-C','orb-Mn','orb-F'],150,4); pr('s2','مبدأ أوفباو',5,[],['ord-1','ord-2','ord-3','ord-4','ord-5'],140,3); pr('s2','الترتيب الإلكتروني',5,[],['cfg-Na','cfg-K','cfg-Fe','cfg-S','cfg-Cl'],200,1);
   pr('s5','الأعداد الكمية',3,['ازدواج قبل ملء الأفلاك منفردة','ازدواج قبل ملء الأفلاك منفردة'],['orb-N','!orb-O','orb-C','!orb-Fe','orb-Mn'],420,2);
   S.students.forEach(st=>st.digest='weekly');
+  S.nominations=[
+    {id:'n1',sid:'s3',role:'parent',by:'ولي أمر دانة',domain:'art',traits:[],note:'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.',status:'new',at:ago(2)},
+    {id:'n2',sid:'s2',role:'teacher',by:'أ. أفنان سامي',domain:'sci',traits:['فضول وأسئلة عميقة','تتعلّم بسرعة','أفكار أصلية'],note:'تحل أسئلة الأولمبياد بطرق ما درّسناها.',status:'new',at:ago(4)}];
   return S;
 }
 
@@ -492,6 +495,11 @@ function simGem(kind,p){
     if(/اختبار|قصير|امتحان/.test(q)) return 'عندج '+p.next+'. حطيت لج مراجعة 20 دقيقة قبلها بيومين، ومراجعة سريعة 10 دقايق الليلة اللي قبل. يناسبج الساعة 5؟';
     if(/تعب|ضغط|كثير/.test(q)) return 'خففنا خطة اليوم لمهمتين بس، والباقي توزع على الأسبوع. استراحة 10 دقايق بين كل مهمة.';
     return 'وضعج: '+p.summary+' أقوى شي عندج '+p.strong+'. تبين أرتب لج خطة الأسبوع؟';
+  }
+  if(kind==='talent'){
+    const d=(p.domains||[]).join(' و')||'مجالها';
+    return p.who==='student'?'خطتج لهالشهر 🌟 أسبوع ١: اختاري سؤال يحيّرج في '+d+' ودوّري عليه. أسبوع ٢: سوي تجربة أو تصميم صغير وصوّريه. أسبوع ٣: اعرضيه على معلمتج. أسبوع ٤: سجّلي بمسابقة أو نشاط بالمدرسة.':
+      'نقترح لهالشهر: ساعة بالأسبوع لنشاط في '+d+' تختاره هي، وتشجيعها تعرض شغلها على المعلمة، والتواصل مع المرشدة عن خطوة الفحص الرسمي. الأهم: نمدح الجهد مو بس النتيجة.';
   }
   if(kind==='counsel'){
     return 'الميول البارزة: '+p.top+'. الأداء الأقوى في: '+p.strong+'. أنسب ثلاثة مسارات حسب القواعد المعلنة معروضة بالأسفل، وتحتاج مناقشة مع الطالبة وولي الأمر قبل تحديد الهدف.';
@@ -719,6 +727,78 @@ function intro(){
     '<div class="row"><span class="pill acc">Gemini</span><span class="pill acc">Calendar</span><span class="pill acc">Gmail</span><span class="pill acc">Sheets</span><span class="pill acc">NotebookLM</span><span class="pill acc">Sites</span></div></div></section>';
 }
 
+
+/* ============ رادار الموهبة ============ */
+// المنصة ما تشخّص. تلقط مؤشرات طول السنة وترشّح للفحص الرسمي (منصة موهوب بوزارة التربية).
+const TAL={
+  sci:{n:'العلوم',i:'🔬',tips:['مشروع بحثي صغير مع معلمة العلوم لمعرض المدرسة','المشاركة بأولمبياد الكيمياء أو العلوم','تجارب بسيطة بالبيت وتسجيل النتائج بدفتر علمي']},
+  math:{n:'الرياضيات',i:'➗',tips:['مسائل تحدّي أسبوعية أصعب من مستوى الصف','مسابقات الرياضيات المدرسية','ألعاب منطق وألغاز (سودوكو، شطرنج)']},
+  lang:{n:'اللغة والكتابة',i:'✍️',tips:['الكتابة بمجلة أو إذاعة المدرسة','مسابقات القصة والشعر','قراءة كتاب كل أسبوعين ونقاشه']},
+  art:{n:'التصميم والفن',i:'🎨',tips:['تصميم ملصقات أنشطة المدرسة بأداة رقمية','ملف أعمال (Portfolio) يجمع تصاميمها','ورش التصميم والفنون التطبيقية']},
+  lead:{n:'القيادة',i:'⭐',tips:['قيادة فريق بنشاط أو مبادرة مدرسية','المشاركة بالبرلمان الطلابي','تنظيم فعالية صغيرة من الفكرة للتنفيذ']},
+  tech:{n:'التقنية',i:'💻',tips:['تعلّم البرمجة (Scratch ثم Python)','مشروع روبوتات أو تطبيق بسيط','مسابقات التقنية والذكاء الاصطناعي']},
+  social:{n:'العمل مع الناس',i:'🤝',tips:['برنامج «الطالبة المعلّمة» تشرح لزميلاتها','العمل التطوعي','مهارات الحوار والإلقاء']},
+  acad:{n:'التميّز الأكاديمي',i:'🏅',tips:['إثراء بمواد متقدمة مع المعلمات','برامج مركز صباح الأحمد للموهبة والإبداع الإثرائية','هدف شخصي واضح لكل فصل']}
+};
+const TAL_SUBJ={chem:'sci',phys:'sci',bio:'sci',math:'math',arabic:'lang',eng:'lang',social:'social'};
+const TAL_DIM={research:'sci',creative:'art',leading:'lead',social:'social',practical:'tech'};
+const TRAITS=['فضول وأسئلة عميقة','تتعلّم بسرعة','أفكار أصلية','مثابرة على الصعب','قيادة وتأثير'];
+function noms(sid){return (S.nominations||[]).filter(n=>n.sid===sid);}
+function talent(sid){
+  const st=stu(sid); if(!st) return {score:0,level:null,dom:[],ev:[]};
+  const ev=[], add=(d,t,w)=>ev.push({d,t,w});
+  const tv=Object.values(st.term||{}).filter(v=>v!=null);
+  if(tv.length>=4){const avg=tv.reduce((a,b)=>a+b,0)/tv.length; if(avg>=90) add('acad','معدل عالي ('+fmt(avg)+')',1);}
+  Object.keys(st.term||{}).forEach(k=>{if(st.term[k]>=95) add(TAL_SUBJ[k]||'acad',TERM[k]+' '+st.term[k],1);});
+  const pr=(S.practice||[]).filter(p=>p.sid===sid&&p.game!=='تقييم ذاتي'), full=pr.filter(p=>p.score===p.total);
+  if(full.length>=2){const sec=Math.round(full.reduce((a,p)=>a+(p.sec||0),0)/full.length); if(sec&&sec<=240) add('sci','دقة وسرعة بالتدريب ('+full.length+' ألعاب كاملة، متوسط '+Math.round(sec/60*10)/10+' د)',1);}
+  if(st.interests) Object.keys(st.interests).forEach(k=>{if(st.interests[k]>=5&&TAL_DIM[k]) add(TAL_DIM[k],'ميل قوي: '+DIMS[k],0.5);});
+  if(/أولمبياد|مسابقة/.test(st.goal||'')) add('sci','هدفها: '+st.goal,0.5);
+  noms(sid).forEach(n=>{if(n.role==='teacher') add(n.domain,'ترشيح '+n.by+(n.traits&&n.traits.length?': '+n.traits.join('، '):''),1.5);
+    else if(n.role==='parent') add(n.domain,'ترشيح ولي الأمر: '+(n.note||TAL[n.domain].n),1);});
+  const score=ev.reduce((a,e)=>a+e.w,0), dm={}; ev.forEach(e=>dm[e.d]=(dm[e.d]||0)+e.w);
+  const dom=Object.keys(dm).sort((a,b)=>dm[b]-dm[a]).filter(d=>d!=='acad'||Object.keys(dm).length===1).slice(0,2);
+  const referred=noms(sid).some(n=>n.status==='referred');
+  return {score,level:score>=3?'cand':score>=2?'prom':null,dom,ev,referred};
+}
+const TLV={cand:['good','مرشّحة للفحص'],prom:['warn','مؤشرات واعدة']};
+function saveNom(n){(S.nominations=S.nominations||[]).push(n); live('saveNomination',n);}
+function talentRadar(canRefer){
+  const rows=S.students.map(s=>({s,t:talent(s.id)})).filter(x=>x.t.level).sort((a,b)=>b.t.score-a.t.score);
+  const pn=(S.nominations||[]).filter(n=>n.role==='parent');
+  return '<section class="panel" id="radar"><div class="panel-h"><h2>🌟 رادار الموهبة</h2><span class="spacer"></span><span class="pill none">يرشّح للفحص، ما يشخّص</span></div>'+
+    (rows.length?rows.map(x=>'<article class="alert" style="border-inline-start-color:var(--'+(x.t.level==='cand'?'good':'warn')+')"><div class="row"><b>'+esc(x.s.name)+'</b><span class="pill '+TLV[x.t.level][0]+'">'+TLV[x.t.level][1]+'</span>'+x.t.dom.map(d=>'<span class="pill acc">'+TAL[d].i+' '+TAL[d].n+'</span>').join('')+(x.t.referred?'<span class="pill good">📨 محوّلة للفحص</span>':'')+'</div>'+
+      '<details><summary>الدليل ('+x.t.ev.length+')</summary><ul>'+x.t.ev.map(e=>'<li>'+(TAL[e.d]||{}).i+' '+esc(e.t)+'</li>').join('')+'</ul></details>'+
+      (canRefer&&!x.t.referred?'<div class="row"><button class="btn sm primary" data-act="refer" data-sid="'+x.s.id+'">📨 حوّليها للفحص الرسمي</button><a class="btn sm ghost" href="https://mawhoob.moe.edu.kw" target="_blank" rel="noopener">منصة موهوب ↗</a></div>':'')+'</article>').join(''):'<div class="empty">ما في مؤشرات كافية لين الحين.</div>')+
+    '<details class="small"><summary>✋ رشّحي طالبة</summary><div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">'+
+      '<div class="row"><label class="field">الطالبة<select id="nmSid">'+S.students.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select></label>'+
+      '<label class="field">المجال<select id="nmDom">'+Object.keys(TAL).map(k=>'<option value="'+k+'">'+TAL[k].i+' '+TAL[k].n+'</option>').join('')+'</select></label></div>'+
+      '<div class="row">'+TRAITS.map((t,i)=>'<label><input type="checkbox" class="nmTr" value="'+t+'"> '+t+'</label>').join('')+'</div>'+
+      '<textarea id="nmNote" placeholder="مثال لاحظتيه (اختياري)"></textarea><button class="btn sm primary" data-act="nomT">إرسال الترشيح</button></div></details>'+
+    (canRefer?'<h3 class="small" style="margin-top:6px">👨‍👩‍👧 ترشيحات أولياء الأمور</h3>'+(pn.length?pn.map(n=>'<div class="row small"><span class="pill acc">'+esc((stu(n.sid)||{}).name||n.sid)+'</span>'+TAL[n.domain].i+' '+esc(n.note||TAL[n.domain].n)+'<span class="spacer"></span><span class="muted">'+esc(n.by)+'</span></div>').join(''):'<div class="empty">لا ترشيحات بعد.</div>'):'')+
+  '</section>';
+}
+function talentFor(sid,who){
+  const t=talent(sid), st=stu(sid), key='tal-'+sid+'-'+who, g=V[key];
+  const tips=t.dom.flatMap(d=>TAL[d].tips.slice(0,2).map(x=>TAL[d].i+' '+x));
+  const mine=noms(sid).filter(n=>n.role==='parent');
+  if(who==='student'){
+    if(!t.level) return '';
+    return '<section class="k-card" id="ktal"><div class="k-h"><h3>🌟 نمّي تميّزج</h3></div><p class="small">عندج مؤشرات تميّز بـ <b>'+t.dom.map(d=>TAL[d].n).join(' و')+'</b> 💫 هذي أفكار تكبّرها:</p>'+
+      '<div style="display:flex;flex-direction:column;gap:6px">'+tips.map(x=>'<div class="k-up">'+esc(x)+'</div>').join('')+'</div>'+
+      (g?'<div class="ai-out">'+aiTag(g.live)+'<p>'+esc(g.text)+'</p></div>':'<button class="k-soft" data-act="talg" data-sid="'+sid+'">✦ خطة تنمية من Gemini</button>')+'</section>';}
+  return '<section class="panel" id="ptal"><h2>🌟 موهبة '+esc(st.name)+'</h2>'+
+    (t.level?'<div class="row"><span class="pill '+TLV[t.level][0]+'">'+(t.level==='cand'?'مرشّحة لفحص الموهبة':'عندها مؤشرات واعدة')+'</span>'+t.dom.map(d=>'<span class="pill acc">'+TAL[d].i+' '+TAL[d].n+'</span>').join('')+'</div>'+
+      '<p class="small">'+(t.referred?'📨 المرشدة حوّلتها للفحص الرسمي، وبيوصلكم الموعد.':t.level==='cand'?'المرشدة بتتواصل معكم عن خطوة الفحص الرسمي.':'نتابعها، وكل ما زادت المؤشرات نبلغكم.')+'</p>'+
+      '<b class="small">كيف تنمّونها بالبيت؟</b><ul class="small" style="margin:0;padding-inline-start:18px">'+tips.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+      (g?'<div class="ai-out">'+aiTag(g.live)+'<p>'+esc(g.text)+'</p></div>':'<button class="btn sm" data-act="talg" data-sid="'+sid+'">✦ خطة تنمية من Gemini</button>'):'<p class="small muted">ما ظهرت مؤشرات كافية لين الحين. إذا تشوفون عندها موهبة، قولوا لنا 👇</p>')+
+    '<details class="small"'+(mine.length?'':' open')+'><summary>🙋 تشوفون عندها موهبة بشي معيّن؟</summary><div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">'+
+      '<label class="field">المجال<select id="pnDom">'+Object.keys(TAL).filter(k=>k!=='acad').map(k=>'<option value="'+k+'">'+TAL[k].i+' '+TAL[k].n+'</option>').join('')+'</select></label>'+
+      '<textarea id="pnNote" placeholder="مثال: ترسم وتصمم من صغرها، أو تحل ألغاز أكبر من عمرها…"></textarea>'+
+      '<button class="btn sm primary" data-act="nomP" data-sid="'+sid+'">أرسلوها للمرشدة</button></div></details>'+
+    (mine.length?mine.map(n=>'<div class="row small"><span class="pill good">✓ وصلت للمرشدة</span>'+TAL[n.domain].i+' '+esc(n.note||TAL[n.domain].n)+'</div>').join(''):'')+'</section>';
+}
+
 /* ---- المعلمة ---- */
 function vTeacher(){
   const sub=S.subjects[V.subj]; if(!sub.skills.includes(V.skill)) V.skill=sub.skills[0];
@@ -762,7 +842,7 @@ function vTeacher(){
   const gt='<section class="panel" id="gtools"><h2>🔗 أدوات جوجل</h2><div class="row">'+
     (GAMES[V.skill]?'<button class="btn sm" data-act="gform">📝 اختبار Google Forms: '+esc(V.skill)+'</button>':'')+
     '<button class="btn sm" data-act="gclass">🏫 مزامنة Classroom</button><button class="btn sm" data-act="gcal">📅 تقويم الشعبة</button></div>'+(V.gout?'<div class="ai-out small">'+V.gout+'</div>':'')+'</section>';
-  return '<section class="panel">'+head+'</section><div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+obs+ass+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+alHtml+gt+'</div></div>';
+  return '<section class="panel">'+head+'</section><div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+obs+ass+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+alHtml+talentRadar(false)+gt+'</div></div>';
 }
 function alertCard(x,canAct){
   const p=V.pending&&V.pending[x.key]; const st=stu(x.sid);
@@ -837,7 +917,7 @@ function vStudent(){
   const itCard=(st.interests?(()=>{const r=st.interests, top=Object.keys(r).sort((x,y)=>r[y]-r[x]).slice(0,2);
       return '<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 ميولي</h3><span class="spacer"></span><button class="k-link" data-act="itest" style="border:0">↻ أعيديه</button></div><div class="k-tags">'+top.map(d=>'<span class="pill acc">'+DIM_ICON[d]+' '+DIMS[d]+'</span>').join('')+'</div><p class="k-note">توصل للمرشدة، ومسارج يتحدد آخر السنة 🤍</p></section>';})()
     :'<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 اكتشفي ميولج</h3></div><p class="small">18 سؤال سريع بالإيموجي، ٣ دقايق، وتعرفين شنو يشبهج 🌟</p><button class="k-play" data-act="itest">▶ ابدئي</button></section>');
-  const side=itCard+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
+  const side=itCard+talentFor(sid,'student')+'<section class="k-card k-tower" id="tower"><div class="k-h"><h3>🏗️ عمارتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div><div style="display:flex;justify-content:center">'+buildingSVG(fl)+'</div><p class="k-note" style="text-align:center">كل ⭐⭐ = دور جديد</p></section>'+
     '<section class="k-card"><div class="k-h"><h3>📈 تقدّمي</h3></div>'+(prog?'<div class="prog">'+prog+'</div>':'<div class="k-empty">ما في درجات بعد</div>')+
     '<div class="k-tags">'+strong.map(s=>'<span class="pill good">💪 '+esc(s)+'</span>').join('')+need.map(s=>'<span class="pill warn">🎯 '+esc(s)+'</span>').join('')+'</div></section>'+
     '<section class="k-card"><div class="k-h"><h3>⏳ القادم</h3></div>'+S.upcoming.map(u=>'<div class="k-up"><span class="k-ic sm" style="box-shadow:inset 0 -3px 0 '+((SUBJ_COLOR[u.subj]||{}).hex||'transparent')+'">'+(SUBJ_ICON[u.subj]||'📌')+'</span><span>'+esc(u.title)+'</span><span class="spacer"></span><span class="k-sub">'+esc(u.when)+'</span>'+(u.date?'<a class="k-link" href="'+upLink(u)+'" target="_blank" rel="noopener" title="أضيفيه لتقويم جوجل">＋</a>':'')+'</div>').join('')+'</section>'+
@@ -870,6 +950,7 @@ function vParent(){
    '<section class="panel"><h2>📊 الدرجات المنشورة</h2>'+(pub.length?'<div class="scroll"><table><thead><tr><th>التقييم</th><th>المادة</th><th>الدرجة</th></tr></thead><tbody>'+pub.map(x=>'<tr><td>'+esc(x.a.title)+'</td><td>'+S.subjects[x.a.subj].name+'</td><td class="num">'+(x.g.s==='ok'?fmt(x.g.v)+' من '+x.a.max:GST[x.g.s])+'</td></tr>').join('')+'</tbody></table></div>':'<div class="empty">لا درجات منشورة بعد.</div>')+
    '</section>'+
   '</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+
+   talentFor(sid,'parent')+
    '<section class="panel"><h2>💪 القوة والاحتياج</h2><div class="small"><b>قوية في:</b> '+(strong.map(s=>'<span class="pill good">'+esc(s)+'</span>').join(' ')||'<span class="muted">—</span>')+'</div><div class="small"><b>تحتاج دعمًا في:</b> '+(need.map(s=>'<span class="pill warn">'+esc(s)+'</span>').join(' ')||'<span class="muted">لا شيء حاليًا</span>')+'</div>'+
    '</section>'+
    '<section class="panel"><h2>📅 الحضور والقادم</h2><div class="small">الغياب المسجّل رسميًا: <b class="num">'+st.abs+'</b> '+(st.abs===1?'يوم':'أيام')+'</div>'+S.upcoming.map(u=>'<div class="row small"><span class="pill acc">'+TERM[u.subj]+'</span>'+esc(u.title)+'<span class="spacer"></span><span class="muted">'+u.when+'</span></div>').join('')+'</section>'+
@@ -891,8 +972,7 @@ function vAdmin(){
   const cmp=S.students.map(s=>{const c=scoredAssess(s.id,'chem',true),p=scoredAssess(s.id,'phys',true);const ca=c.length?c.reduce((x,y)=>x+y.r,0)/c.length:null,pa=p.length?p.reduce((x,y)=>x+y.r,0)/p.length:null;
     let note='—'; if(ca!=null&&pa!=null){ if(ca<0.65&&pa>=0.8) note='ضعف خاص بالكيمياء'; else if(pa<0.65&&ca>=0.8) note='ضعف خاص بالفيزياء'; else if(ca<0.65&&pa<0.65) note='ضعف عام — إحالة للمرشدة'; else note='متوازن'; } else note='بيانات ناقصة';
     return {s,ca,pa,note};});
-  return 
-  '<div class="kpis" id="kpis">'+
+  return '<div class="kpis" id="kpis">'+
    '<div class="kpi"><b class="num">'+(cells?Math.round(filled/cells*100):0)+'%</b><span>📊 اكتمال الرصد</span></div>'+
    '<div class="kpi"><b class="num">'+doneA+' / '+as.length+'</b><span>✔ تقييمات معتمدة</span></div>'+
    '<div class="kpi"><b class="num">'+new Set(al.map(a=>a.sid)).size+'</b><span>🔔 تحتاج متابعة</span></div>'+
@@ -908,7 +988,8 @@ function vAdmin(){
    '<form class="chat-in" data-act="askf"><input type="text" id="askIn" value="وين أكثر مهارة تتعثر فيها الطالبات؟" aria-label="سؤال"><button class="btn primary">اسألي</button></form>'+
    (ask?'<div class="ai-out">'+aiTag(ask.live)+'<p>'+esc(ask.text)+'</p></div>':'')+'</section>'+
    '<section class="panel"><h2>🔔 الحالات المفتوحة</h2>'+(al.length?al.map(x=>'<div class="row small"><span class="pill '+x.sev+'">'+esc(stu(x.sid).name)+'</span>'+esc(x.reason)+'<span class="spacer"></span><span class="muted">'+esc(x.owner)+'</span></div>').join(''):'<div class="empty">لا حالات.</div>')+'</section>'+
-   '<section class="panel"><h2>🏆 المتفوقات</h2><div class="small"><span class="pill good">نورة</span> أولمبياد الكيمياء</div><div class="small"><span class="pill good">دانة</span> رياضيات وفيزياء</div></section>'+
+   (()=>{const r=S.students.map(x=>({x,t:talent(x.id)})).filter(y=>y.t.level);
+     return '<section class="panel"><h2>🌟 مؤشرات الموهبة</h2><div class="small muted">'+r.filter(y=>y.t.level==='cand').length+' مرشّحة للفحص · '+r.filter(y=>y.t.level==='prom').length+' مؤشرات واعدة · '+r.filter(y=>y.t.referred).length+' محوّلة</div>'+r.map(y=>'<div class="row small"><span class="pill '+TLV[y.t.level][0]+'">'+esc(y.x.name)+'</span>'+y.t.dom.map(d=>TAL[d].i+' '+TAL[d].n).join(' · ')+'</div>').join('')+'</section>';})()+
   '</div></div>';
 }
 
@@ -941,6 +1022,7 @@ function vCounselor(){
    '<section class="panel"><h2>الأداء الفعلي هذا العام (من 100)</h2><div class="prog">'+subj+'</div></section>'+
    '<section class="panel"><h2>ملخص للمرشدة</h2>'+(cs?'<div class="ai-out">'+aiTag(cs.live)+'<p>'+esc(cs.text)+'</p></div>':'<button class="btn" data-act="csum" '+(st.interests?'':'disabled')+'>✦ لخّصي الحالة بـ Gemini</button>')+'</section>'+
   '</div><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
+   talentRadar(true)+
    '<section class="panel" id="paths"><h2>🎯 أنسب ثلاثة مسارات</h2>'+cards+
    '<details class="small"><summary>طريقة الترشيح</summary><div class="method"><ol><li>ميول داعمة: أعلى بُعدين (4 من 5 فأكثر).</li><li>مادة داعمة: 80 فأكثر.</li><li>الترتيب بعدد عوامل الدعم، بلا نسب.</li><li>ميل مع درجات منخفضة: خطة دعم، لا استبعاد.</li></ol></div></details></section>'+
    '<section class="panel"><h2>مراجعة المرشدة</h2><textarea id="rvNote" placeholder="ملاحظات المرشدة…">'+esc(rv.note||'')+'</textarea>'+
@@ -1093,6 +1175,17 @@ document.addEventListener('click',async e=>{
   else if(a==='psum'){parentSum(b.dataset.sid);}
   else if(a==='psend'){live('sendParentSummary',b.dataset.sid,V['sum-'+b.dataset.sid].text).then(()=>toast('أُرسل الملخص'));}
   else if(a==='csum'){const st=stu(V.sid);const R=rankPaths(st);const r=await gem('counsel',{top:(R.top||[]).map(d=>DIMS[d]).join(' و'),strong:Object.keys(st.term).sort((x,y)=>st.term[y]-st.term[x]).slice(0,2).map(k=>TERM[k]).join(' و'),paths:(R.list||[]).map(x=>x.p.name)});V['cs-'+st.id]=r;render();}
+  else if(a==='nomT'){const sid=$('#nmSid').value, tr=[...document.querySelectorAll('.nmTr:checked')].map(x=>x.value);
+    saveNom({id:'n'+Date.now(),sid,role:'teacher',by:S.me.roles.includes('teacher')&&S.mode==='live'?S.me.name:'المعلمة',domain:$('#nmDom').value,traits:tr,note:$('#nmNote').value.trim(),status:'new',at:new Date().toISOString()});
+    toast('وصل ترشيح '+stu(sid).name+' للمرشدة'); render();}
+  else if(a==='nomP'){const sid=b.dataset.sid;
+    saveNom({id:'n'+Date.now(),sid,role:'parent',by:S.mode==='live'?S.me.name:stu(sid).parent,domain:$('#pnDom').value,traits:[],note:$('#pnNote').value.trim(),status:'new',at:new Date().toISOString()});
+    toast('شكرًا 🤍 وصلت للمرشدة'); render();}
+  else if(a==='refer'){const sid=b.dataset.sid, t=talent(sid);
+    saveNom({id:'n'+Date.now(),sid,role:'counselor',by:S.mode==='live'?S.me.name:'المرشدة',domain:t.dom[0]||'acad',traits:[],note:'تحويل للفحص الرسمي',status:'referred',at:new Date().toISOString()});
+    S.audit.unshift({t:nowStr(),who:'المرشدة',what:'حوّلت '+stu(sid).name+' لفحص الموهبة'}); toast('انحوّلت '+stu(sid).name+' للفحص، وبيوصل لولي الأمر'); render();}
+  else if(a==='talg'){const sid=b.dataset.sid, t=talent(sid); const k='tal-'+sid+'-'+V.role; V[k]={live:false,text:'⏳ لحظة…'}; render();
+    gem('talent',{name:stu(sid).name, domains:t.dom.map(d=>TAL[d].n), evidence:t.ev.map(e=>e.t), who:V.role}).then(r=>{V[k]=r; render();});}
   else if(a==='review'){S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{note:$('#rvNote').value,at:nowStr()}); live('saveReview',V.sid,S.reviews[V.sid]); render(); toast('حُفظت المراجعة');}
   else if(a==='goal'){const p=PATHS.find(x=>x.id===b.dataset.v); const st=stu(V.sid); S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{goal:p.id}); st.goal='الاستعداد لمسار '+p.name;
     const gaps=rankPaths(st).list.find(x=>x.p.id===p.id).gaps; const today=new Date().getDay();
