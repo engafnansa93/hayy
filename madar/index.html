@@ -380,6 +380,12 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .rlist b{display:block;font-family:var(--f-display)}
 .rlist small{color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.pl .orbx,.pl .ring::after{animation:none}}
+.scope{padding:12px 14px}
+.scope-in{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.seg{display:flex;gap:4px;background:rgba(255,255,255,.06);padding:4px;border-radius:999px}
+.seg button{all:unset;cursor:pointer;padding:7px 14px;border-radius:999px;font-size:.88rem;color:var(--muted);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#1A1433;font-weight:600}
+.login optgroup{color:var(--muted)}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -1471,8 +1477,9 @@ function gateHome(){
 }
 function gateLogin(r){
   const p=PL[r]; const g=$('#gate');
-  const acct = r==='student' ? '<label for="gAcc">الحساب</label><select id="gAcc">'+S.students.map(s=>'<option value="'+s.id+'"'+(s.id==='s1'?' selected':'')+'>'+s.name+' · '+s.cls.replace('-','/')+'</option>').join('')+'</select>'
-    : r==='parent' ? '<label for="gAcc">ولي أمر</label><select id="gAcc">'+S.students.map(s=>'<option value="'+s.id+'"'+(s.id==='s1'?' selected':'')+'>'+s.name+' · '+s.cls.replace('-','/')+'</option>').join('')+'</select>'
+  const all=(S.ALL?S.ALL.students:S.students);
+  const acct = r==='student' ? '<label for="gAcc">الحساب</label><select id="gAcc">'+S.classes.map(c=>'<optgroup label="الشعبة '+c.name+'">'+all.filter(s=>s.cls===c.id).map(s=>'<option value="'+s.id+'"'+(s.id==='s1'?' selected':'')+'>'+s.name+' · '+c.name+'</option>').join('')+'</optgroup>').join('')+'</select>'
+    : r==='parent' ? '<label for="gAcc">الحساب</label><select id="gAcc">'+FAMS.map(f=>'<option value="'+f.id+'">'+f.n+' ('+f.kids.map(id=>{const x=anyStu(id);return x?x.name+' '+clsName(x.cls):'';}).join(' + ')+')</option>').join('')+'</select>'
     : '';
   const mail = {student:'sara.10-6@moe.edu.kw',parent:'parent.sara@gmail.com',counselor:'counselor@moe.edu.kw',teacher:'afnan.sami@moe.edu.kw',admin:'admin@moe.edu.kw'}[r];
   g.innerHTML='<div class="gate-in" style="gap:14px">'+
@@ -1489,7 +1496,9 @@ function gateLogin(r){
   g.dataset.r=r; g.scrollTop=0;
 }
 function gateEnter(r){
-  const acc=$('#gAcc'); if(acc) V.sid=acc.value; else if(r!=='teacher'&&r!=='admin'&&r!=='counselor') V.sid='s1';
+  const acc=$('#gAcc'); V.view='class';
+  if(r==='student') V.sid=acc?acc.value:'s1';
+  else if(r==='parent'){const f=FAMS.find(f=>f.id===(acc&&acc.value))||FAMS[0]; GATE.fam=f.id; ssSet('madar.fam',f.id); V.sid=f.kids[0];}
   GATE.who=r; V.role=r; ssSet('madar.who',r); if(V.sid) ssSet('madar.sid',V.sid);
   $('#gate').hidden=true; $('#app').hidden=false; document.body.style.overflow='';
   render(); scrollTo(0,0);
@@ -1526,11 +1535,11 @@ document.addEventListener('click',e=>{
   else if(a==='go') gateEnter($('#gate').dataset.r);
   else if(a==='judge-pop') judgePop();
   else if(a==='judge-on'){setJudge(true); closeModal(); gateHome();}
-  else if(a==='judge-tour'){setJudge(true); closeModal(); GATE.who='teacher'; $('#gate').hidden=true; $('#app').hidden=false; document.body.style.overflow=''; T.on=true; STEPS.forEach(s=>{s.ran=false; if(s.stay) s.btn='العبي التدريب';}); goStep(0);}
+  else if(a==='judge-tour'){setJudge(true); closeModal(); GATE.who='teacher'; V.sid='s1'; $('#gate').hidden=true; $('#app').hidden=false; document.body.style.overflow=''; T.on=true; STEPS.forEach(s=>{s.ran=false; if(s.stay) s.btn='العبي التدريب';}); goStep(0);}
   else if(a==='judge-no'){setJudge(false); closeModal(); gateHome();}
   else if(a==='switch') switchPop();
   else if(a==='close') closeModal();
-  else if(a==='as'){const r=b.dataset.r; closeModal(); if(T.on){T.on=false; $('#tour').hidden=true; document.querySelectorAll('.spot').forEach(x=>x.classList.remove('spot'));} if((r==='student'||r==='parent')&&!V.sid) V.sid='s1'; V.role=r; GATE.who=r; ssSet('madar.who',r); render(); scrollTo(0,0); toast('صرتوا الحين: '+PL[r].n);}
+  else if(a==='as'){const r=b.dataset.r; closeModal(); if(T.on){T.on=false; $('#tour').hidden=true; document.querySelectorAll('.spot').forEach(x=>x.classList.remove('spot'));} if((r==='student'||r==='parent')&&!V.sid) V.sid='s1'; if(r==='parent'){const f=FAMS.find(f=>f.kids.includes(V.sid))||FAMS[0]; GATE.fam=f.id; if(!f.kids.includes(V.sid)) V.sid=f.kids[0];} V.role=r; GATE.who=r; ssSet('madar.who',r); render(); scrollTo(0,0); toast('صرتوا الحين: '+PL[r].n);}
 });
 document.addEventListener('submit',e=>{if(e.target.id==='gForm'){e.preventDefault(); gateEnter($('#gate').dataset.r);}});
 document.addEventListener('click',e=>{if(e.target.id==='modal'&&!$('#modal').hidden) closeModal();});
@@ -1539,9 +1548,157 @@ function gateBoot(){
   const q=new URLSearchParams(location.search);
   if(q.has('judge')) setJudge(true); else if(q.has('student')) setJudge(false); else GATE.judge=lsGet('madar.judge')==='1';
   const who=ssGet('madar.who');
-  if(who&&PL[who]){const sid=ssGet('madar.sid'); if(sid) V.sid=sid; GATE.who=who; V.role=who; $('#gate').hidden=true; render();}
+  if(who&&PL[who]){const sid=ssGet('madar.sid'); if(sid) V.sid=sid; GATE.fam=ssGet('madar.fam')||null; GATE.who=who; V.role=who; $('#gate').hidden=true; render();}
   else { gateHome(); if(!q.has('student')&&!ssGet('madar.jpop')){ssSet('madar.jpop','1'); judgePop();} }
 }
+
+/* ============ الشعب: الصف ← الشعبة ← الطالبة · صورة الشعبة + صورة الطالبة ============ */
+const SECS=[{id:'10-4',name:'10/4',d:4,names:['شهد','فاطمة','روان','غلا','منيرة','العنود','حصة','بشاير']},
+            {id:'10-5',name:'10/5',d:-7,names:['مريم','ضي','دلال','سلمى','ياسمين','عائشة','رهف','شيخة']}];
+// العائلات (ولي أمر ممكن عنده أكثر من بنت بشعب مختلفة)
+const FAMS=[{id:'f1',n:'عائلة سارة',kids:['s1','s1_104']},{id:'f2',n:'عائلة نورة',kids:['s2','s2_105']},{id:'f3',n:'ولي أمر دانة',kids:['s3']},
+            {id:'f4',n:'عائلة ريم',kids:['s4','s4_104','s4_105']},{id:'f5',n:'ولي أمر هيا',kids:['s5']}];
+const SKEYS=['indicators','plans','practice','nominations'];
+const LVDOWN={m:'p',p:'h',h:'h',n:'n'}, LVUP={h:'p',p:'m',m:'m',n:'n'};
+function expandSections(S){
+  const base=S.students.slice(), all=base.slice(), A={indicators:S.indicators.slice(),plans:S.plans.slice(),practice:(S.practice||[]).slice(),nominations:(S.nominations||[]).slice()};
+  SECS.forEach(sec=>{const tag=sec.id.replace('-','');
+    base.forEach((b,i)=>{const nid=b.id+'_'+tag, nn=sec.names[i];
+      const sw=x=>JSON.parse(JSON.stringify(x).split('"'+b.id+'"').join('"'+nid+'"').split(b.name).join(nn));
+      const c=sw(b); c.cls=sec.id; c.name=nn; c.parent='ولي أمر '+nn;
+      Object.keys(c.term||{}).forEach(k=>{c.term[k]=Math.max(45,Math.min(99,Math.round(c.term[k]+sec.d+(hash01(nid+k)-0.5)*10)));});
+      c.abs=Math.max(0,Math.round(c.abs+(hash01(nid+'a')-0.5)*4+(sec.d<0?1:0))); c.hw=Math.max(0,Math.round(c.hw+(hash01(nid+'h')-0.4)*3));
+      if(sec.d<0&&i===1) c.goal='أرفع معدلي فوق 90'; all.push(c);
+      A.indicators.filter(x=>x.sid===b.id).forEach(x=>{const y=sw(x); const r=hash01(nid+x.skill+x.week+x.period); if(sec.d<0&&r<0.35) y.level=LVDOWN[y.level]; if(sec.d>0&&r<0.3) y.level=LVUP[y.level]; A.indicators.push(y);});
+      A.plans.filter(x=>x.sid===b.id).forEach(x=>{const y=sw(x); y.id=x.id+'_'+tag; A.plans.push(y);});
+      A.practice.filter(x=>x.sid===b.id).forEach(x=>{const y=sw(x); if(sec.d<0) y.score=Math.max(1,y.score-1); A.practice.push(y);});
+      A.nominations.filter(x=>x.sid===b.id).forEach(x=>{if(hash01(nid+x.id)<0.6){const y=sw(x); y.id=x.id+'_'+tag; A.nominations.push(y);}});
+      S.assessments.forEach(a=>{const g=a.grades[b.id]; if(!g) return; const v=g.v==null?null:Math.max(0,Math.min(a.max,Math.round((g.v+sec.d/10*a.max/10+(hash01(nid+a.id)-0.5)*2)*2)/2)); a.grades[nid]={v,s:g.s};});
+    });});
+  S.classes=[{id:'10-4',name:'10/4'},{id:'10-5',name:'10/5'},{id:'10-6',name:'10/6'}];
+  S.ALL=Object.assign({students:all},A); S.cls=null; setCls(S,'10-6');
+}
+function setCls(S0,c){const S_=S0||S; if(S_.cls===c) return;
+  if(S_.cls){const cur=new Set(S_.students.map(s=>s.id));
+    S_.ALL.students=S_.ALL.students.filter(s=>!cur.has(s.id)).concat(S_.students);
+    SKEYS.forEach(k=>{S_.ALL[k]=S_.ALL[k].filter(x=>!cur.has(x.sid)).concat(S_[k]||[]);});}
+  S_.cls=c; const ids=new Set(S_.ALL.students.filter(s=>s.cls===c).map(s=>s.id));
+  S_.students=S_.ALL.students.filter(s=>ids.has(s.id)); SKEYS.forEach(k=>{S_[k]=S_.ALL[k].filter(x=>ids.has(x.sid));});
+}
+function anyStu(id){return (S.ALL?S.ALL.students:S.students).find(s=>s.id===id)||(S.ALL&&S.students.find(s=>s.id===id));}
+function clsName(c){return (S.classes.find(x=>x.id===c)||{name:c}).name;}
+(function(){const _ds=demoState; demoState=function(){const s=_ds(); try{expandSections(s);}catch(e){console.error('sections',e);} return s;};})();
+// قبل كل رسم: الطالبة المختارة لازم تكون بالشعبة الحالية
+function ensureScope(){ if(!S.ALL) return; const st=V.sid&&anyStu(V.sid); if(st&&st.cls!==S.cls) setCls(null,st.cls);
+  if(!V.sid||!S.students.find(s=>s.id===V.sid)) V.sid=(S.students[0]||{}).id; }
+(function(){const _r=render; render=function(){ensureScope(); _r();};})();
+V.view=V.view||'class';
+
+// الطالبة ما تغيّر اسمها · ولي الأمر يشوف بناته بس
+(function(){const _p=pickStudent; pickStudent=function(lbl){
+  if(V.role==='student'||V.role==='teacher'||V.role==='counselor'||V.role==='admin') return '';
+  if(V.role==='parent'){const f=FAMS.find(f=>f.id===GATE.fam)||FAMS.find(f=>f.kids.includes(V.sid))||FAMS[0];
+    if(f.kids.length<2) return '';
+    return '<label class="field">بناتي<select data-scope="kid">'+f.kids.map(id=>{const s=anyStu(id);return s?'<option value="'+id+'"'+(id===V.sid?' selected':'')+'>'+esc(s.name)+' · '+clsName(s.cls)+'</option>':'';}).join('')+'</select></label>';}
+  return _p(lbl);};})();
+
+function scopeBar(){
+  const one=V.view==='one';
+  return '<section class="panel scope"><div class="scope-in">'+
+    '<label class="field">الصف<select data-scope="grade"><option selected>العاشر</option><option disabled>الحادي عشر · قريبًا</option><option disabled>الثاني عشر · قريبًا</option></select></label>'+
+    '<label class="field">الشعبة<select data-scope="cls">'+S.classes.map(c=>'<option value="'+c.id+'"'+(c.id===S.cls?' selected':'')+'>'+c.name+'</option>').join('')+'</select></label>'+
+    '<div class="seg" role="group" aria-label="العرض"><button data-gate="view" data-v="class" aria-pressed="'+!one+'">📊 الشعبة كاملة</button><button data-gate="view" data-v="one" aria-pressed="'+one+'">👤 طالبة</button></div>'+
+    (one?'<label class="field">الطالبة<select data-scope="sid">'+S.students.map(s=>'<option value="'+s.id+'"'+(s.id===V.sid?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></label>':'')+
+  '</div></section>';
+}
+function avgTerm(st){const v=Object.values(st.term||{}).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null;}
+function pct(r){return r==null?'—':Math.round(r*100)+'%';}
+function bar(v,c){return '<div class="bar" style="flex:1;min-width:60px"><i style="width:'+(v||0)+'%'+(c?';background:var(--'+c+')':'')+'"></i></div>';}
+function viewBtn(sid){return '<button class="btn sm" data-gate="one" data-sid="'+sid+'">عرض</button>';}
+
+// صورة الشعبة للمعلمة: جدول شامل قبل الرصد
+function teacherOverview(){
+  const sub=S.subjects[V.subj]; const al=alerts({subj:V.subj,general:true});
+  const rows=S.students.map(st=>{const sc=scoredAssess(st.id,V.subj,true); const last=sc[sc.length-1], prev=sc[sc.length-2];
+    const ind=S.indicators.filter(i=>i.sid===st.id&&i.subj===V.subj).sort((a,b)=>a.week-b.week||a.period-b.period).slice(-3);
+    const n=al.filter(a=>a.sid===st.id).length; const d=last&&prev?last.r-prev.r:0;
+    return {st,last,d,ind,n,term:(st.term||{})[V.subj]};});
+  const avg=x=>{const v=x.filter(y=>y!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null;};
+  const avgQ=avg(rows.map(r=>r.last?r.last.r*100:null)), avgT=avg(rows.map(r=>r.term));
+  const m=S.indicators.filter(i=>i.subj===V.subj&&i.level==='m').length, tot=S.indicators.filter(i=>i.subj===V.subj&&i.level!=='n').length;
+  return '<div class="kpis"><div class="kpi"><b class="num">'+S.students.length+'</b><span>👥 طالبات الشعبة</span></div>'+
+    '<div class="kpi"><b class="num">'+(avgQ==null?'—':avgQ+'%')+'</b><span>📝 متوسط آخر قصير</span></div>'+
+    '<div class="kpi"><b class="num">'+(tot?Math.round(m/tot*100):0)+'%</b><span>✓ ملاحظات إتقان</span></div>'+
+    '<div class="kpi"><b class="num">'+new Set(al.map(a=>a.sid)).size+'</b><span>🔔 تحتاج متابعة</span></div></div>'+
+  '<section class="panel" id="overview"><div class="panel-h"><h2>📊 صورة الشعبة · '+esc(sub.name)+'</h2><span class="spacer"></span><span class="pill none">متوسط الفصل '+(avgT==null?'—':avgT)+'</span></div>'+
+    '<div class="scroll"><table><thead><tr><th>الطالبة</th><th>درجة الفصل</th><th>آخر قصير</th><th>آخر الملاحظات</th><th>تنبيه</th><th></th></tr></thead><tbody>'+
+    rows.map(r=>'<tr><td><b>'+esc(r.st.name)+'</b></td><td><div class="row" style="gap:6px;flex-wrap:nowrap">'+bar(r.term,r.term<70?'crit':r.term<80?'warn':'good')+'<span class="num">'+(r.term==null?'—':r.term)+'</span></div></td>'+
+      '<td class="num">'+(r.last?pct(r.last.r)+(r.d>0.02?' <span style="color:var(--good)">▲</span>':r.d<-0.02?' <span style="color:var(--crit)">▼</span>':''):'—')+'</td>'+
+      '<td><span class="dots">'+(r.ind.length?r.ind.map(i=>'<i class="dot '+LV[i.level].c+'" title="'+LV[i.level].t+'"></i>').join(''):'—')+'</span></td>'+
+      '<td>'+(r.n?'<span class="pill warn">'+r.n+'</span>':'<span class="muted">—</span>')+'</td><td>'+viewBtn(r.st.id)+'</td></tr>').join('')+
+    '</tbody></table></div></section>';
+}
+// صورة الشعبة للمرشدة
+function counselorOverview(){
+  const rows=S.students.map(st=>{let top=null; try{const R=rankPaths(st); top=R.missing?null:R.list[0];}catch(e){}
+    const dims=st.interests?Object.keys(st.interests).sort((a,b)=>st.interests[b]-st.interests[a]):[]; return {st,top,dim:dims[0],t:talent(st.id),avg:avgTerm(st)};});
+  const al=alerts(); const paths={}; rows.forEach(r=>{if(r.top){paths[r.top.p.name]=(paths[r.top.p.name]||0)+1;}});
+  const pk=Object.keys(paths).sort((a,b)=>paths[b]-paths[a]); const mx=Math.max(1,...Object.values(paths));
+  return '<div class="kpis"><div class="kpi"><b class="num">'+S.students.length+'</b><span>👥 طالبات الشعبة</span></div>'+
+    '<div class="kpi"><b class="num">'+rows.filter(r=>r.st.interests).length+' / '+rows.length+'</b><span>🧭 أكملن اختبار الميول</span></div>'+
+    '<div class="kpi"><b class="num">'+rows.filter(r=>r.t.level==='cand').length+'</b><span>🌟 مرشّحات للفحص</span></div>'+
+    '<div class="kpi"><b class="num">'+new Set(al.map(a=>a.sid)).size+'</b><span>🔔 تحتاج متابعة</span></div></div>'+
+  '<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
+   '<section class="panel" id="overview"><div class="panel-h"><h2>📊 صورة الشعبة</h2><span class="spacer"></span><span class="pill none">بيانات تجريبية</span></div>'+
+    '<div class="scroll"><table><thead><tr><th>الطالبة</th><th>المعدل</th><th>أعلى ميل</th><th>أنسب مسار</th><th>الموهبة</th><th></th></tr></thead><tbody>'+
+    rows.map(r=>'<tr><td><b>'+esc(r.st.name)+'</b></td><td class="num">'+(r.avg==null?'—':r.avg)+'</td><td class="small">'+(r.dim?DIMS[r.dim]:'<span class="muted">لم تختبر</span>')+'</td>'+
+      '<td class="small">'+(r.top?esc(r.top.p.name):'<span class="muted">بيانات ناقصة</span>')+'</td>'+
+      '<td>'+(r.t.level?'<span class="pill '+TLV[r.t.level][0]+'">'+TLV[r.t.level][1]+'</span>':'<span class="muted">—</span>')+'</td><td>'+viewBtn(r.st.id)+'</td></tr>').join('')+
+    '</tbody></table></div></section>'+
+   '<section class="panel"><h2>🎯 المسارات المتوقعة للشعبة</h2>'+(pk.length?'<div class="prog">'+pk.map(k=>'<span>'+esc(k)+'</span><div class="bar"><i style="width:'+Math.round(paths[k]/mx*100)+'%"></i></div><span class="num">'+paths[k]+'</span>').join('')+'</div>':'<div class="empty">ما في بيانات كافية.</div>')+
+    '<p class="small muted" style="margin:8px 0 0">أول ترشيح لكل طالبة من الميول + الأداء. القرار للطالبة وأهلها بعد جلسة الإرشاد.</p></section>'+
+  '</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+talentRadar(true)+
+   '<section class="panel"><h2>🔔 تحتاج متابعة</h2>'+(al.length?al.slice(0,8).map(x=>'<div class="row small" style="padding:4px 0"><span class="pill '+x.sev+'">'+esc(stu(x.sid).name)+'</span>'+esc(x.reason)+'</div>').join(''):'<div class="empty">ما في حالات.</div>')+'</section>'+
+  '</div></div>';
+}
+// صورة الطالبة (للمعلمة والإدارة)
+function studentReport(sid){
+  const {st,res,strong,need}=studentSummary(sid); const al=alerts().filter(a=>a.sid===sid);
+  const pr=(S.practice||[]).filter(p=>p.sid===sid&&p.game!=='تقييم ذاتي'); const pl=S.plans.filter(p=>p.sid===sid); const dn=pl.filter(p=>p.status==='done').length;
+  const t=talent(sid); const avg=avgTerm(st);
+  const subj=Object.keys(TERM).filter(k=>(st.term||{})[k]!=null).map(k=>'<span>'+TERM[k]+'</span><div class="bar"><i style="width:'+st.term[k]+'%'+(st.term[k]<70?';background:var(--crit)':st.term[k]<80?';background:var(--warn)':'')+'"></i></div><span class="num">'+st.term[k]+'</span>').join('');
+  const quiz=Object.keys(res).map(k=>'<tr><td>'+(SUBJ_ICON[k]||'')+' '+S.subjects[k].name+'</td><td class="small muted">'+esc(res[k].c.title)+'</td><td class="num">'+fmt(res[k].c.v)+' / '+res[k].c.max+'</td><td>'+(res[k].d>0.02?'<span style="color:var(--good)">▲ تحسّن</span>':res[k].d<-0.02?'<span style="color:var(--crit)">▼ تراجع</span>':'<span class="muted">ثابت</span>')+'</td></tr>').join('');
+  return '<section class="panel"><div class="panel-h"><h2>👤 '+esc(st.name)+' · '+clsName(st.cls)+'</h2><span class="spacer"></span>'+(t.level?'<span class="pill '+TLV[t.level][0]+'">🌟 '+TLV[t.level][1]+'</span>':'')+'</div>'+
+    '<div class="kpis" style="margin:0"><div class="kpi"><b class="num">'+(avg==null?'—':avg)+'</b><span>📈 المعدل</span></div><div class="kpi"><b class="num">'+st.abs+'</b><span>📅 أيام غياب</span></div>'+
+    '<div class="kpi"><b class="num">'+st.hw+'</b><span>📚 واجبات ناقصة</span></div><div class="kpi"><b class="num">'+dn+' / '+pl.length+'</b><span>✅ مهام منجزة</span></div></div>'+
+    (st.goal?'<p class="small" style="margin:10px 0 0">🎯 هدفها: '+esc(st.goal)+'</p>':'')+'</section>'+
+  '<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
+    '<section class="panel"><h2>📊 درجات الفصل (من 100)</h2><div class="prog">'+(subj||'<div class="empty">ما في درجات بعد.</div>')+'</div></section>'+
+    '<section class="panel"><h2>📝 آخر الاختبارات القصيرة</h2>'+(quiz?'<div class="scroll"><table><thead><tr><th>المادة</th><th>التقييم</th><th>الدرجة</th><th>الاتجاه</th></tr></thead><tbody>'+quiz+'</tbody></table></div>':'<div class="empty">ما في نتائج منشورة.</div>')+'</section>'+
+    '<section class="panel"><h2>💪 القوة والدعم</h2><div class="row small" style="align-items:flex-start;gap:16px"><div style="flex:1;min-width:140px"><b style="color:var(--good)">أتقنت</b><div class="row" style="gap:6px;margin-top:6px">'+(strong.map(s=>'<span class="pill good">'+esc(s)+'</span>').join('')||'<span class="muted">—</span>')+'</div></div>'+
+      '<div style="flex:1;min-width:140px"><b style="color:var(--warn)">تحتاج دعم</b><div class="row" style="gap:6px;margin-top:6px">'+(need.map(s=>'<span class="pill warn">'+esc(s)+'</span>').join('')||'<span class="muted">—</span>')+'</div></div></div></section>'+
+  '</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+
+    '<section class="panel"><h2>🔔 تنبيهاتها</h2>'+(al.length?al.map(x=>alertCard(x,V.role==='teacher')).join(''):'<div class="empty">ما في تنبيهات 🤍</div>')+'</section>'+
+    '<section class="panel"><h2>🎮 التدريب</h2><div class="row small"><span>'+pr.length+' تدريب</span><span>·</span><span>⭐ '+totalStars(sid)+' نجمة</span>'+(pr.length?'<span>·</span><span>آخر نتيجة '+pr[pr.length-1].score+' / '+pr[pr.length-1].total+'</span>':'')+'</div></section>'+
+    '<section class="panel"><h2>🌌 كوكبتها</h2>'+skySVG(t)+'<div class="small muted" style="margin-top:6px">'+(t.ev.length?t.ev.length+' دليل من '+Object.keys(t.srcs||{}).length+' مجال':'ما في نجوم بعد')+'</div></section>'+
+  '</div></div>';
+}
+(function(){
+  const _vT=vTeacher,_vC=vCounselor,_vA=vAdmin;
+  const mode=r=>T.on?(r==='counselor'?'one':'class'):V.view;
+  vTeacher=function(){return scopeBar()+(mode('teacher')==='one'?studentReport(V.sid):teacherOverview()+_vT().replace(' · 10/6</h2>',' · '+clsName(S.cls)+'</h2>'));};
+  vCounselor=function(){return scopeBar()+(mode('counselor')==='one'?_vC():counselorOverview());};
+  vAdmin=function(){return scopeBar()+(mode('admin')==='one'?studentReport(V.sid):_vA());};
+})();
+document.addEventListener('change',e=>{const el=e.target.closest('[data-scope]'); if(!el) return; e.stopPropagation(); const k=el.dataset.scope;
+  if(k==='cls'){setCls(null,el.value); V.sid=(S.students[0]||{}).id; V.assess=null;}
+  else if(k==='sid'||k==='kid'){V.sid=el.value;}
+  render();},true);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gate="view"],[data-gate="one"]'); if(!b) return;
+  if(b.dataset.gate==='view') V.view=b.dataset.v; else {V.view='one'; V.sid=b.dataset.sid;}
+  render(); scrollTo(0,0);},true);
+
+document.addEventListener('click',e=>{if(e.target.closest('[data-act="tour-start"]')) V.sid='s1';},true);
 
 boot(); gateBoot();
 </script>
