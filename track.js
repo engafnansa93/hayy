@@ -256,7 +256,7 @@
       '<div class="n">🤍 أ. أفنان تشوف سؤالج عشان تساعدج أكثر.</div></div>';
     document.body.appendChild(d);
     var q = d.querySelector('.q'), go = d.querySelector('.go');
-    var close = function () { d.remove(); removeEventListener('keydown', esc, true); };
+    var close = function () { d.remove(); removeEventListener('keydown', esc, true); try { if (window.__botAu) window.__botAu.pause(); } catch (x) {} };
     var esc = function (e) { if (e.key === 'Escape') close(); };
     addEventListener('keydown', esc, true);
     d.addEventListener('click', function (e) { if (e.target === d) close(); });
@@ -286,6 +286,15 @@
     var href = a.getAttribute('href') || BOT;
     if (!/notebook\.google\.com/.test(href)) return; // لو الزر للحين بدون رابط، نخليه على حاله
     e.preventDefault(); e.stopImmediatePropagation();
+    /* صوت Afnan I: يشتغل مع نفس الضغطة (عشان الآيباد والآيفون يسمحون فيه)، ويوقف لو سكّرت المربع */
+    try {
+      var V = window.__botVoice;
+      if (V) {
+        if (!window.__botAu) window.__botAu = new Audio(V);
+        var au = window.__botAu; au.currentTime = 0;
+        var pr = au.play(); if (pr && pr.catch) pr.catch(function () {});
+      }
+    } catch (x) {}
     askBox(href);
   }, true);
   window.hayyTrack = { emit: emit, flush: flush, queue: function () { return queue.slice(); } };
