@@ -1,10 +1,10 @@
 <!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>
-@font-face{font-family:R;font-weight:400;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-400-normal.woff2)}
-@font-face{font-family:R;font-weight:600;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-600-normal.woff2)}
-@font-face{font-family:R;font-weight:700;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-700-normal.woff2)}
-@font-face{font-family:R;font-weight:400;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
-@font-face{font-family:R;font-weight:600;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-latin-600-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
-@font-face{font-family:R;font-weight:700;src:url(/tmp/claude-0/-home-claude/7b988989-2591-5ea2-bf11-79e6f8338f7d/scratchpad/pdf/node_modules/@fontsource/readex-pro/files/readex-pro-latin-700-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:R;font-weight:400;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-400-normal.woff2)}
+@font-face{font-family:R;font-weight:600;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-600-normal.woff2)}
+@font-face{font-family:R;font-weight:700;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-arabic-700-normal.woff2)}
+@font-face{font-family:R;font-weight:400;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-latin-400-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:R;font-weight:600;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-latin-600-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:R;font-weight:700;src:url(/tmp/claude-0/-home-claude/be519707-cf0b-5bad-8bf2-684a50b78d6f/scratchpad/deck/node_modules/@fontsource/readex-pro/files/readex-pro-latin-700-normal.woff2);unicode-range:U+0000-00FF,U+2000-206F}
 *{box-sizing:border-box;margin:0}
 html,body{width:1600px;height:900px;background:transparent;font-family:R,'Noto Color Emoji',sans-serif;color:#3b2a26}
 .abs{position:absolute}
@@ -29,21 +29,26 @@ h1{position:absolute;top:66px;left:0;right:0;text-align:center;font-size:54px;fo
 .cert div{font-size:17px;font-weight:600;direction:ltr;text-align:right;color:#7a5a12;line-height:1.7}
 .voice{flex:1;border:4px solid #7b61c9;border-radius:22px;padding:30px 14px 12px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
 .vt{position:absolute;top:-22px;background:#7b61c9;color:#fff;font-weight:700;font-size:19px;border-radius:20px;padding:4px 18px}
-.q{font-size:21px;font-style:italic;color:#6a5f5b;line-height:1.5}
+.q{font-size:18px;font-style:italic;color:#6a5f5b;line-height:1.5}
 .btn{background:#7b61c9;color:#fff;border-radius:20px;padding:5px 18px;font-size:17px;font-weight:700}
 .pill{left:470px;top:700px;width:660px;height:62px;border-radius:31px;background:#fff;border:2px solid #f0d2cb;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:600;color:#7c3933;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.step{display:flex;align-items:center;gap:10px;background:#fff6f3;border:2px solid #f3d5cf;border-radius:16px;padding:12px 12px;flex:1}
+.step .ic{font-size:30px}.step div{flex:1;display:flex;flex-direction:column;gap:2px}.step b{font-size:18px;color:#7c3933}.step small{font-size:14.5px;color:#6a5f5b}
+.tag{font-size:13.5px;font-weight:700;color:#8b3528;background:#fde3dd;border-radius:12px;padding:4px 10px;white-space:nowrap}
+.vn{font-size:22px;font-weight:700;color:#5b45a8}.vr{font-size:14px;color:#7b6f9a;margin-top:-8px}
 </style></head><body>
-<div class="abs badge">📍 مركز التمكين</div>
-<div class="abs chip" style="right:290px">🤝 تمكين ودعم</div>
-<div class="abs chip" style="right:470px">🎓 تطوير مهني</div>
+<div class="abs badge">📍 11 · مركز التمكين</div>
+<div class="abs chip" style="right:330px">🤝 تمكين ودعم</div>
+<div class="abs chip" style="right:510px">🎓 تطوير مهني</div>
 <h1>من صفّي… للمدرسة كلها 🤝</h1>
 <div class="abs sub">ما وقفنا عند طالباتي: نقلنا التجربة للزميلات والإدارة عشان الفكرة تكبر</div>
 <div class="abs card">
  <div class="col" style="width:400px">
-  <div class="h">🏛️ دورة للإدارة المدرسية</div>
-  <div class="s"><b>Gemini والذكاء الاصطناعي</b> لرئيسات الأقسام والوكيلات، بالاجتماع الإداري للمدرسة</div>
-  <div class="ph">📷 صورة الدورة<small>تنضاف الثلاثاء</small></div>
-  <div class="stat"><b>__</b><span class="s">مشاركة من الإدارة ورئيسات الأقسام</span></div>
+  <div class="h">🏛️ ننشر التجربة بالمدرسة</div>
+  <div class="s">فريق الابتكار ينقل الأدوات للإدارة والأقسام، خطوة خطوة</div>
+  <div class="step"><span class="ic">🧠</span><div><b>دورة Gemini للإدارة</b><small>رئيسات الأقسام والوكيلات</small></div><span class="tag">📅 مجدولة</span></div>
+  <div class="step"><span class="ic">🤝</span><div><b>زيارة الأقسام</b><small>بالاجتماعات الفنية، بحجز QR</small></div><span class="tag">🔓 الحجز مفتوح</span></div>
+  <div class="step"><span class="ic">🎓</span><div><b>شهادة Gemini للمعلمات</b><small>نساعدهن يجتازن الاختبار</small></div><span class="tag">🎯 الهدف</span></div>
  </div>
  <div class="col" style="width:580px">
   <div class="h">📊 واجهة المعلمات</div>
@@ -61,7 +66,8 @@ h1{position:absolute;top:66px;left:0;right:0;text-align:center;font-size:54px;fo
   <div class="cert"><div>Gemini Certified Educator</div><div>Gemini Certified Faculty</div></div>
   <div class="voice" style="margin-top:22px">
    <div class="vt">👩‍🏫 معلمة فيزياء</div>
-   <div class="q">«اقتباس قصير يتعبى»</div>
+   <div class="vn">أ. وهج الماجدي</div><div class="vr">جرّبت واجهة المعلمة</div>
+   <div class="q">«حبيت حيل إن فيه تقييم تفصيلي لكل طالبة: النظري، العملي، الفهم، وحتى الوقت اللي خذته عشان تفهم»</div>
    <div class="btn">🔊 اسمعوها</div>
   </div>
  </div>

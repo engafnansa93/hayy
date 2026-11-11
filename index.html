@@ -421,7 +421,7 @@ const CONFIG = {
     video:   '',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'ai.mp4',   // فيديو الذكاء الاصطناعي
     slides:  ((function(){ try{ if(/[?&#]preview\b/.test(location.href)) localStorage.setItem('hayy.preview','1'); if(/[?&]student\b/.test(location.search)) localStorage.removeItem('hayy.preview'); return localStorage.getItem('hayy.preview')==='1'; }catch(e){ return /[?&#]preview\b/.test(location.href); } })()?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
-    slidesCount: 12,
+    slidesCount: 13,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
@@ -454,7 +454,7 @@ const CONFIG = {
     card('فيديو المقدمة','تعريف سريع بالمشروع.',PROJECT.intro,'🎬')+
     card('فيديو المشروع','من السبورة… للعمارة… للموقع، والتجربة مع الطالبات.',PROJECT.video,'🎥')+
     card('فيديو بالذكاء الاصطناعي','فيديو مصنوع بأدوات الذكاء الاصطناعي.',PROJECT.ai,'✨')+
-    card('العرض التقديمي','رحلة المشروع بإحدى عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
+    card('العرض التقديمي','رحلة المشروع بثلاث عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
     card('النتائج','قبل وبعد، ورأي الطالبات وأولياء الأمور والمؤلفين.',PROJECT.results,'📊')+
     '<div class="card"><h3>♻️ منو يكمل المشروع؟</h3><p>مسؤولة الاستمرار وتطوير الموقع للدروس الجاية.</p><div class="who"><img src="afnan.jpg" alt="'+PROJECT.keeper+'" loading="lazy" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:4px solid #e8a79b;box-shadow:0 4px 12px rgba(139,52,40,.18)"><b>'+PROJECT.keeper+'</b></div></div>';
 })();</script>
@@ -469,23 +469,27 @@ const CONFIG = {
   var N=+(numEl&&numEl.textContent.split('/')[1])||9, book=null, wrap=host.parentNode;
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
   /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
-  var vAud=new Audio('voice-principal.mp3'); vAud.preload='none';
-  var vBtn=document.createElement('button'); vBtn.type='button'; vBtn.className='btn main'; vBtn.style.display='none';
-  var vIdle='🔊 اسمعوا المديرة أ. شيماء الجنديل';
-  vBtn.textContent=vIdle;
-  vBtn.onclick=function(){ if(vAud.paused){ vAud.play(); vBtn.textContent='⏸ إيقاف'; } else { vAud.pause(); vBtn.textContent=vIdle; } };
-  vAud.addEventListener('ended',function(){ vAud.currentTime=0; vBtn.textContent=vIdle; });
-  numEl.parentNode.insertAdjacentElement('afterend',vBtn); vBtn.style.alignSelf='center';
-  function showVoice(on){ vBtn.style.display=on?'':'none'; if(!on&&!vAud.paused){ vAud.pause(); vBtn.textContent=vIdle; } }
+  /* فويسات: صفحة 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة يطلع زرها */
+  var VOICES={10:['voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],11:['voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],12:['voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']};
+  var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
+  numEl.parentNode.insertAdjacentElement('afterend',vRow);
+  var vList=Object.keys(VOICES).map(function(k){
+    var a=new Audio(VOICES[k][0]); a.preload='none';
+    var b=document.createElement('button'); b.type='button'; b.className='btn main'; b.style.display='none'; b.textContent=VOICES[k][1];
+    b.onclick=function(){ if(a.paused){ vList.forEach(function(o){ if(o.a!==a&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); a.play(); b.textContent='⏸ إيقاف'; } else { a.pause(); b.textContent=VOICES[k][1]; } };
+    a.addEventListener('ended',function(){ a.currentTime=0; b.textContent=VOICES[k][1]; });
+    vRow.appendChild(b); return {k:+k,a:a,b:b,t:VOICES[k][1]};
+  });
+  function showVoice(pages){ vList.forEach(function(o){ var on=pages.indexOf(o.k)>-1; o.b.style.display=on?'':'none'; if(!on&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); }
   var PAD=(N%2===0)?1:0; // عدد زوجي من السلايدات = نضيف صفحة داخلية عشان الغلاف يبدأ مسكّر
   function slideOf(k){ return k<=PAD?0:N+1+PAD-k; }
   function label(k){
     if(!book) return;
     var portrait=book.getOrientation&&book.getOrientation()==='portrait';
-    if(k===0){ numEl.textContent='النهاية'; return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
+    if(k===0){ numEl.textContent='النهاية'; showVoice([]); return; } var s1=slideOf(k), s2=portrait?0:slideOf(k+1);
     var arr=[s1,s2].filter(function(x){return x>0&&x<=N;}).sort(function(a,b){return a-b;});
     numEl.textContent=arr.length?(arr.join('–')+' / '+N):('النهاية');
-    showVoice(arr.indexOf(11)>-1);
+    showVoice(arr);
   }
   /* لما المجلة مسكّرة (الغلاف أو الغلاف الخلفي) نخليها بالنص بدل ما يطلع نص أبيض */
   function center(k){
