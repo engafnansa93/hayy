@@ -469,16 +469,16 @@ const CONFIG = {
   var N=+(numEl&&numEl.textContent.split('/')[1])||9, book=null, wrap=host.parentNode;
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
   /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
-  /* فويسات: صفحة 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة يطلع زرها */
-  var VOICES={10:['voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],11:['voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],12:['voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']};
+  /* فويسات: صفحة 9 المؤلفة (3 أصوات)، 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة تطلع أزرارها */
+  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح: الكتاب'],[9,'voice-author-2.mp3','🔊 أ. سماح: المعلمة'],[9,'voice-author-3.mp3','🔊 أ. سماح: الطالبات'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[12,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
   var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
   numEl.parentNode.insertAdjacentElement('afterend',vRow);
-  var vList=Object.keys(VOICES).map(function(k){
-    var a=new Audio(VOICES[k][0]); a.preload='none';
-    var b=document.createElement('button'); b.type='button'; b.className='btn main'; b.style.display='none'; b.textContent=VOICES[k][1];
-    b.onclick=function(){ if(a.paused){ vList.forEach(function(o){ if(o.a!==a&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); a.play(); b.textContent='⏸ إيقاف'; } else { a.pause(); b.textContent=VOICES[k][1]; } };
-    a.addEventListener('ended',function(){ a.currentTime=0; b.textContent=VOICES[k][1]; });
-    vRow.appendChild(b); return {k:+k,a:a,b:b,t:VOICES[k][1]};
+  var vList=VOICES.map(function(v){
+    var a=new Audio(v[1]); a.preload='none';
+    var b=document.createElement('button'); b.type='button'; b.className='btn main'; b.style.display='none'; b.textContent=v[2];
+    b.onclick=function(){ if(a.paused){ vList.forEach(function(o){ if(o.a!==a&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); a.play(); b.textContent='⏸ إيقاف'; } else { a.pause(); b.textContent=v[2]; } };
+    a.addEventListener('ended',function(){ a.currentTime=0; b.textContent=v[2]; });
+    vRow.appendChild(b); return {k:v[0],a:a,b:b,t:v[2]};
   });
   function showVoice(pages){ vList.forEach(function(o){ var on=pages.indexOf(o.k)>-1; o.b.style.display=on?'':'none'; if(!on&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); }
   var PAD=(N%2===0)?1:0; // عدد زوجي من السلايدات = نضيف صفحة داخلية عشان الغلاف يبدأ مسكّر
