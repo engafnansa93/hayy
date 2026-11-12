@@ -418,10 +418,10 @@ const CONFIG = {
 (function(){
   var PROJECT = {
     intro:   'intro.mp4',   // فيديو المقدمة
-    video:   '',   // فيديو المشروع (التصوير + المونتاج)
+    video:   'project.mp4',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'ai.mp4',   // فيديو الذكاء الاصطناعي
     slides:  ((function(){ try{ if(/[?&#]preview\b/.test(location.href)) localStorage.setItem('hayy.preview','1'); if(/[?&]student\b/.test(location.search)) localStorage.removeItem('hayy.preview'); return localStorage.getItem('hayy.preview')==='1'; }catch(e){ return /[?&#]preview\b/.test(location.href); } })()?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
-    slidesCount: 13,
+    slidesCount: 14,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
@@ -443,7 +443,7 @@ const CONFIG = {
     }
     var e=embed(u);
     var isVid=/\.mp4(\?|$)/i.test(u||'');
-    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':''); var m='<div class="media"><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>'+(pst?'<button type="button" class="vcov" aria-label="شغّلوا الفيديو" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;background:#000 url('+pst.split('"')[1]+') center/contain no-repeat;display:flex;align-items:center;justify-content:center"><span style="width:72px;height:72px;border-radius:50%;background:rgba(139,52,40,.88);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.3);padding-left:6px">▶</span></button>':'')+'</div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
+    if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':(u===PROJECT.video?' poster="project.jpg"':'')); var m='<div class="media"'+(u===PROJECT.video?' style="aspect-ratio:9/16;width:min(100%,360px);margin:0 auto"':'')+'><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>'+(pst?'<button type="button" class="vcov" aria-label="شغّلوا الفيديو" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;background:#000 url('+pst.split('"')[1]+') center/contain no-repeat;display:flex;align-items:center;justify-content:center"><span style="width:72px;height:72px;border-radius:50%;background:rgba(139,52,40,.88);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.3);padding-left:6px">▶</span></button>':'')+'</div>'; return '<div class="card'+(wide?' wide':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
     var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
            :'<div class="media"'+(wide?' style="aspect-ratio:auto;height:170px"':'')+'><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
     var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
@@ -454,7 +454,7 @@ const CONFIG = {
     card('فيديو المقدمة','تعريف سريع بالمشروع.',PROJECT.intro,'🎬')+
     card('فيديو المشروع','من السبورة… للعمارة… للموقع، والتجربة مع الطالبات.',PROJECT.video,'🎥')+
     card('فيديو بالذكاء الاصطناعي','فيديو مصنوع بأدوات الذكاء الاصطناعي.',PROJECT.ai,'✨')+
-    card('العرض التقديمي','رحلة المشروع بثلاث عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
+    card('العرض التقديمي','رحلة المشروع بأربع عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
     card('النتائج','قبل وبعد، ورأي الطالبات وأولياء الأمور والمؤلفين.',PROJECT.results,'📊')+
     '<div class="card"><h3>♻️ منو يكمل المشروع؟</h3><p>مسؤولة الاستمرار وتطوير الموقع للدروس الجاية.</p><div class="who"><img src="afnan.jpg" alt="'+PROJECT.keeper+'" loading="lazy" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:4px solid #e8a79b;box-shadow:0 4px 12px rgba(139,52,40,.18)"><b>'+PROJECT.keeper+'</b></div></div>';
 })();</script>
@@ -470,7 +470,7 @@ const CONFIG = {
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
   /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
   /* فويسات: صفحة 9 المؤلفة (3 أصوات)، 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة تطلع أزرارها */
-  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[12,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
+  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[12,'voice-jana.mp3','🔊 جنى'],[12,'voice-saja.mp3','🔊 سجى'],[12,'voice-wasan.mp3','🔊 وسن'],[13,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
   var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
   numEl.parentNode.insertAdjacentElement('afterend',vRow);
   var vList=VOICES.map(function(v){
