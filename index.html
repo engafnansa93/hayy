@@ -486,7 +486,7 @@ const CONFIG = {
   var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
   numEl.parentNode.insertAdjacentElement('afterend',vRow);
   var vList=VOICES.map(function(v){
-    var a=new Audio(v[1]); a.preload='none'; a.__noprime=true;
+    var a=new Audio(v[1]+'?v=2'); a.preload='none'; a.__noprime=true;
     var b=document.createElement('button'); b.type='button'; b.className='btn main'; b.style.display='none'; b.textContent=v[2];
     b.onclick=function(){ if(a.paused){ vList.forEach(function(o){ if(o.a!==a&&!o.a.paused){ o.a.pause(); o.b.textContent=o.t; } }); a.play(); b.textContent='⏸ إيقاف'; } else { a.pause(); b.textContent=v[2]; } };
     a.addEventListener('ended',function(){ a.currentTime=0; b.textContent=v[2]; });
