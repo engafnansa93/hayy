@@ -426,7 +426,7 @@ const CONFIG = {
     intro:   'intro.mp4',   // فيديو المقدمة
     video:   'project.mp4',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'ai.mp4',   // فيديو الذكاء الاصطناعي
-    slides:  ((function(){ try{ if(/[?&#]preview\b/.test(location.href)) localStorage.setItem('hayy.preview','1'); if(/[?&]student\b/.test(location.search)) localStorage.removeItem('hayy.preview'); return localStorage.getItem('hayy.preview')==='1'; }catch(e){ return /[?&#]preview\b/.test(location.href); } })()?'flip':''),   // العرض: يطلع «قريبًا» للكل، والمجلة بس مع ?preview (رابط أفنان للمراجعة). للنشر: خليها 'flip'
+    slides:  'flip',   // العرض: مجلة مفتوحة للكل (فُتحت 14/11 للحكام). ?preview صار ما يفرق
     slidesCount: 14,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
     results: '',   // النتائج (صورة الرسم أو رابط)
