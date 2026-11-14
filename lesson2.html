@@ -291,7 +291,7 @@ try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
     body='<h4>'+g[0]+'</h4><p>'+g[1]+'</p>'+
       '<p>✅ <b>كل شي مفتوح لكم:</b> المقاطع والألعاب بأي ترتيب، وتقدرون تضغطون «التالي» بدون ما يخلص المقطع.</p>'+
       '<p>🎯 <b>ما تحتاجون تعرفون كيمياء:</b> اختاروا أي إجابة، والموقع يقول لكم صح أو غلط بصوت أ. أفنان («عفية عليج» / «مو جذي…»).</p>'+
-      '<p>🤖 زر <b>Afnan I</b> تحت: اسألوه أي سؤال، مثل «عطني سؤال من بنك الأسئلة عن الترتيب الإلكتروني».</p>'+
+      '<p>🤖 زر <b>Afnan I</b> تحت (يفتح بحساب Google): اسألوه أي سؤال، مثل «عطني سؤال من بنك الأسئلة عن الترتيب الإلكتروني».</p>'+
       '<div class="row"><a href="'+L('lesson1.html')+'">الدرس 1</a><a href="'+L('lesson2.html')+'">الدرس 2</a><a href="'+L('lesson3.html')+'">الدرس 3</a><a href="'+base+'index.html?judge#project">📁 ملف المشروع</a><a href="'+base+'index.html?judge">الرئيسية</a></div>';
   }else{
     body='<h4>أهلًا بلجنة التحكيم 👋</h4>'+
@@ -1670,3 +1670,4 @@ fix();new MutationObserver(fix).observe(document.documentElement,{childList:true
 })();
 </script>
 <script src="track.js?v=4" defer></script>
+<style id="botnote">.bot>span:last-child::after,.afbot>span:last-child::after{content:"يفتح بحساب Google";display:block;font-weight:400;font-size:10px;opacity:.6;line-height:1.3}</style>
