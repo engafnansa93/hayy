@@ -33,7 +33,7 @@ try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   };
   var css='#hayyJ{position:fixed;top:10px;left:10px;z-index:2147483000;font-family:"Readex Pro",system-ui,sans-serif;direction:rtl}'+
     '#hayyJ .pill{background:#2b2b3a;color:#fff;border:0;border-radius:999px;padding:8px 14px;font:700 13px/1.2 inherit;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}'+
-    '#hayyJ .ov{position:fixed;inset:0;background:rgba(30,24,50,.45);display:grid;place-items:center;padding:16px;z-index:2147483001}#hayyJ .ov[hidden]{display:none}#hayyJ .card{position:relative;width:min(400px,100%);animation:hayyJin .25s ease-out;background:#fff;color:#2b2b3a;border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;line-height:1.7;max-height:70vh;overflow:auto;height:auto;min-width:0;border:0;font-family:inherit;touch-action:auto;user-select:text;-webkit-user-select:text}'+
+    '#hayyJ .ov{position:fixed;inset:0;background:rgba(30,24,50,.45);display:grid;place-items:center;padding:16px;z-index:2147483001}#hayyJ .ov[hidden]{display:none}#hayyJ .card{position:relative;width:min(400px,100%);animation:hayyJin .25s ease-out;background:#fff;color:#2b2b3a;border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;line-height:1.7;max-height:86vh;overflow:auto;height:auto;min-width:0;border:0;font-family:inherit;touch-action:auto;user-select:text;-webkit-user-select:text}'+
     '#hayyJ h4{margin:0 0 6px;font-size:15px;color:#C64C39}#hayyJ p{margin:0 0 8px}#hayyJ ol{margin:0 0 8px;padding-inline-start:20px}'+
     '#hayyJ a{color:#C64C39;font-weight:700}#hayyJ .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}'+
     '#hayyJ .row a,#hayyJ .row button{border:1.5px solid #C64C39;border-radius:999px;padding:5px 12px;background:#fff;color:#C64C39;font:700 12.5px inherit;text-decoration:none;cursor:pointer}'+
@@ -429,7 +429,8 @@ const CONFIG = {
     slides:  'flip',   // العرض: مجلة مفتوحة للكل (فُتحت 14/11 للحكام). ?preview صار ما يفرق
     slidesCount: 14,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
-    results: '',   // النتائج (صورة الرسم أو رابط)
+    results: 'deck-8.jpg',   // النتائج: سلايد برج النتائج
+    resultsForms: 'results-parents.png',   // لقطة ملخص استبيان أولياء الأمور (Google Forms، 20 رد)
     keeper:  'أ. أفنان سامي'   // مسؤولة الاستمرار
   };
   function embed(u){
@@ -450,6 +451,11 @@ const CONFIG = {
     var e=embed(u);
     var isVid=/\.mp4(\?|$)/i.test(u||'');
     if(isVid){ var pst=(u==='intro.mp4')?' poster="intro.jpg"':(u===PROJECT.ai?' poster="ai.jpg"':(u===PROJECT.video?' poster="project.jpg?v=3"':'')); var m='<div class="media"'+(u===PROJECT.video?' style="aspect-ratio:9/16;width:min(100%,360px);margin:0 auto"':'')+'><video src="'+encodeURI(u)+(pst?'':'#t=1')+'" controls playsinline preload="'+(pst?'none':'metadata')+'"'+pst+' style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>'+(pst?'<button type="button" class="vcov" aria-label="شغّلوا الفيديو" style="position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;background:#000 url('+pst.split('"')[1]+') center/contain no-repeat;display:flex;align-items:center;justify-content:center"><span style="width:72px;height:72px;border-radius:50%;background:rgba(139,52,40,.88);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.3);padding-left:6px">▶</span></button>':'')+'</div>'; return '<div class="card'+(wide?' wide':'')+(u===PROJECT.video?' tall':'')+'"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+m+'</div>'; }
+    if(/\.(jpe?g|png)(\?|$)/i.test(u||'')){
+      return '<div class="card"><h3>'+icon+' '+t+'</h3><p>'+d+'</p>'+
+        '<a href="'+u+'" target="_blank" rel="noopener" style="display:block;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(139,52,40,.15)"><img src="'+u+'" alt="'+t+'" loading="lazy" style="display:block;width:100%;height:auto"></a>'+
+        (PROJECT.resultsForms&&u===PROJECT.results?'<a class="btn" href="'+PROJECT.resultsForms+'" target="_blank" rel="noopener">📋 ردود أولياء الأمور (Google Forms) ↗</a>':'')+'</div>';
+    }
     var m=e?'<div class="media"><iframe src="'+e+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="'+t+'"></iframe></div>'
            :'<div class="media" style="aspect-ratio:auto;height:170px"><div><div style="font-size:2rem">'+icon+'</div><div class="soon">يُضاف قريبًا</div></div></div>';
     var a=u?'<a class="btn" href="'+u+'" target="_blank" rel="noopener">افتحيه كامل ↗</a>':'';
@@ -461,7 +467,7 @@ const CONFIG = {
     card('فيديو المقدمة','تعريف سريع بالمشروع.',PROJECT.intro,'🎬')+
     card('فيديو بالذكاء الاصطناعي','فيديو مصنوع بأدوات الذكاء الاصطناعي.',PROJECT.ai,'✨')+
     card('العرض التقديمي','رحلة المشروع بأربع عشرة محطة، تتصفحونها مثل المجلة.',PROJECT.slides,'📖',true)+
-    card('النتائج','قبل وبعد، ورأي الطالبات وأولياء الأمور والمؤلفين.',PROJECT.results,'📊')+
+    card('النتائج','قبل وبعد: من 55% إلى <b>80%</b> بالموقع، مقابل 63% بالكتاب. ورأي 20 طالبة و20 ولي أمر.',PROJECT.results,'📊')+
     '<div class="card"><h3>♻️ منو يكمل المشروع؟</h3><p>مسؤولة الاستمرار وتطوير الموقع للدروس الجاية.</p><div class="who"><img src="afnan.jpg" alt="'+PROJECT.keeper+'" loading="lazy" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:4px solid #e8a79b;box-shadow:0 4px 12px rgba(139,52,40,.18)"><b>'+PROJECT.keeper+'</b></div></div>';
 })();</script>
 <script>/* page-flip 2.0.7 (MIT) */
@@ -476,7 +482,7 @@ const CONFIG = {
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
   /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
   /* فويسات: صفحة 9 المؤلفة (3 أصوات)، 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة تطلع أزرارها */
-  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[12,'voice-jana.mp3','🔊 جنى'],[12,'voice-saja.mp3','🔊 سجى'],[12,'voice-wasan.mp3','🔊 وسن'],[13,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
+  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[11,'voice-parent.mp3','🔊 اسمعوا ولي الأمر'],[12,'voice-jana.mp3','🔊 جنى'],[12,'voice-saja.mp3','🔊 سجى'],[12,'voice-wasan.mp3','🔊 وسن'],[13,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
   var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
   numEl.parentNode.insertAdjacentElement('afterend',vRow);
   var vList=VOICES.map(function(v){
