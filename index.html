@@ -425,7 +425,7 @@ function demoState(){
     students:[
       {id:'s1', name:'سارة', cls:'10-6', parent:'ولي أمر سارة', abs:1, hw:0, goal:'أرفع درجة الكيمياء', term:{chem:74,phys:88,math:85,bio:90,arabic:82,eng:86,social:80}, interests:{research:5,social:4,practical:3,creative:2,leading:3,organizing:3}},
       {id:'s2', name:'نورة', cls:'10-6', parent:'ولي أمر نورة', abs:0, hw:0, goal:'أشارك في أولمبياد الكيمياء', term:{chem:98,phys:97,math:96,bio:95,arabic:90,eng:94,social:88}, interests:{research:5,practical:4,creative:2,social:3,leading:3,organizing:2}},
-      {id:'s3', name:'دانة', cls:'10-6', parent:'ولي أمر دانة', abs:0, hw:0, goal:'أكتشف مجال التصميم', term:{chem:92,phys:94,math:96,bio:85,arabic:78,eng:84,social:76}, interests:{creative:5,social:4,research:2,practical:3,leading:2,organizing:2}},
+      {id:'s3', name:'قمر', cls:'10-6', parent:'ولي أمر قمر', abs:0, hw:0, goal:'أكتشف مجال التصميم', term:{chem:92,phys:94,math:96,bio:85,arabic:78,eng:84,social:76}, interests:{creative:5,social:4,research:2,practical:3,leading:2,organizing:2}},
       {id:'s4', name:'ريم', cls:'10-6', parent:'ولي أمر ريم', abs:2, hw:1, goal:'', term:{chem:68,phys:72}, interests:null},
       {id:'s5', name:'هيا', cls:'10-6', parent:'ولي أمر هيا', abs:0, hw:2, goal:'', term:{chem:75,phys:66,math:70,bio:78,arabic:85,eng:80,social:84}, interests:{social:5,leading:4,organizing:3,creative:3,research:2,practical:2}},
       {id:'s6', name:'لطيفة', cls:'10-6', parent:'ولي أمر لطيفة', abs:4, hw:1, goal:'', term:{chem:70,phys:74,math:72,bio:76,arabic:88,eng:79,social:90}, interests:{social:4,creative:4,organizing:3,research:2,practical:2,leading:3}},
@@ -474,9 +474,9 @@ function demoState(){
   extendG10(S,today);
   S.students.forEach(st=>st.digest='weekly');
   S.nominations=[
-    {id:'n1',sid:'s3',role:'parent',by:'ولي أمر دانة',domain:'art',traits:[],note:'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.',status:'new',at:ago(2)},
+    {id:'n1',sid:'s3',role:'parent',by:'ولي أمر قمر',domain:'art',traits:[],note:'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.',status:'new',at:ago(2)},
     {id:'n3',sid:'s2',role:'self',by:'نورة',domain:'sci',traits:[],note:'شاركت بأولمبياد الكيمياء المدرسي ووصلت للنهائي',link:'',status:'new',at:ago(6)},
-    {id:'n4',sid:'s3',role:'self',by:'دانة',domain:'art',traits:[],note:'صممت شعار نادي العلوم وملصقات يوم الكيمياء',link:'',status:'new',at:ago(3)},
+    {id:'n4',sid:'s3',role:'self',by:'قمر',domain:'art',traits:[],note:'صممت شعار نادي العلوم وملصقات يوم الكيمياء',link:'',status:'new',at:ago(3)},
     {id:'n5',sid:'s1',role:'self',by:'سارة',domain:'lead',traits:[],note:'نظّمت فعالية يوم العلوم بالصف',link:'',status:'new',at:ago(1)},
     {id:'n2',sid:'s2',role:'teacher',by:'أ. أفنان سامي',domain:'sci',traits:['فضول وأسئلة عميقة','تتعلّم بسرعة','أفكار أصلية'],note:'تحل أسئلة الأولمبياد بطرق ما درّسناها.',status:'new',at:ago(4)}];
   return S;
@@ -1153,8 +1153,8 @@ const STEPS=[
   {role:'parent',spot:'#psum',t:'وملخص يكتبه Gemini',p:'Gemini يكتب الملخص بلغة بسيطة، ويوصل على Gmail. الدرجات تظهر بعد نشرها فقط.',btn:'اكتب الملخص',async run(){await parentSum('s1');}},
   {role:'admin',spot:'#supports',t:'الإدارة تتابع أثر التدخل',p:'رئيسة القسم والمديرة يشوفون الخطة ونتيجتها، والمهارات اللي يتكرر فيها التعثّر، ويسألون البيانات بالعربي.',btn:'التالي'},
   {role:'counselor',spot:'#paths',t:'آخر السنة: الميول + الأداء = المسار',p:'نتيجة اختبار الميول تنجمع مع أداء سارة طول السنة، بقواعد معلنة، ثم تراجعها المرشدة وتحدد سارة هدفها والكوتش يبني له خطة.',btn:'التالي',pre(){V.sid='s1';}},
-  {role:'student',spot:'#ktal',t:'🌌 وهذي دانة… موهبة مخفية',p:'درجات دانة مو الأعلى بالشعبة. بس ثلاث عيون شافت فيها نفس الشي: ميولها بالاختبار، وأهلها، ونجمة أضافتها بنفسها «صممت شعار نادي العلوم». فضوت كوكبة التصميم ✨',btn:'التالي',pre(){V.sid='s3';}},
-  {role:'counselor',spot:'#radar',t:'رادار الموهبة: يرشّح، ما يشخّص',p:'المرشدة تشوف كل الترشيحات بمكان واحد مع الدليل، وهي وحدها تقرر. ضغطة وحدة تحوّل دانة للفحص الرسمي بمنصة «موهوب»، ويوصل إيميل لأهلها.',btn:'حوّلي دانة للفحص',pre(){V.sid='s3';},run(){referStudent('s3');}},
+  {role:'student',spot:'#ktal',t:'🌌 وهذي قمر… موهبة مخفية',p:'درجات قمر مو الأعلى بالشعبة. بس ثلاث عيون شافت فيها نفس الشي: ميولها بالاختبار، وأهلها، ونجمة أضافتها بنفسها «صممت شعار نادي العلوم». فضوت كوكبة التصميم ✨',btn:'التالي',pre(){V.sid='s3';}},
+  {role:'counselor',spot:'#radar',t:'رادار الموهبة: يرشّح، ما يشخّص',p:'المرشدة تشوف كل الترشيحات بمكان واحد مع الدليل، وهي وحدها تقرر. ضغطة وحدة تحوّل قمر للفحص الرسمي بمنصة «موهوب»، ويوصل إيميل لأهلها.',btn:'حوّلي قمر للفحص',pre(){V.sid='s3';},run(){referStudent('s3');}},
   {role:'parent',spot:'#ptal',t:'وأهلها يعرفون الخطوة الجاية',p:'ولي الأمر يشوف المجال، وكيف ينمّونه بالبيت، وخطة شهر من Gemini. وإذا شاف موهبة ما انتبهت لها المدرسة، يرسلها للمرشدة بنفسه. أربع عيون تشوف، ومختصة وحدة تقرر.',btn:'إنهاء الجولة',pre(){V.sid='s3';}}
 ];
 function renderTour(){

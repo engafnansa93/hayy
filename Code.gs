@@ -627,7 +627,7 @@ function installTriggers() {
  */
 function seedDemo() {
   clearDemo();
-  var names = ['سارة', 'نورة', 'دانة', 'ريم', 'هيا', 'لطيفة', 'مها', 'جود'];
+  var names = ['سارة', 'نورة', 'قمر', 'ريم', 'هيا', 'لطيفة', 'مها', 'جود'];
   var meta = [
     { abs: 1, hw: 0, goal: 'أرفع درجة الكيمياء', term: { chem: 74, phys: 88, math: 85, bio: 90, arabic: 82, eng: 86, social: 80 }, interests: { research: 5, social: 4, practical: 3, creative: 2, leading: 3, organizing: 3 } },
     { abs: 0, hw: 0, goal: 'أشارك في أولمبياد الكيمياء', term: { chem: 98, phys: 97, math: 96, bio: 95, arabic: 90, eng: 94, social: 88 }, interests: { research: 5, practical: 4, creative: 2, social: 3, leading: 3, organizing: 2 } },
@@ -707,10 +707,10 @@ function seedDemo() {
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
   if (u) update_('Users', u._row, { roles: 'teacher,student,parent,admin,counselor', studentId: 'd1', children: 'd1' });
   seedG10_(terms);
-  append_('Nominations', { id: 'dn1', sid: 'd3', role: 'parent', by: 'ولي أمر دانة', domain: 'art', traits: '[]', note: 'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn1', sid: 'd3', role: 'parent', by: 'ولي أمر قمر', domain: 'art', traits: '[]', note: 'ترسم وتصمم على الآيباد من صغرها، وصممت شعار نادي المدرسة.', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn2', sid: 'd2', role: 'teacher', by: 'أ. أفنان سامي', domain: 'sci', traits: JSON.stringify(['فضول وأسئلة عميقة', 'تتعلّم بسرعة', 'أفكار أصلية']), note: 'تحل أسئلة الأولمبياد بطرق ما درّسناها.', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn3', sid: 'd2', role: 'self', by: 'نورة', domain: 'sci', traits: '[]', note: 'شاركت بأولمبياد الكيمياء المدرسي ووصلت للنهائي', status: 'new', at: new Date() });
-  append_('Nominations', { id: 'dn4', sid: 'd3', role: 'self', by: 'دانة', domain: 'art', traits: '[]', note: 'صممت شعار نادي العلوم وملصقات يوم الكيمياء', status: 'new', at: new Date() });
+  append_('Nominations', { id: 'dn4', sid: 'd3', role: 'self', by: 'قمر', domain: 'art', traits: '[]', note: 'صممت شعار نادي العلوم وملصقات يوم الكيمياء', status: 'new', at: new Date() });
   append_('Nominations', { id: 'dn5', sid: 'd1', role: 'self', by: 'سارة', domain: 'lead', traits: '[]', note: 'نظّمت فعالية يوم العلوم بالصف', status: 'new', at: new Date() });
   var gm = rows_('Settings').filter(function (r) { return r.key === 'geminiModel'; })[0];
   if (gm) update_('Settings', gm._row, { value: 'gemini-flash-lite-latest' });
