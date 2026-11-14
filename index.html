@@ -427,7 +427,7 @@ const CONFIG = {
     video:   'project.mp4',   // فيديو المشروع (التصوير + المونتاج)
     ai:      'ai.mp4',   // فيديو الذكاء الاصطناعي
     slides:  'flip',   // العرض: مجلة مفتوحة للكل (فُتحت 14/11 للحكام). ?preview صار ما يفرق
-    slidesCount: 14,
+    slidesCount: 15,
     slidesLink: 'https://docs.google.com/presentation/d/1ix6IXVzHaZDfBP6o-S6j4i7wuDFxMNQtlNXGKxHedow/present',
     results: 'deck-8.jpg',   // النتائج: سلايد برج النتائج
     resultsForms: 'results-parents.png',   // لقطة ملخص استبيان أولياء الأمور (Google Forms، 20 رد)
@@ -535,7 +535,7 @@ const CONFIG = {
     back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><img class="mbLogo" alt="By Afnan"><div class="mbS2">شكراً من القلب 🤍</div></div>';
     h.appendChild(back);
     if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><img class="mbLogo" alt="By Afnan" style="opacity:.55"></div>'; h.appendChild(inner); }
-    for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
+    for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg?v=15" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
     var W=wrap.clientWidth||900, single=W<640;
     var pw=single?Math.min(W,980):Math.floor(Math.min(W,1100)/2);
     book=new St.PageFlip(h,{width:pw,height:Math.round(pw*9/16),size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:true,flippingTime:1000,drawShadow:true});
