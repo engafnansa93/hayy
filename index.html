@@ -482,7 +482,7 @@ const CONFIG = {
   // الترتيب: [الغلاف الخلفي، N … 1]  ← 1 هو الغلاف الأمامي ويبدأ مسكّر
   /* فويس المديرة: يطلع زره لما تنفتح صفحة 11 (ساحة الأصوات) */
   /* فويسات: صفحة 9 المؤلفة (3 أصوات)، 10 الخبير، 11 المديرة، 12 معلمة الفيزياء. كل صفحة مفتوحة تطلع أزرارها */
-  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[11,'voice-parent.mp3','🔊 اسمعوا ولي الأمر'],[11,'voice-jana.mp3','🔊 اسمعوا جنى'],[12,'voice-jana.mp3','🔊 جنى'],[12,'voice-saja.mp3','🔊 سجى'],[12,'voice-wasan.mp3','🔊 وسن'],[13,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
+  var VOICES=[[9,'voice-author-1.mp3','🔊 أ. سماح ١'],[9,'voice-author-2.mp3','🔊 أ. سماح ٢'],[9,'voice-author-3.mp3','🔊 أ. سماح ٣'],[10,'voice-expert.mp3','🔊 اسمعوا أ. صالح العجيل'],[11,'voice-principal.mp3','🔊 اسمعوا المديرة أ. شيماء الجنديل'],[11,'voice-parent.mp3','🔊 اسمعوا ولي الأمر'],[11,'voice-saja-2.mp3','🔊 اسمعوا سجى'],[12,'voice-jana.mp3','🔊 جنى'],[12,'voice-saja.mp3','🔊 سجى'],[12,'voice-wasan.mp3','🔊 وسن'],[13,'voice-physics.mp3','🔊 اسمعوا أ. وهج الماجدي']];
   var vRow=document.createElement('div'); vRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-self:center';
   numEl.parentNode.insertAdjacentElement('afterend',vRow);
   var vList=VOICES.map(function(v){
@@ -535,7 +535,7 @@ const CONFIG = {
     back.innerHTML='<div><div class="mbT">حيّ الكيمياء</div><img class="mbLogo" alt="By Afnan"><div class="mbS2">شكراً من القلب 🤍</div></div>';
     h.appendChild(back);
     if(PAD){ var inner=document.createElement('div'); inner.className='page magBack magInner'; inner.innerHTML='<div><img class="mbLogo" alt="By Afnan" style="opacity:.55"></div>'; h.appendChild(inner); }
-    for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg?v=19" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
+    for(var i=N;i>=1;i--){ var pg=document.createElement('div'); pg.className='page'; if(i===1) pg.setAttribute('data-density','hard'); pg.innerHTML='<img src="deck-'+i+'.jpg?v=20" alt="سلايد '+i+'" decoding="async">'; h.appendChild(pg); }
     var W=wrap.clientWidth||900, single=W<640;
     var pw=single?Math.min(W,980):Math.floor(Math.min(W,1100)/2);
     book=new St.PageFlip(h,{width:pw,height:Math.round(pw*9/16),size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:true,flippingTime:1000,drawShadow:true});
