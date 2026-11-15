@@ -340,6 +340,26 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .p-co{--pc:#B79CFF;--pd:#6A4BD6;--pg:rgba(183,156,255,.45)}
 .p-te{--pc:#7FB2FF;--pd:#2F5FC7;--pg:rgba(127,178,255,.45)}
 .p-ad{--pc:#FF8FA3;--pd:#B83A58;--pg:rgba(255,143,163,.4)}
+.planets{grid-template-columns:repeat(3,1fr)!important;max-width:620px}
+@media (max-width:620px){.planets{grid-template-columns:repeat(2,1fr)!important}}
+.pl:nth-child(5) .orbx{animation-delay:-4.4s}.pl:nth-child(6) .orbx{animation-delay:-.6s}
+.p-vi{--pc:#FFB37A;--pd:#C2621F;--pg:rgba(255,179,122,.45)}
+.p-mo{--pc:#5FE1E6;--pd:#16808A;--pg:rgba(95,225,230,.42)}
+.vrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.vrow:last-of-type{border-bottom:0}.vrow .vi{font-size:1.3rem;line-height:1.2}
+.vrow.fresh{background:linear-gradient(90deg,transparent,rgba(242,178,68,.12));border-radius:10px;padding-inline:8px;animation:vin .6s ease}
+@keyframes vin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.vfilter{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.vcard{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;padding:12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--surface,rgba(255,255,255,.03))}
+.vcard:hover,.vcard.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-mid,rgba(242,178,68,.3))}
+.vcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.vtypes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.vtypes button{all:unset;cursor:pointer;display:flex;gap:6px;align-items:center;font-size:.88rem;padding:8px 10px;border:1px solid var(--line);border-radius:12px}
+.vtypes button[aria-pressed="true"]{border-color:var(--accent);background:rgba(242,178,68,.12);font-weight:700}
+.ailist{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px;line-height:1.7}
+.airec{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(242,178,68,.1);border:1px solid rgba(242,178,68,.35)}
+tr.sel td{background:rgba(242,178,68,.08)}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .gate-adm{all:unset;cursor:pointer;color:var(--muted);font-size:.85rem;border-bottom:1px dashed var(--line);padding-bottom:2px}
 .gate-judge{all:unset;cursor:pointer;color:var(--accent-ink);font-size:.9rem;border:1px solid var(--accent-mid);border-radius:999px;padding:6px 14px}
@@ -442,7 +462,7 @@ const PATHS = [
   {id:'hum', name:'العلوم الإنسانية والإعلام', desc:'يتجه للإعلام والتربية والقانون والعلوم الاجتماعية.', subj:['arabic','social'], dims:['social','creative'], explore:'كتابة مقال للإذاعة المدرسية أو إجراء مقابلة.'},
   {id:'art', name:'التصميم والفنون التطبيقية', desc:'يتجه للتصميم الجرافيكي والعمارة الداخلية والإنتاج الرقمي.', subj:['math','arabic'], dims:['creative','practical'], explore:'تصميم ملصق لنشاط المدرسة بأداة رقمية.'}
 ];
-const ROLE = {teacher:'المعلمة', student:'الطالبة', parent:'ولي الأمر', admin:'الإدارة', counselor:'المرشدة'};
+const ROLE = {teacher:'المعلمة', student:'الطالبة', parent:'ولي الأمر', admin:'الإدارة', counselor:'المرشدة', vice:'الوكيلة', monitor:'المشرفة'};
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
 
 /* ============ ألوان المواد في Google Calendar ============ */
@@ -1452,7 +1472,9 @@ const PL={
   parent:{c:'p-pa',i:'👨‍👩‍👧',n:'ولي الأمر',d:'وين وصلت بنتي؟'},
   counselor:{c:'p-co',i:'🧭',n:'المرشدة',d:'المسارات ورادار الموهبة'},
   teacher:{c:'p-te',i:'👩‍🏫',n:'المعلمة',d:'التنبيه المبكر والخطط'},
-  admin:{c:'p-ad',i:'🏫',n:'الإدارة',d:'صورة المدرسة كاملة'}
+  admin:{c:'p-ad',i:'🏫',n:'الإدارة',d:'صورة المدرسة كاملة'},
+  vice:{c:'p-vi',i:'🗂️',n:'الوكيلة',d:'شؤون الطالبات وملف كل بنت'},
+  monitor:{c:'p-mo',i:'📋',n:'المشرفة',d:'رصد المخالفات بالفصول'}
 };
 const GATE={judge:false,who:null};
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -1460,7 +1482,7 @@ function lsSet(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(
 function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
 function ssSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
 function ball(r,extra){const p=PL[r];return '<span class="ball '+p.c+'"'+(extra||'')+'>'+p.i+'</span>';}
-const ORB_T={student:[7,-18,0],parent:[8.5,16,-2],counselor:[10,-12,-5],teacher:[9,20,-3]};
+const ORB_T={student:[7,-18,0],parent:[8.5,16,-2],counselor:[10,-12,-5],teacher:[9,20,-3],vice:[9.5,-14,-1],monitor:[7.5,18,-4]};
 function orbitSVG(r,side){const [d,tilt,bg]=ORB_T[r]||[8,-18,0]; const P='M159,85 a74,20 0 1,1 -148,0 a74,20 0 1,1 148,0'; const id='oc-'+r+'-'+side;
   const m='<animateMotion dur="'+d+'s" begin="'+bg+'s" repeatCount="indefinite" path="'+P+'"/>';
   return '<svg class="orbit '+side+'" viewBox="0 0 170 170" aria-hidden="true"><g transform="rotate('+tilt+' 85 85)"><clipPath id="'+id+'"><rect x="-20" y="'+(side==='back'?-20:85)+'" width="210" height="105"/></clipPath>'+
@@ -1471,7 +1493,7 @@ function gateHome(){
     '<svg class="gate-logo" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="nuc2"><stop offset="0" stop-color="#FFE7A8"/><stop offset="1" stop-color="#FFB84D"/></radialGradient></defs><ellipse cx="20" cy="20" rx="17" ry="7" fill="none" stroke="#9B8CFF" stroke-width="1.3" opacity=".9"/><g transform="rotate(60 20 20)"><ellipse cx="20" cy="20" rx="17" ry="7" fill="none" stroke="#FF8FA3" stroke-width="1.1" opacity=".75"/></g><circle cx="20" cy="20" r="5" fill="url(#nuc2)"/><circle r="2.4" fill="#7FB2FF"><animateMotion dur="4s" repeatCount="indefinite" path="M3,20 a17,7 0 1,0 34,0 a17,7 0 1,0 -34,0"/></circle><g transform="rotate(60 20 20)"><circle r="2" fill="#FFC1CC"><animateMotion dur="6s" begin="-2s" repeatCount="indefinite" path="M3,20 a17,7 0 1,0 34,0 a17,7 0 1,0 -34,0"/></circle></g></svg>'+
     '<h1>مَدار</h1><p class="slogan">لكل بنت مدارها ✨</p>'+
     '<p class="hint">اختاري كوكبج عشان تدخلين</p>'+
-    '<div class="planets">'+['student','parent','counselor','teacher'].map(r=>{const p=PL[r];return '<button class="pl '+p.c+'" data-gate="pick" data-r="'+r+'"><span class="orbx">'+orbitSVG(r,'back')+ball(r)+orbitSVG(r,'front')+'</span><b>'+p.n+'</b><small>'+p.d+'</small></button>';}).join('')+'</div>'+
+    '<div class="planets">'+['student','parent','teacher','counselor','vice','monitor'].map(r=>{const p=PL[r];return '<button class="pl '+p.c+'" data-gate="pick" data-r="'+r+'"><span class="orbx">'+orbitSVG(r,'back')+ball(r)+orbitSVG(r,'front')+'</span><b>'+p.n+'</b><small>'+p.d+'</small></button>';}).join('')+'</div>'+
     '<div class="row" style="justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px"><button class="gate-adm" data-gate="pick" data-r="admin">🏫 دخول الإدارة</button>'+
     (GATE.judge?'<span class="jpill">⚖️ وضع التحكيم</span>':'<button class="gate-judge" data-gate="judge-pop">⚖️ أنا حكم</button>')+'</div>'+
   '</div>';
@@ -1483,7 +1505,7 @@ function gateLogin(r){
   const acct = r==='student' ? '<label for="gAcc">الحساب</label><select id="gAcc">'+S.classes.map(c=>'<optgroup label="الشعبة '+c.name+'">'+all.filter(s=>s.cls===c.id).map(s=>'<option value="'+s.id+'"'+(s.id==='s1'?' selected':'')+'>'+s.name+' · '+c.name+'</option>').join('')+'</optgroup>').join('')+'</select>'
     : r==='parent' ? '<label for="gAcc">الحساب</label><select id="gAcc">'+FAMS.map(f=>'<option value="'+f.id+'">'+f.n+' ('+f.kids.map(id=>{const x=anyStu(id);return x?x.name+' '+clsName(x.cls):'';}).join(' + ')+')</option>').join('')+'</select>'
     : '';
-  const mail = {student:'sara.10-6@moe.edu.kw',parent:'parent.sara@gmail.com',counselor:'counselor@moe.edu.kw',teacher:'afnan.sami@moe.edu.kw',admin:'admin@moe.edu.kw'}[r];
+  const mail = {student:'sara.10-6@moe.edu.kw',parent:'parent.sara@gmail.com',counselor:'counselor@moe.edu.kw',teacher:'afnan.sami@moe.edu.kw',admin:'admin@moe.edu.kw',vice:'vice.affairs@moe.edu.kw',monitor:'haya.monitor@moe.edu.kw'}[r];
   g.innerHTML='<div class="gate-in" style="gap:14px">'+
     '<button class="back" data-gate="home">→ رجوع للكواكب</button>'+
     '<form class="login" id="gForm" autocomplete="off">'+
@@ -1704,6 +1726,176 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-act="tour-start
 
 try{if(matchMedia('(prefers-reduced-motion: reduce)').matches){const ps=()=>document.querySelectorAll('svg').forEach(v=>v.pauseAnimations&&v.pauseAnimations()); new MutationObserver(ps).observe(document.body,{childList:true,subtree:true}); setTimeout(ps,0);}}catch(e){}
 boot(); gateBoot();
+
+/* ============ الوكيلة (شؤون الطالبات) + المشرفة (المخالفات) ============ */
+// المشرفة ترصد المخالفة ← تنحفظ بملف الطالبة ← توصل للوكيلة + ولي الأمر + المرشدة بنفس اللحظة
+const VTYPES=[
+  {k:'late',i:'⏰',n:'تأخير صباحي',lv:'low'},
+  {k:'abs',i:'📅',n:'غياب بدون عذر',lv:'mid'},
+  {k:'skip',i:'🚪',n:'قطع حصة / خروج بدون إذن',lv:'high'},
+  {k:'phone',i:'📱',n:'استخدام الجوال',lv:'mid'},
+  {k:'uniform',i:'👗',n:'مخالفة الزي المدرسي',lv:'low'},
+  {k:'tools',i:'🎒',n:'عدم إحضار الكتب والأدوات',lv:'low'},
+  {k:'behav',i:'🗣️',n:'سلوك غير لائق',lv:'high'},
+  {k:'other',i:'✍️',n:'أخرى',lv:'mid'}
+];
+const VLV={low:['none','بسيطة'],mid:['warn','متوسطة'],high:['crit','تحتاج تدخّل']};
+const MON={name:'أ. هيا',classes:['10-4','10-5','10-6']};
+let VIOL=null, VV={grade:'10',track:'sci',sec:1,sid:null}, MV={cls:null,sid:null,type:'late'};
+function vtype(k){return VTYPES.find(t=>t.k===k)||VTYPES[VTYPES.length-1];}
+function violSeed(){
+  if(VIOL) return; try{const s=ssGet('madar.viol'); if(s){VIOL=JSON.parse(s); return;}}catch(e){}
+  const all=(S.ALL?S.ALL.students:S.students); const pick=i=>(all[i]||all[0]||{}).id;
+  VIOL=[
+    {id:'v1',sid:pick(2),k:'late',note:'وصلت 7:25',by:MON.name,t:'الأحد 7:30 ص',d:-6},
+    {id:'v2',sid:pick(2),k:'phone',note:'بحصة الرياضيات',by:MON.name,t:'الثلاثاء 10:10 ص',d:-4},
+    {id:'v3',sid:pick(2),k:'skip',note:'ما رجعت بعد الفسحة للحصة الرابعة',by:MON.name,t:'الخميس 11:05 ص',d:-2},
+    {id:'v4',sid:pick(5),k:'uniform',note:'',by:MON.name,t:'الاثنين 7:20 ص',d:-5},
+    {id:'v5',sid:pick(9),k:'late',note:'',by:MON.name,t:'الأربعاء 7:28 ص',d:-3}
+  ].filter(v=>v.sid);
+}
+function violSave(){try{ssSet('madar.viol',JSON.stringify(VIOL));}catch(e){}}
+function violOf(sid){violSeed(); return VIOL.filter(v=>v.sid===sid);}
+function violRow(v,showName){const t=vtype(v.k), st=anyStu(v.sid)||{name:v.sname||'—'};
+  return '<div class="vrow'+(v.fresh?' fresh':'')+'"><span class="vi">'+t.i+'</span><div style="flex:1;min-width:0"><b>'+(showName?esc(st.name)+' · ':'')+esc(v.k==='other'&&v.txt?v.txt:t.n)+'</b>'+
+    (v.note?'<div class="small muted">'+esc(v.note)+'</div>':'')+'<div class="small muted">'+esc(v.t)+' · رصدتها '+esc(v.by)+'</div></div><span class="pill '+VLV[t.lv][0]+'">'+VLV[t.lv][1]+'</span></div>';}
+function violPanel(sid,title){const l=violOf(sid);
+  return '<section class="panel"><h2>'+(title||'🧾 الملاحظات السلوكية')+'</h2>'+(l.length?l.slice().reverse().map(v=>violRow(v)).join(''):'<div class="empty">ما في ملاحظات سلوكية 🤍</div>')+
+    '<p class="small muted" style="margin:8px 0 0">ترصدها مشرفة الفصل، وتوصل بنفس اللحظة للوكيلة وولي الأمر والمرشدة.</p></section>';}
+
+// ===== بيانات تجريبية للحادي عشر والثاني عشر (أسماء وهمية) =====
+const UPN=['ريم','لولوة','حصة','دلال','شهد','جود','مريم','غلا','فاطمة','نوف','العنود','بشاير','روان','هيا','سارة','لطيفة','منيرة','دانة','أسيل','رزان'];
+const UPL=['العتيبي','المطيري','العنزي','الرشيدي','الشمري','الكندري','العجمي','الفضلي','الهاجري','السبيعي'];
+function upClasses(g,tr){return [1,2,3].map(n=>({id:g+'-'+tr+'-'+n,name:g+'/'+(tr==='sci'?'علمي ':'أدبي ')+n}));}
+function upStudents(cid){const out=[]; for(let i=0;i<8;i++){const h=hash01(cid+i), h2=hash01(cid+'x'+i);
+  out.push({id:'u_'+cid+'_'+i,name:UPN[Math.floor(h*UPN.length)]+' '+UPL[Math.floor(h2*UPL.length)],cls:cid,up:true,
+    avg:Math.round(62+hash01(cid+'a'+i)*36),abs:Math.round(hash01(cid+'b'+i)*7)});}
+  return out;}
+
+// ===== تقرير Gemini للوكيلة =====
+function viceAI(st){
+  const l=violOf(st.id); const hi=l.filter(v=>vtype(v.k).lv==='high').length;
+  let avg,abs,t={level:null,ev:[]},al=[],strong=[],need=[];
+  if(st.up){avg=st.avg;abs=st.abs;}
+  else{avg=avgTerm(st);abs=st.abs;try{t=talent(st.id);}catch(e){} try{al=alerts().filter(a=>a.sid===st.id);}catch(e){}
+    try{const s=studentSummary(st.id);strong=s.strong||[];need=s.need||[];}catch(e){}}
+  const stat = (avg>=90&&l.length===0)?['good','🌟 فائقة'] : (l.length>=3||hi>=1||(avg!=null&&avg<70)||al.length>=2)?['crit','⚠️ تحتاج متابعة'] : ['none','✓ مستقرة'];
+  const lines=[];
+  lines.push('<b>الأكاديمي:</b> '+(avg==null?'ما في درجات بعد.':'معدلها '+avg+(avg>=90?' — متفوقة.':avg>=80?' — جيد جدًا.':avg>=70?' — مقبول، تحتاج دفعة.':' — منخفض، تحتاج خطة دعم.'))+
+    (strong.length?' أتقنت: '+strong.slice(0,3).map(esc).join('، ')+'.':'')+(need.length?' تحتاج دعم في: '+need.slice(0,3).map(esc).join('، ')+'.':''));
+  lines.push('<b>الحضور:</b> '+(abs||0)+' أيام غياب'+(abs>=5?' — عالي، يحتاج تواصل مع الأهل.':'.'));
+  lines.push('<b>السلوك:</b> '+(l.length?l.length+' ملاحظة'+(hi?'، منها '+hi+' تحتاج تدخّل':'')+'. آخرها: '+esc(l[l.length-1].k==='other'&&l[l.length-1].txt?l[l.length-1].txt:vtype(l[l.length-1].k).n)+' ('+esc(l[l.length-1].t)+').':'ما عليها أي ملاحظة 🤍'));
+  if(t.level) lines.push('<b>الموهبة:</b> '+(t.level==='cand'?'مرشّحة لفحص الموهبة — كوكبتها مضوية من أكثر من جهة.':'عندها مؤشرات واعدة بالكوكبة.'));
+  if(al.length) lines.push('<b>تنبيهات المعلمات:</b> '+al.length+' تنبيه مبكر مفتوح.');
+  const rec = stat[0]==='crit' ? (l.length>=3?'جلسة قصيرة مع الطالبة اليوم، وتواصل مع ولي الأمر، وتحويل للمرشدة إذا تكرر.':'متابعة أسبوعية مع معلماتها وخطة دعم بالمواد الضعيفة.')
+    : stat[0]==='good' ? 'كلمة تشجيع، وترشيحها لنشاط أو مسابقة تناسب موهبتها.' : 'تكمل على نفس المسار، ومتابعة عادية.';
+  return '<section class="panel aiv"><div class="panel-h"><h2>🤖 تقرير Gemini عن '+esc(st.name)+'</h2><span class="spacer"></span><span class="pill '+stat[0]+'">'+stat[1]+'</span></div>'+
+    '<ul class="ailist">'+lines.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+    '<div class="airec">💡 <b>اقتراح للوكيلة:</b> '+rec+'</div>'+
+    '<p class="small muted" style="margin:8px 0 0">ملخص يكتبه Gemini من درجاتها وحضورها وملاحظات المشرفة والمعلمات. بيانات تجريبية.</p></section>';
+}
+function stuStat(st){const l=violOf(st.id); const avg=st.up?st.avg:avgTerm(st); const hi=l.some(v=>vtype(v.k).lv==='high');
+  if(avg>=90&&!l.length) return ['good','🌟 فائقة']; if(l.length>=3||hi||(avg!=null&&avg<70)) return ['crit','⚠️ متابعة']; return ['none','✓'];}
+
+// ===== صفحة الوكيلة =====
+function vVice(){
+  violSeed();
+  const g=VV.grade; let classes, list;
+  if(g==='10'){classes=S.classes; if(!classes.find(c=>c.id===VV.cls)) VV.cls=S.cls; list=(S.ALL?S.ALL.students:S.students).filter(s=>s.cls===VV.cls);}
+  else{classes=upClasses(g,VV.track); if(!classes.find(c=>c.id===VV.cls)) VV.cls=classes[0].id; list=upStudents(VV.cls);}
+  const today=VIOL.filter(v=>v.fresh||v.d===0); const allSt=(S.ALL?S.ALL.students:S.students);
+  const many=allSt.filter(s=>violOf(s.id).length>=3).length, top=allSt.filter(s=>avgTerm(s)>=90&&!violOf(s.id).length).length;
+  const seg=(k,v,lbl,cur)=>'<button data-vv="'+k+'" data-v="'+v+'" aria-pressed="'+(cur===v)+'">'+lbl+'</button>';
+  const sel=VV.sid&&(list.find(s=>s.id===VV.sid));
+  return '<div class="kpis"><div class="kpi"><b class="num">'+today.length+'</b><span>🧾 مخالفات اليوم</span></div>'+
+    '<div class="kpi"><b class="num">'+VIOL.length+'</b><span>📋 مخالفات الأسبوع</span></div>'+
+    '<div class="kpi"><b class="num">'+many+'</b><span>⚠️ عليها 3 أو أكثر</span></div>'+
+    '<div class="kpi"><b class="num">'+top+'</b><span>🌟 فائقات بدون مخالفات</span></div></div>'+
+  '<section class="panel"><div class="panel-h"><h2>📥 وصل من المشرفات</h2><span class="spacer"></span><span class="pill none">لحظي</span></div>'+
+    (VIOL.length?VIOL.slice().reverse().slice(0,5).map(v=>violRow(v,true)).join(''):'<div class="empty">ما وصل شي اليوم.</div>')+'</section>'+
+  '<section class="panel"><h2>🔎 جيبي ملف أي طالبة</h2>'+
+    '<div class="vfilter"><div class="seg" role="group" aria-label="الصف">'+seg('grade','10','العاشر',g)+seg('grade','11','الحادي عشر',g)+seg('grade','12','الثاني عشر',g)+'</div>'+
+    (g!=='10'?'<div class="seg" role="group" aria-label="المسار">'+seg('track','sci','🔬 علمي',VV.track)+seg('track','lit','📖 أدبي',VV.track)+'</div>':'')+
+    '<label class="field">الشعبة<select data-vvs="cls">'+classes.map(c=>'<option value="'+c.id+'"'+(c.id===VV.cls?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></label></div>'+
+    '<div class="vgrid">'+list.map(s=>{const st=stuStat(s), n=violOf(s.id).length;
+      return '<button class="vcard'+(sel&&sel.id===s.id?' on':'')+'" data-vv="sid" data-v="'+s.id+'"><b>'+esc(s.name)+'</b><span class="row" style="gap:6px;justify-content:center"><span class="pill '+st[0]+'">'+st[1]+'</span>'+(n?'<span class="pill warn">🧾 '+n+'</span>':'')+'</span></button>';}).join('')+'</div>'+
+    (g!=='10'?'<p class="small muted" style="margin:8px 0 0">الحادي عشر والثاني عشر بأسماء تجريبية للعرض.</p>':'')+'</section>'+
+  (sel? viceAI(sel)+'<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+violPanel(sel.id,'🧾 ملفها السلوكي')+'</div>'+
+     '<div class="c5" style="display:flex;flex-direction:column;gap:16px"><section class="panel"><h2>📌 إجراء سريع</h2><div class="row" style="gap:8px;flex-wrap:wrap">'+
+     '<button class="btn" data-vact="call">📞 تواصل مع ولي الأمر</button><button class="btn" data-vact="coun">🧭 تحويل للمرشدة</button><button class="btn" data-vact="praise">🌟 شهادة تميّز</button></div></section></div></div>'+
+     (sel.up?'':studentReport(sel.id)) : '<div class="empty" style="padding:22px">اختاري طالبة وبيطلع لج تقريرها كامل 👆</div>');
+}
+
+// ===== صفحة المشرفة =====
+function vMonitor(){
+  violSeed();
+  if(!MON.classes.includes(MV.cls)) MV.cls=MON.classes[0];
+  const list=(S.ALL?S.ALL.students:S.students).filter(s=>s.cls===MV.cls);
+  if(!list.find(s=>s.id===MV.sid)) MV.sid=null;
+  const mine=VIOL.filter(v=>v.by===MON.name);
+  return '<section class="panel"><div class="panel-h"><h2>👋 هلا '+MON.name+' — مشرفة '+MON.classes.map(clsName).join('، ')+'</h2></div>'+
+    '<div class="seg" role="group" aria-label="الصف">'+MON.classes.map(c=>'<button data-mv="cls" data-v="'+c+'" aria-pressed="'+(c===MV.cls)+'">'+clsName(c)+'</button>').join('')+'</div></section>'+
+  '<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
+   '<section class="panel"><h2>👥 طالبات '+clsName(MV.cls)+'</h2><div class="scroll"><table><thead><tr><th>الطالبة</th><th>المخالفات</th><th>آخر وحدة</th><th></th></tr></thead><tbody>'+
+    list.map(s=>{const l=violOf(s.id), last=l[l.length-1];
+      return '<tr'+(s.id===MV.sid?' class="sel"':'')+'><td><b>'+esc(s.name)+'</b></td><td>'+(l.length?'<span class="pill '+(l.length>=3?'crit':'warn')+'">'+l.length+'</span>':'<span class="muted">—</span>')+'</td>'+
+        '<td class="small">'+(last?vtype(last.k).i+' '+esc(last.k==='other'&&last.txt?last.txt:vtype(last.k).n):'<span class="muted">—</span>')+'</td>'+
+        '<td><button class="btn sm'+(s.id===MV.sid?' primary':'')+'" data-mv="sid" data-v="'+s.id+'">✍️ رصد</button></td></tr>';}).join('')+'</tbody></table></div></section>'+
+  '</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+
+   '<section class="panel" id="vform"><h2>✍️ رصد مخالفة</h2>'+(MV.sid?
+     '<p style="margin:0 0 10px"><b>'+esc(anyStu(MV.sid).name)+'</b> · '+clsName(MV.cls)+'</p>'+
+     '<div class="vtypes">'+VTYPES.map(t=>'<button data-mv="type" data-v="'+t.k+'" aria-pressed="'+(MV.type===t.k)+'"><span>'+t.i+'</span>'+t.n+'</button>').join('')+'</div>'+
+     (MV.type==='other'?'<label class="field" style="margin-top:10px">اكتبي المخالفة<input id="vTxt" type="text" placeholder="مثال: ما سلّمت النموذج الموقّع"></label>':'')+
+     '<label class="field" style="margin-top:10px">ملاحظة (اختياري)<input id="vNote" type="text" placeholder="مثال: وصلت 7:25"></label>'+
+     '<button class="btn primary" style="width:100%;margin-top:12px;padding:10px" data-mv="save">رصد وإرسال</button>'+
+     '<p class="small muted" style="margin:8px 0 0">توصل بنفس اللحظة: 🏫 الوكيلة · 👨‍👩‍👧 ولي الأمر · 🧭 المرشدة</p>'
+     :'<div class="empty">اختاري طالبة من الجدول عشان ترصدين 👈</div>')+'</section>'+
+   '<section class="panel"><h2>🕘 آخر ما رصدتيه</h2>'+(mine.length?mine.slice().reverse().slice(0,5).map(v=>violRow(v,true)).join(''):'<div class="empty">ما رصدتي شي بعد.</div>')+'</section>'+
+  '</div></div>';
+}
+
+// ===== ربط الأدوار الجديدة =====
+(function(){const _r=render; render=function(){
+  if(!S.me.roles.includes('vice')) S.me.roles.push('vice','monitor');
+  if(V.role==='vice'||V.role==='monitor'){
+    if(V.role==='vice'&&VV.grade==='10'&&VV.sid&&!String(VV.sid).startsWith('u_')) V.sid=VV.sid;
+    ensureScope();
+    $('#appName').textContent=CONFIG.appName;
+    $('#roles').innerHTML=S.me.roles.map(r=>'<button data-act="role" data-v="'+r+'" aria-pressed="'+(V.role===r)+'">'+ROLE[r]+'</button>').join('');
+    $('#main').innerHTML=V.role==='vice'?vVice():vMonitor(); try{hbar();}catch(e){} return;}
+  _r();};})();
+// ولي الأمر والمرشدة يشوفون الملاحظات السلوكية
+(function(){const _p=vParent,_c=vCounselor;
+  vParent=function(){return _p()+violPanel(V.sid,'🧾 ملاحظات المدرسة السلوكية');};
+  vCounselor=function(){const h=_c(); if(V.view==='one'||(typeof T!=='undefined'&&T.on)) return h+violPanel(V.sid);
+    violSeed(); const ids=new Set(S.students.map(s=>s.id)); const l=VIOL.filter(v=>ids.has(v.sid));
+    return h+'<section class="panel"><h2>🧾 ملاحظات المشرفة على الشعبة</h2>'+(l.length?l.slice().reverse().slice(0,6).map(v=>violRow(v,true)).join(''):'<div class="empty">ما في ملاحظات.</div>')+'</section>';};
+})();
+
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-vv],[data-mv],[data-vact]'); if(!a) return; e.preventDefault();
+  if(a.dataset.vact){const st=anyStu(VV.sid)||{name:''}; toast({call:'انرسل لولي الأمر رسالة بـ Gmail ✓',coun:'انحوّلت للمرشدة ✓',praise:'شهادة تميّز جاهزة للطباعة 🌟'}[a.dataset.vact]); return;}
+  if(a.dataset.vv){const k=a.dataset.vv,v=a.dataset.v;
+    if(k==='grade'){VV.grade=v;VV.cls=null;VV.sid=null;} else if(k==='track'){VV.track=v;VV.cls=null;VV.sid=null;}
+    else if(k==='sid'){VV.sid=v; if(!String(v).startsWith('u_')) V.sid=v;}
+    render(); if(k==='sid'){const x=document.querySelector('.aiv'); x&&x.scrollIntoView({behavior:'smooth',block:'start'});} return;}
+  const k=a.dataset.mv,v=a.dataset.v;
+  if(k==='cls'){MV.cls=v;MV.sid=null;}
+  else if(k==='sid'){MV.sid=v;MV.type='late'; render(); const f=$('#vform'); f&&f.scrollIntoView({behavior:'smooth',block:'start'}); return;}
+  else if(k==='type'){const n=$('#vNote'); MV.note=n?n.value:''; MV.type=v;}
+  else if(k==='save'){
+    const txt=($('#vTxt')||{}).value||'', note=($('#vNote')||{}).value||'';
+    if(MV.type==='other'&&!txt.trim()){toast('اكتبي المخالفة أول');return;}
+    const d=new Date(); const t='اليوم '+d.toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'});
+    VIOL.forEach(x=>x.fresh=false);
+    VIOL.push({id:'v'+Date.now(),sid:MV.sid,k:MV.type,txt:txt.trim(),note:note.trim(),by:MON.name,t,d:0,fresh:true}); violSave();
+    toast('انرصدت ✓ ووصلت للوكيلة وولي الأمر والمرشدة'); MV.sid=null;
+  }
+  render();
+  if(k==='type'){const n=$('#vNote'); if(n&&MV.note) n.value=MV.note;}
+},true);
+document.addEventListener('change',e=>{const s=e.target.closest('[data-vvs]'); if(!s) return; e.stopPropagation(); VV.cls=s.value; VV.sid=null; render();},true);
+
 </script>
 
 </body></html>
