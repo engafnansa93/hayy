@@ -1,4 +1,17 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.vseg{display:inline-flex;flex-wrap:wrap;gap:6px}.vseg button{all:unset;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
+.vseg button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.vrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}.vrow:last-of-type{border-bottom:0}.vrow .vi{font-size:1.3rem;line-height:1.2}
+.vrow.fresh{background:var(--accent-soft);border-radius:10px;padding-inline:8px}
+.vfilter{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.vcard{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;padding:12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.vcard:hover,.vcard.on{border-color:var(--accent)}
+.vtypes{display:grid;grid-template-columns:1fr;gap:6px}.vtypes button{all:unset;cursor:pointer;display:flex;gap:6px;align-items:center;font-size:.85rem;padding:8px 10px;border:1px solid var(--line);border-radius:12px}
+.vtypes button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.ailist{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px;line-height:1.7}
+.airec{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)}
+tr.sel td{background:var(--accent-soft)}
+</style></head><body>
 <title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -781,7 +794,7 @@ function render(){
   $('#roles').innerHTML=roles.map(r=>'<button data-act="role" data-v="'+r+'" aria-pressed="'+(V.role===r)+'">'+ROLE[r]+'</button>').join('');
   $('#tourBtn').hidden=S.mode==='live';
   const m=$('#main');
-  m.innerHTML=({teacher:vTeacher,student:vStudent,parent:vParent,admin:vAdmin,counselor:vCounselor}[V.role])();
+  m.innerHTML=({teacher:vTeacher,student:vStudent,parent:vParent,admin:vAdmin,counselor:vCounselor,vice:()=>vVice(),monitor:()=>vMonitor()}[V.role])();
   if(T.on) renderTour();
 }
 function intro(){
@@ -1375,6 +1388,156 @@ function boot(){
   size(); addEventListener('resize',size); requestAnimationFrame(frame);
 })();
 boot();
+
+/* ============ الوكيلة (شؤون الطالبات) + المشرفة (المخالفات) ============ */
+// المشرفة ترصد المخالفة ← تنحفظ بملف الطالبة (Sheets) ← توصل للوكيلة + ولي الأمر + المرشدة
+const VTYPES=[
+  {k:'uniform',i:'👕',n:'عدم الالتزام باللبس المدرسي (قميص – مريول – حجاب – حذاء – جاكيت)',lv:'low'},
+  {k:'makeup',i:'💄',n:'وضع مكياج أثناء الدوام',lv:'low'},
+  {k:'hijab',i:'🚫',n:'نزع الحجاب داخل المدرسة',lv:'mid'},
+  {k:'hair',i:'🎀',n:'عدم ربط الشعر بطريقة مناسبة',lv:'low'},
+  {k:'assembly',i:'⏰',n:'الغياب عن طابور الصباح',lv:'mid'},
+  {k:'line',i:'🚶‍♀️',n:'الوقوف في طابور صف غير الفصل المخصص للطالبة',lv:'low'},
+  {k:'exit',i:'🎟️',n:'الخروج من الفصل بدون كرت خروج',lv:'high'},
+  {k:'other',i:'✍️',n:'أخرى',lv:'mid'}
+];
+ROLE.vice='الوكيلة'; ROLE.monitor='المشرفة';
+const VLV={low:['none','بسيطة'],mid:['warn','متوسطة'],high:['crit','تحتاج تدخّل']};
+let VV={grade:'10',track:'sci',cls:null,sid:null,ai:{}}, MV={cls:null,sid:null,type:'uniform'};
+function vtype(k){return VTYPES.find(t=>t.k===k)||VTYPES[VTYPES.length-1];}
+function vClsName(id){const c=(S.classes||[]).find(c=>c.id===id); return c?c.name:String(id).replace('-','/');}
+function vAvg(st){const v=Object.values(st.term||{}).filter(x=>x!=null&&!isNaN(x)); return v.length?Math.round(v.reduce((a,b)=>a+Number(b),0)/v.length):null;}
+function monName(){return S.mode==='live'?(S.me.name||'المشرفة'):'أ. هيا';}
+function violAll(){
+  if(!S.violations){
+    const ss=S.students||[], pick=i=>(ss[i]||ss[0]||{}).id;
+    S.violations=S.mode==='live'?[]:[
+      {id:'v1',sid:pick(2),k:'assembly',note:'',by:'أ. هيا',at:'الأحد 7:30 ص'},
+      {id:'v2',sid:pick(2),k:'makeup',note:'',by:'أ. هيا',at:'الثلاثاء 10:10 ص'},
+      {id:'v3',sid:pick(2),k:'exit',note:'ما رجعت بعد الفسحة للحصة الرابعة',by:'أ. هيا',at:'الخميس 11:05 ص'},
+      {id:'v4',sid:pick(5),k:'uniform',note:'',by:'أ. هيا',at:'الاثنين 7:20 ص'}
+    ].filter(v=>v.sid);
+  }
+  return S.violations;
+}
+function violOf(sid){return violAll().filter(v=>v.sid===sid);}
+function vName(v){return v.k==='other'&&v.txt?v.txt:vtype(v.k).n;}
+function violRow(v,showName){const t=vtype(v.k), st=stu(v.sid)||{name:'—'};
+  return '<div class="vrow'+(v.fresh?' fresh':'')+'"><span class="vi">'+t.i+'</span><div style="flex:1;min-width:0"><b>'+(showName?esc(st.name)+' · ':'')+esc(vName(v))+'</b>'+
+    (v.note?'<div class="small muted">'+esc(v.note)+'</div>':'')+'<div class="small muted">'+esc(v.at||'')+' · رصدتها '+esc(v.by||'')+'</div></div><span class="pill '+VLV[t.lv][0]+'">'+VLV[t.lv][1]+'</span></div>';}
+function violPanel(sid,title){const l=violOf(sid);
+  return '<section class="panel"><h2>'+(title||'🧾 الملاحظات السلوكية')+'</h2>'+(l.length?l.slice().reverse().map(v=>violRow(v)).join(''):'<div class="empty">ما في ملاحظات سلوكية 🤍</div>')+
+    '<p class="small muted" style="margin:8px 0 0">ترصدها مشرفة الفصل، وتوصل بنفس اللحظة للوكيلة وولي الأمر والمرشدة.</p></section>';}
+
+// الحادي عشر والثاني عشر: أسماء تجريبية للعرض
+const UPN=['ريم','لولوة','حصة','دلال','شهد','جود','مريم','غلا','فاطمة','نوف','العنود','بشاير','روان','هيا','سارة','لطيفة','منيرة','أسيل','رزان','جنى'];
+const UPL=['العتيبي','المطيري','العنزي','الرشيدي','الشمري','الكندري','العجمي','الفضلي','الهاجري','السبيعي'];
+function upClasses(g,tr){return [1,2,3].map(n=>({id:g+'-'+tr+'-'+n,name:g+'/'+(tr==='sci'?'علمي ':'أدبي ')+n}));}
+function upStudents(cid){const out=[]; for(let i=0;i<8;i++){out.push({id:'u_'+cid+'_'+i,name:UPN[Math.floor(hash01(cid+i)*UPN.length)]+' '+UPL[Math.floor(hash01(cid+'x'+i)*UPL.length)],cls:cid,up:true,
+  avg:Math.round(62+hash01(cid+'a'+i)*36),abs:Math.round(hash01(cid+'b'+i)*7)});} return out;}
+function stuStat(st){const l=violOf(st.id), avg=st.up?st.avg:vAvg(st), hi=l.some(v=>vtype(v.k).lv==='high');
+  if(avg>=90&&!l.length) return ['good','🌟 فائقة']; if(l.length>=3||hi||(avg!=null&&avg<70)) return ['crit','⚠️ متابعة']; return ['none','✓'];}
+
+function viceFacts(st){
+  const l=violOf(st.id), hi=l.filter(v=>vtype(v.k).lv==='high').length;
+  let avg=st.up?st.avg:vAvg(st), abs=st.abs||0, t={level:null}, al=[], strong=[], need=[];
+  if(!st.up){try{t=talent(st.id);}catch(e){} try{al=alerts().filter(a=>a.sid===st.id);}catch(e){} try{const s=studentSummary(st.id);strong=s.strong||[];need=s.need||[];}catch(e){}}
+  return {l,hi,avg,abs,t,al,strong,need};
+}
+function viceAI(st){
+  const f=viceFacts(st), l=f.l, last=l[l.length-1];
+  const stat=stuStat(st), lines=[];
+  lines.push('<b>الأكاديمي:</b> '+(f.avg==null?'ما في درجات بعد.':'معدلها '+f.avg+(f.avg>=90?' — متفوقة.':f.avg>=80?' — جيد جدًا.':f.avg>=70?' — مقبول، تحتاج دفعة.':' — منخفض، تحتاج خطة دعم.'))+
+    (f.strong.length?' أتقنت: '+f.strong.slice(0,3).map(esc).join('، ')+'.':'')+(f.need.length?' تحتاج دعم في: '+f.need.slice(0,3).map(esc).join('، ')+'.':''));
+  lines.push('<b>الحضور:</b> '+f.abs+' أيام غياب'+(f.abs>=5?' — عالي، يحتاج تواصل مع الأهل.':'.'));
+  lines.push('<b>السلوك:</b> '+(l.length?l.length+' ملاحظة'+(f.hi?'، منها '+f.hi+' تحتاج تدخّل':'')+'. آخرها: '+esc(vName(last))+' ('+esc(last.at||'')+').':'ما عليها أي ملاحظة 🤍'));
+  if(f.t.level) lines.push('<b>الموهبة:</b> '+(f.t.level==='cand'?'مرشّحة لفحص الموهبة — مؤشراتها من أكثر من جهة.':'عندها مؤشرات واعدة.'));
+  if(f.al.length) lines.push('<b>تنبيهات المعلمات:</b> '+f.al.length+' تنبيه مبكر مفتوح.');
+  const rec=stat[0]==='crit'?(l.length>=3?'جلسة قصيرة مع الطالبة اليوم، وتواصل مع ولي الأمر، وتحويل للمرشدة إذا تكرر.':'متابعة أسبوعية مع معلماتها وخطة دعم بالمواد الضعيفة.')
+    :stat[0]==='good'?'كلمة تشجيع، وترشيحها لنشاط أو مسابقة تناسب تميّزها.':'تكمل على نفس المسار، ومتابعة عادية.';
+  const g=VV.ai[st.id];
+  return '<section class="panel aiv"><div class="panel-h"><h2>🤖 تقرير عن '+esc(st.name)+'</h2><span class="spacer"></span><span class="pill '+stat[0]+'">'+stat[1]+'</span></div>'+
+    '<ul class="ailist">'+lines.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+    '<div class="airec">💡 <b>اقتراح للوكيلة:</b> '+rec+'</div>'+
+    (g?'<div class="airec" style="margin-top:8px">✨ <b>Gemini:</b> '+esc(g)+'</div>':'<button class="btn" style="margin-top:10px" data-vact="gem">✨ اكتب لي ملخص بـ Gemini</button>')+
+    '<p class="small muted" style="margin:8px 0 0">من درجاتها وحضورها وملاحظات المشرفة والمعلمات.</p></section>';
+}
+
+function vVice(){
+  const g=VV.grade; let classes,list;
+  if(g==='10'){classes=S.classes||[]; if(!classes.find(c=>c.id===VV.cls)) VV.cls=classes[0]&&classes[0].id; list=S.students.filter(s=>s.cls===VV.cls);}
+  else{classes=upClasses(g,VV.track); if(!classes.find(c=>c.id===VV.cls)) VV.cls=classes[0].id; list=upStudents(VV.cls);}
+  const all=violAll(), many=S.students.filter(s=>violOf(s.id).length>=3).length, top=S.students.filter(s=>vAvg(s)>=90&&!violOf(s.id).length).length;
+  const seg=(k,v,lbl,cur)=>'<button data-vv="'+k+'" data-v="'+v+'" aria-pressed="'+(cur===v)+'">'+lbl+'</button>';
+  const sel=VV.sid&&list.find(s=>s.id===VV.sid);
+  return '<div class="kpis"><div class="kpi"><b>'+all.filter(v=>v.fresh).length+'</b><span>🧾 وصلت الحين</span></div>'+
+    '<div class="kpi"><b>'+all.length+'</b><span>📋 كل الملاحظات</span></div>'+
+    '<div class="kpi"><b>'+many+'</b><span>⚠️ عليها 3 أو أكثر</span></div>'+
+    '<div class="kpi"><b>'+top+'</b><span>🌟 فائقات بدون مخالفات</span></div></div>'+
+  '<section class="panel"><div class="panel-h"><h2>📥 وصل من المشرفات</h2></div>'+(all.length?all.slice().reverse().slice(0,5).map(v=>violRow(v,true)).join(''):'<div class="empty">ما وصل شي.</div>')+'</section>'+
+  '<section class="panel"><h2>🔎 جيبي ملف أي طالبة</h2><div class="vfilter"><div class="vseg">'+seg('grade','10','العاشر',g)+seg('grade','11','الحادي عشر',g)+seg('grade','12','الثاني عشر',g)+'</div>'+
+    (g!=='10'?'<div class="vseg">'+seg('track','sci','🔬 علمي',VV.track)+seg('track','lit','📖 أدبي',VV.track)+'</div>':'')+
+    '<label class="field">الشعبة<select data-vvs="cls">'+classes.map(c=>'<option value="'+c.id+'"'+(c.id===VV.cls?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></label></div>'+
+    '<div class="vgrid">'+list.map(s=>{const st=stuStat(s), n=violOf(s.id).length; return '<button class="vcard'+(sel&&sel.id===s.id?' on':'')+'" data-vv="sid" data-v="'+s.id+'"><b>'+esc(s.name)+'</b><span class="row" style="gap:6px;justify-content:center"><span class="pill '+st[0]+'">'+st[1]+'</span>'+(n?'<span class="pill warn">🧾 '+n+'</span>':'')+'</span></button>';}).join('')+'</div>'+
+    (g!=='10'?'<p class="small muted" style="margin:8px 0 0">الحادي عشر والثاني عشر بأسماء تجريبية للعرض.</p>':'')+'</section>'+
+  (sel?viceAI(sel)+violPanel(sel.id,'🧾 ملفها السلوكي'):'<div class="empty" style="padding:22px">اختاري طالبة وبيطلع لج تقريرها كامل 👆</div>');
+}
+function vMonitor(){
+  const mine=(S.classes||[]).slice(0,3).map(c=>c.id);
+  if(!mine.includes(MV.cls)) MV.cls=mine[0];
+  const list=S.students.filter(s=>s.cls===MV.cls); if(!list.find(s=>s.id===MV.sid)) MV.sid=null;
+  const recent=violAll().filter(v=>v.by===monName());
+  return '<section class="panel"><div class="panel-h"><h2>👋 هلا '+esc(monName())+' — مشرفة '+mine.map(vClsName).join('، ')+'</h2></div>'+
+    '<p class="small muted" style="margin:6px 0 10px">نفس قائمة المخالفات المعتمدة بالمدرسة، ومبني على «برنامج نبيهة» للتنبيهات اللي سوته أ. أفنان قبل (Google Forms + Sheets) — بس الحين توصل المخالفة لحظيًا للوكيلة والأهل والمرشدة.</p>'+'<div class="vseg">'+mine.map(c=>'<button data-mv="cls" data-v="'+c+'" aria-pressed="'+(c===MV.cls)+'">'+vClsName(c)+'</button>').join('')+'</div></section>'+
+  '<div class="cols"><div class="c7"><section class="panel"><h2>👥 طالبات '+vClsName(MV.cls)+'</h2><div class="scroll"><table><thead><tr><th>الطالبة</th><th>المخالفات</th><th>آخر وحدة</th><th></th></tr></thead><tbody>'+
+    list.map(s=>{const l=violOf(s.id), last=l[l.length-1];
+      return '<tr'+(s.id===MV.sid?' class="sel"':'')+'><td><b>'+esc(s.name)+'</b></td><td>'+(l.length?'<span class="pill '+(l.length>=3?'crit':'warn')+'">'+l.length+'</span>':'<span class="muted">—</span>')+'</td>'+
+      '<td class="small">'+(last?vtype(last.k).i+' '+esc(vName(last)):'<span class="muted">—</span>')+'</td><td><button class="btn sm'+(s.id===MV.sid?' primary':'')+'" data-mv="sid" data-v="'+s.id+'">✍️ رصد</button></td></tr>';}).join('')+
+    '</tbody></table></div></section></div><div class="c5"><section class="panel" id="vform"><h2>✍️ رصد مخالفة</h2>'+(MV.sid?
+     '<p style="margin:0 0 10px"><b>'+esc(stu(MV.sid).name)+'</b> · '+vClsName(MV.cls)+'</p>'+
+     '<div class="vtypes">'+VTYPES.map(t=>'<button data-mv="type" data-v="'+t.k+'" aria-pressed="'+(MV.type===t.k)+'"><span>'+t.i+'</span>'+t.n+'</button>').join('')+'</div>'+
+     (MV.type==='other'?'<label class="field" style="margin-top:10px">اكتبي المخالفة<input id="vTxt" type="text"></label>':'')+
+     '<label class="field" style="margin-top:10px">ملاحظة (اختياري)<input id="vNote" type="text" placeholder="مثال: بدون جاكيت"></label>'+
+     '<button class="btn primary" style="width:100%;margin-top:12px;padding:10px" data-mv="save">رصد وإرسال</button>'+
+     '<p class="small muted" style="margin:8px 0 0">توصل بنفس اللحظة: 🏫 الوكيلة · 👨‍👩‍👧 ولي الأمر · 🧭 المرشدة</p>'
+     :'<div class="empty">اختاري طالبة من الجدول عشان ترصدين</div>')+'</section>'+
+   '<section class="panel" style="margin-top:16px"><h2>🕘 آخر ما رصدتيه</h2>'+(recent.length?recent.slice().reverse().slice(0,5).map(v=>violRow(v,true)).join(''):'<div class="empty">ما رصدتي شي بعد.</div>')+'</section></div></div>';
+}
+(function(){const _r=render; render=function(){
+  if(S.mode!=='live'&&!S.me.roles.includes('vice')) S.me.roles.push('vice','monitor');
+  _r();};
+})();
+(function(){const _p=vParent,_c=vCounselor;
+  vParent=function(){return _p()+violPanel(V.sid,'🧾 ملاحظات المدرسة السلوكية');};
+  vCounselor=function(){const h=_c(); const ids=new Set(S.students.map(s=>s.id)); const l=violAll().filter(v=>ids.has(v.sid));
+    return h+'<section class="panel"><h2>🧾 ملاحظات المشرفة</h2>'+(l.length?l.slice().reverse().slice(0,6).map(v=>violRow(v,true)).join(''):'<div class="empty">ما في ملاحظات.</div>')+'</section>';};
+})();
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-vv],[data-mv],[data-vact]'); if(!a) return; e.preventDefault(); e.stopPropagation();
+  if(a.dataset.vact==='gem'){const st=stu(VV.sid)||upStudents(VV.cls).find(s=>s.id===VV.sid); if(!st) return; const f=viceFacts(st);
+    const p={name:st.name,avg:f.avg,abs:f.abs,viol:f.l.map(vName),strong:f.strong,need:f.need,talent:f.t.level||'',alerts:f.al.length};
+    if(S.mode==='live'&&S.gemini==='live'){a.disabled=true;a.textContent='Gemini يكتب…'; call('askGemini','vice',p).then(r=>{VV.ai[st.id]=(r&&r.text)||String(r||''); render();}).catch(err=>{toast('تعذّر: '+(err&&err.message||err)); render();});}
+    else{VV.ai[st.id]=st.name+' '+(f.avg>=90?'متفوقة دراسيًا':'مستواها '+(f.avg||'—'))+(f.l.length?'، وعليها '+f.l.length+' ملاحظات سلوكية تحتاج متابعة هادية مع البيت':'، وسلوكها ممتاز')+'. (وضع العرض: بحساب الوزارة يكتبه Gemini الحقيقي)'; render();}
+    return;}
+  if(a.dataset.vv){const k=a.dataset.vv,v=a.dataset.v;
+    if(k==='grade'){VV.grade=v;VV.cls=null;VV.sid=null;} else if(k==='track'){VV.track=v;VV.cls=null;VV.sid=null;} else if(k==='sid'){VV.sid=v;}
+    render(); if(k==='sid'){const x=document.querySelector('.aiv'); x&&x.scrollIntoView({behavior:'smooth',block:'start'});} return;}
+  const k=a.dataset.mv,v=a.dataset.v;
+  if(k==='cls'){MV.cls=v;MV.sid=null;}
+  else if(k==='sid'){MV.sid=v;MV.type='uniform'; render(); const f=$('#vform'); f&&f.scrollIntoView({behavior:'smooth',block:'start'}); return;}
+  else if(k==='type'){const n=$('#vNote'); MV.note=n?n.value:''; MV.type=v;}
+  else if(k==='save'){
+    const txt=(($('#vTxt')||{}).value||'').trim(), note=(($('#vNote')||{}).value||'').trim();
+    if(MV.type==='other'&&!txt){toast('اكتبي المخالفة أول');return;}
+    const d=new Date(), rec={id:'v'+Date.now(),sid:MV.sid,k:MV.type,txt,note,by:monName(),at:'اليوم '+d.toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})};
+    violAll().forEach(x=>x.fresh=false); S.violations.push(Object.assign({fresh:true},rec));
+    live('saveViolation',rec); toast('انرصدت ✓ ووصلت للوكيلة وولي الأمر والمرشدة'); MV.sid=null;
+  }
+  render(); if(k==='type'){const n=$('#vNote'); if(n&&MV.note) n.value=MV.note;}
+},true);
+document.addEventListener('change',e=>{const s=e.target.closest('[data-vvs]'); if(!s) return; e.stopPropagation(); VV.cls=s.value; VV.sid=null; render();},true);
+
+try{ if(typeof S!=='undefined'&&S&&S.me) render(); }catch(e){}
 </script>
 
 </body></html>

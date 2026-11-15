@@ -15,6 +15,7 @@ var TZ = 'Asia/Kuwait';
 var SHEETS = {
   Settings:    ['key', 'value'],
   Users:       ['email', 'name', 'roles', 'subjects', 'children', 'studentId'],
+  Violations:  ['id', 'sid', 'k', 'txt', 'note', 'by', 'at'],
   Students:    ['id', 'name', 'cls', 'email', 'parentEmail', 'parent', 'abs', 'hw', 'goal', 'term', 'interests', 'digest'],
   Subjects:    ['id', 'name', 'teacher', 'teacherEmail', 'skills'],
   Upcoming:    ['cls', 'subj', 'title', 'when', 'date', 'skill', 'eventId'],
@@ -99,7 +100,7 @@ function setup() {
 
   var email = Session.getEffectiveUser().getEmail().toLowerCase();
   if (!rows_('Users').some(function (u) { return String(u.email).toLowerCase() === email; })) {
-    append_('Users', { email: email, name: 'أ. أفنان سامي', roles: 'teacher,admin,counselor', subjects: 'chem:10-6' });
+    append_('Users', { email: email, name: 'أ. أفنان سامي', roles: 'teacher,admin,counselor,vice,monitor', subjects: 'chem:10-6' });
   }
   if (!rows_('Subjects').length) {
     append_('Subjects', { id: 'chem', name: 'الكيمياء', teacher: 'أ. أفنان سامي', teacherEmail: email, skills: SKILLS_CHEM.join('|') });
@@ -149,10 +150,10 @@ function buildState_(user, set) {
   var roleMap = { head: 'admin', principal: 'admin' };
   var roles = String(user.roles || '').split(',').map(function (r) { r = r.trim(); return roleMap[r] || r; })
     .filter(function (r, i, a) { return r && a.indexOf(r) === i; });
-  var order = ['teacher', 'student', 'parent', 'admin', 'counselor'];
+  var order = ['teacher', 'student', 'parent', 'admin', 'counselor', 'vice', 'monitor'];
   roles.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
   if (!roles.length) roles = ['student'];
-  var staff = roles.some(function (r) { return ['teacher', 'admin', 'counselor'].indexOf(r) >= 0; });
+  var staff = roles.some(function (r) { return ['teacher', 'admin', 'counselor', 'vice', 'monitor'].indexOf(r) >= 0; });
   var self = String(user.studentId || '');
   var children = String(user.children || '').split(',').map(function (s) { return s.trim(); }).filter(String);
   var allowed = staff ? null : [self].concat(children).filter(String);
@@ -209,6 +210,9 @@ function buildState_(user, set) {
     audit: staff ? rows_('Audit').slice(-60).reverse().map(function (a) { return { t: a.t, who: a.who, what: a.what }; }) : [],
     requests: staff ? rows_('Requests').slice(-30).reverse().map(function (r) { return { sid: String(r.sid), text: r.text, t: r.t }; }) : [],
     reviews: reviews,
+    violations: rows_('Violations').filter(function (v) { return ok(v.sid); }).map(function (v) {
+      return { id: String(v.id), sid: String(v.sid), k: v.k, txt: v.txt || '', note: v.note || '', by: v.by || '', at: v.at instanceof Date ? Utilities.formatDate(v.at, TZ, 'dd/MM HH:mm') : String(v.at || '') };
+    }),
     nominations: rows_('Nominations').filter(function (n) { return ok(n.sid); }).map(function (n) {
       return { id: String(n.id), sid: String(n.sid), role: n.role, by: n.by, domain: n.domain, traits: json_(n.traits, []), note: n.note || '', link: n.link || '', status: n.status || 'new',
         at: n.at instanceof Date ? n.at.toISOString() : String(n.at) };
@@ -436,6 +440,13 @@ function askGemini(kind, p) {
     prompt = (p.who === 'student' ? 'اكتب لطالبة في الصف العاشر' : 'اكتب لولي أمر طالبة في الصف العاشر') +
       ' خطة شهر قصيرة (4 أسابيع، سطر لكل أسبوع) لتنمية تميّزها في: ' + (p.domains || []).join(' و') + '.\nالمؤشرات: ' + (p.evidence || []).join('؛ ') +
       '\nأنشطة عملية متاحة بالمدرسة أو البيت بالكويت. لا تقل إنها «موهوبة» ولا تعد بنتيجة؛ قل «مؤشرات تميّز». ' + (p.who === 'student' ? 'خاطبها بصيغة المؤنث. ' : '') + STYLE;
+    return gemini_(prompt);
+  }
+  if (kind === 'vice') {
+    prompt = 'أنت مساعد وكيلة شؤون الطالبات في ثانوية بنات بالكويت. اكتبي ملخصًا في 3 جمل عن الطالبة «' + p.name + '» يساعد الوكيلة قبل ما تقابلها: ' +
+      'معدلها ' + p.avg + '، غيابها ' + p.abs + ' أيام، ملاحظاتها السلوكية: ' + ((p.viol || []).join('، ') || 'لا شيء') +
+      '، تتقن: ' + ((p.strong || []).join('، ') || '—') + '، تحتاج دعم في: ' + ((p.need || []).join('، ') || '—') + (p.talent ? '، عندها مؤشرات تميّز' : '') +
+      '. اختمي بإجراء واحد مناسب. بدون أحكام قاسية. ' + STYLE;
     return gemini_(prompt);
   }
   if (kind === 'counsel') {
@@ -768,4 +779,40 @@ function clearDemo() {
   var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === me; })[0];
   if (u && u.studentId === 'd1') update_('Users', u._row, { roles: 'teacher,admin,counselor', studentId: '', children: '' });
   Logger.log('🧹 انمسحت البيانات التجريبية.');
+}
+
+/* ===================== المخالفات (المشرفة ← الوكيلة + ولي الأمر + المرشدة) ===================== */
+function saveViolation(v) {
+  var u = who_();
+  if (!/monitor|vice|admin|teacher/.test(String(u.roles))) throw new Error('الرصد للمشرفة والمعلمات فقط.');
+  v = v || {};
+  return lock_(function () {
+    var rec = { id: v.id || ('v' + Date.now()), sid: String(v.sid), k: v.k, txt: v.txt || '', note: v.note || '', by: u.name || u.email, at: now_() };
+    append_('Violations', rec);
+    audit_(u.email, 'مخالفة ' + rec.k + ' للطالبة ' + rec.sid);
+    var st = rows_('Students').filter(function (s) { return String(s.id) === rec.sid; })[0] || {};
+    var what = (rec.k === 'other' && rec.txt) ? rec.txt : rec.k;
+    var body = 'مَدار — ملاحظة سلوكية جديدة\nالطالبة: ' + (st.name || rec.sid) + '\nالملاحظة: ' + what + (rec.note ? ' (' + rec.note + ')' : '') + '\nرصدتها: ' + rec.by + ' · ' + rec.at;
+    var staff = rows_('Users').filter(function (x) { return /vice|counselor/.test(String(x.roles)); }).map(function (x) { return x.email; }).filter(String);
+    if (staff.length) safeMail_(staff.join(','), 'مَدار: ملاحظة سلوكية — ' + (st.name || ''), body);
+    if (st.parentEmail) safeMail_(String(st.parentEmail), 'مَدار: ملاحظة من المدرسة عن ' + (st.name || 'بنتكم'), body);
+    return { ok: true };
+  });
+}
+/* تشغيل مرة وحدة: يضيف دور الوكيلة والمشرفة لحسابج، وجدول المخالفات، وملاحظات تجريبية */
+function enableViceMonitor() {
+  var email = Session.getEffectiveUser().getEmail().toLowerCase();
+  var u = rows_('Users').filter(function (x) { return String(x.email).toLowerCase() === email; })[0];
+  if (u) {
+    var roles = String(u.roles || '').split(',').map(function (r) { return r.trim(); }).filter(String);
+    ['vice', 'monitor'].forEach(function (r) { if (roles.indexOf(r) < 0) roles.push(r); });
+    sheet_('Users').getRange(u._row, SHEETS.Users.indexOf('roles') + 1).setValue(roles.join(','));
+  }
+  sheet_('Violations');
+  if (!rows_('Violations').length) {
+    var ss = rows_('Students').slice(0, 6);
+    var demo = [[2, 'assembly', ''], [2, 'makeup', ''], [2, 'exit', 'ما رجعت بعد الفسحة للحصة الرابعة'], [5, 'uniform', 'بدون جاكيت']];
+    demo.forEach(function (d, i) { var s = ss[d[0]] || ss[0]; if (s) append_('Violations', { id: 'vd' + i, sid: String(s.id), k: d[1], note: d[2], by: 'أ. هيا (تجريبي)', at: now_() }); });
+  }
+  Logger.log('✅ صار عندج دور الوكيلة والمشرفة، وجدول المخالفات جاهز.');
 }
