@@ -1730,28 +1730,28 @@ boot(); gateBoot();
 /* ============ الوكيلة (شؤون الطالبات) + المشرفة (المخالفات) ============ */
 // المشرفة ترصد المخالفة ← تنحفظ بملف الطالبة ← توصل للوكيلة + ولي الأمر + المرشدة بنفس اللحظة
 const VTYPES=[
-  {k:'late',i:'⏰',n:'تأخير صباحي',lv:'low'},
-  {k:'abs',i:'📅',n:'غياب بدون عذر',lv:'mid'},
-  {k:'skip',i:'🚪',n:'قطع حصة / خروج بدون إذن',lv:'high'},
-  {k:'phone',i:'📱',n:'استخدام الجوال',lv:'mid'},
-  {k:'uniform',i:'👗',n:'مخالفة الزي المدرسي',lv:'low'},
-  {k:'tools',i:'🎒',n:'عدم إحضار الكتب والأدوات',lv:'low'},
-  {k:'behav',i:'🗣️',n:'سلوك غير لائق',lv:'high'},
+  {k:'uniform',i:'👕',n:'عدم الالتزام باللبس المدرسي (قميص – مريول – حجاب – حذاء – جاكيت)',lv:'low'},
+  {k:'makeup',i:'💄',n:'وضع مكياج أثناء الدوام',lv:'low'},
+  {k:'hijab',i:'🚫',n:'نزع الحجاب داخل المدرسة',lv:'mid'},
+  {k:'hair',i:'🎀',n:'عدم ربط الشعر بطريقة مناسبة',lv:'low'},
+  {k:'assembly',i:'⏰',n:'الغياب عن طابور الصباح',lv:'mid'},
+  {k:'line',i:'🚶‍♀️',n:'الوقوف في طابور صف غير الفصل المخصص للطالبة',lv:'low'},
+  {k:'exit',i:'🎟️',n:'الخروج من الفصل بدون كرت خروج',lv:'high'},
   {k:'other',i:'✍️',n:'أخرى',lv:'mid'}
 ];
 const VLV={low:['none','بسيطة'],mid:['warn','متوسطة'],high:['crit','تحتاج تدخّل']};
 const MON={name:'أ. هيا',classes:['10-4','10-5','10-6']};
-let VIOL=null, VV={grade:'10',track:'sci',sec:1,sid:null}, MV={cls:null,sid:null,type:'late'};
+let VIOL=null, VV={grade:'10',track:'sci',sec:1,sid:null}, MV={cls:null,sid:null,type:'uniform'};
 function vtype(k){return VTYPES.find(t=>t.k===k)||VTYPES[VTYPES.length-1];}
 function violSeed(){
   if(VIOL) return; try{const s=ssGet('madar.viol'); if(s){VIOL=JSON.parse(s); return;}}catch(e){}
   const all=(S.ALL?S.ALL.students:S.students); const pick=i=>(all[i]||all[0]||{}).id;
   VIOL=[
-    {id:'v1',sid:pick(2),k:'late',note:'وصلت 7:25',by:MON.name,t:'الأحد 7:30 ص',d:-6},
-    {id:'v2',sid:pick(2),k:'phone',note:'بحصة الرياضيات',by:MON.name,t:'الثلاثاء 10:10 ص',d:-4},
-    {id:'v3',sid:pick(2),k:'skip',note:'ما رجعت بعد الفسحة للحصة الرابعة',by:MON.name,t:'الخميس 11:05 ص',d:-2},
+    {id:'v1',sid:pick(2),k:'assembly',note:'',by:MON.name,t:'الأحد 7:30 ص',d:-6},
+    {id:'v2',sid:pick(2),k:'makeup',note:'',by:MON.name,t:'الثلاثاء 10:10 ص',d:-4},
+    {id:'v3',sid:pick(2),k:'exit',note:'ما رجعت بعد الفسحة للحصة الرابعة',by:MON.name,t:'الخميس 11:05 ص',d:-2},
     {id:'v4',sid:pick(5),k:'uniform',note:'',by:MON.name,t:'الاثنين 7:20 ص',d:-5},
-    {id:'v5',sid:pick(9),k:'late',note:'',by:MON.name,t:'الأربعاء 7:28 ص',d:-3}
+    {id:'v5',sid:pick(9),k:'hair',note:'',by:MON.name,t:'الأربعاء 7:28 ص',d:-3}
   ].filter(v=>v.sid);
 }
 function violSave(){try{ssSet('madar.viol',JSON.stringify(VIOL));}catch(e){}}
@@ -1834,7 +1834,7 @@ function vMonitor(){
   if(!list.find(s=>s.id===MV.sid)) MV.sid=null;
   const mine=VIOL.filter(v=>v.by===MON.name);
   return '<section class="panel"><div class="panel-h"><h2>👋 هلا '+MON.name+' — مشرفة '+MON.classes.map(clsName).join('، ')+'</h2></div>'+
-    '<div class="seg" role="group" aria-label="الصف">'+MON.classes.map(c=>'<button data-mv="cls" data-v="'+c+'" aria-pressed="'+(c===MV.cls)+'">'+clsName(c)+'</button>').join('')+'</div></section>'+
+    '<p class="small muted" style="margin:6px 0 10px">نفس قائمة المخالفات المعتمدة بالمدرسة، ومبني على «برنامج نبيهة» للتنبيهات اللي سوته أ. أفنان قبل (Google Forms + Sheets) — بس الحين توصل المخالفة لحظيًا للوكيلة والأهل والمرشدة.</p>'+'<div class="seg" role="group" aria-label="الصف">'+MON.classes.map(c=>'<button data-mv="cls" data-v="'+c+'" aria-pressed="'+(c===MV.cls)+'">'+clsName(c)+'</button>').join('')+'</div></section>'+
   '<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
    '<section class="panel"><h2>👥 طالبات '+clsName(MV.cls)+'</h2><div class="scroll"><table><thead><tr><th>الطالبة</th><th>المخالفات</th><th>آخر وحدة</th><th></th></tr></thead><tbody>'+
     list.map(s=>{const l=violOf(s.id), last=l[l.length-1];
@@ -1846,7 +1846,7 @@ function vMonitor(){
      '<p style="margin:0 0 10px"><b>'+esc(anyStu(MV.sid).name)+'</b> · '+clsName(MV.cls)+'</p>'+
      '<div class="vtypes">'+VTYPES.map(t=>'<button data-mv="type" data-v="'+t.k+'" aria-pressed="'+(MV.type===t.k)+'"><span>'+t.i+'</span>'+t.n+'</button>').join('')+'</div>'+
      (MV.type==='other'?'<label class="field" style="margin-top:10px">اكتبي المخالفة<input id="vTxt" type="text" placeholder="مثال: ما سلّمت النموذج الموقّع"></label>':'')+
-     '<label class="field" style="margin-top:10px">ملاحظة (اختياري)<input id="vNote" type="text" placeholder="مثال: وصلت 7:25"></label>'+
+     '<label class="field" style="margin-top:10px">ملاحظة (اختياري)<input id="vNote" type="text" placeholder="مثال: بدون جاكيت"></label>'+
      '<button class="btn primary" style="width:100%;margin-top:12px;padding:10px" data-mv="save">رصد وإرسال</button>'+
      '<p class="small muted" style="margin:8px 0 0">توصل بنفس اللحظة: 🏫 الوكيلة · 👨‍👩‍👧 ولي الأمر · 🧭 المرشدة</p>'
      :'<div class="empty">اختاري طالبة من الجدول عشان ترصدين 👈</div>')+'</section>'+
@@ -1881,7 +1881,7 @@ document.addEventListener('click',e=>{
     render(); if(k==='sid'){const x=document.querySelector('.aiv'); x&&x.scrollIntoView({behavior:'smooth',block:'start'});} return;}
   const k=a.dataset.mv,v=a.dataset.v;
   if(k==='cls'){MV.cls=v;MV.sid=null;}
-  else if(k==='sid'){MV.sid=v;MV.type='late'; render(); const f=$('#vform'); f&&f.scrollIntoView({behavior:'smooth',block:'start'}); return;}
+  else if(k==='sid'){MV.sid=v;MV.type='uniform'; render(); const f=$('#vform'); f&&f.scrollIntoView({behavior:'smooth',block:'start'}); return;}
   else if(k==='type'){const n=$('#vNote'); MV.note=n?n.value:''; MV.type=v;}
   else if(k==='save'){
     const txt=($('#vTxt')||{}).value||'', note=($('#vNote')||{}).value||'';
