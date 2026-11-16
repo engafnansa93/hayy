@@ -389,6 +389,7 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .mcard p{color:var(--muted);margin:0 0 14px;line-height:1.7}
 .mcard ul{margin:0 0 16px;padding:0 18px 0 0;color:var(--muted);line-height:1.8}
 .mcard.wide{max-width:600px}
+.byafnan{display:block;width:150px;max-width:40vw;margin:22px auto 6px;opacity:.9}
 .mvid{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0a0e26;margin:4px 0 14px;border:1px solid rgba(255,255,255,.12)}
 .mvid iframe,.mvid video{position:absolute;inset:0;width:100%;height:100%;border:0}
 .mvid .soon{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.95rem;text-align:center;padding:12px}
@@ -1504,6 +1505,7 @@ function gateHome(){
     '<div class="planets">'+['student','parent','teacher','counselor','vice','monitor'].map(r=>{const p=PL[r];return '<button class="pl '+p.c+'" data-gate="pick" data-r="'+r+'"><span class="orbx">'+orbitSVG(r,'back')+ball(r)+orbitSVG(r,'front')+'</span><b>'+p.n+'</b><small>'+p.d+'</small></button>';}).join('')+'</div>'+
     '<div class="row" style="justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px"><button class="gate-adm" data-gate="pick" data-r="admin">🏫 دخول الإدارة</button>'+
     (GATE.judge?'<span class="jpill">⚖️ وضع التحكيم</span>':'<button class="gate-judge" data-gate="judge-pop">⚖️ أنا حكم</button>')+'<button class="gate-judge" data-gate="judge-pop">🎬 الفيديو والعرض</button></div>'+
+    '<img class="byafnan" src="by-afnan-white.png" alt="by Afnan">'+
   '</div>';
   g.scrollTop=0;
 }
