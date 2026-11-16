@@ -388,6 +388,14 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .mcard h3{font-family:var(--f-display);margin:0 0 8px;font-size:1.25rem}
 .mcard p{color:var(--muted);margin:0 0 14px;line-height:1.7}
 .mcard ul{margin:0 0 16px;padding:0 18px 0 0;color:var(--muted);line-height:1.8}
+.mcard.wide{max-width:600px}
+.mvid{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0a0e26;margin:4px 0 14px;border:1px solid rgba(255,255,255,.12)}
+.mvid iframe,.mvid video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mvid .soon{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.95rem;text-align:center;padding:12px}
+.mvid .soon b{font-size:2rem}
+.mlinks{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.mlinks a,.mlinks span{flex:1;min-width:140px;text-align:center;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
+.mlinks span{opacity:.55;border-style:dashed}
 .mcard .row2{display:flex;gap:8px;flex-wrap:wrap}
 .mcard .row2 .btn{flex:1;padding:11px;border-radius:12px;font-weight:600}
 .rlist{display:grid;gap:8px;margin-bottom:12px}
@@ -1495,7 +1503,7 @@ function gateHome(){
     '<p class="hint">اختاري كوكبج عشان تدخلين</p>'+
     '<div class="planets">'+['student','parent','teacher','counselor','vice','monitor'].map(r=>{const p=PL[r];return '<button class="pl '+p.c+'" data-gate="pick" data-r="'+r+'"><span class="orbx">'+orbitSVG(r,'back')+ball(r)+orbitSVG(r,'front')+'</span><b>'+p.n+'</b><small>'+p.d+'</small></button>';}).join('')+'</div>'+
     '<div class="row" style="justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px"><button class="gate-adm" data-gate="pick" data-r="admin">🏫 دخول الإدارة</button>'+
-    (GATE.judge?'<span class="jpill">⚖️ وضع التحكيم</span>':'<button class="gate-judge" data-gate="judge-pop">⚖️ أنا حكم</button>')+'</div>'+
+    (GATE.judge?'<span class="jpill">⚖️ وضع التحكيم</span>':'<button class="gate-judge" data-gate="judge-pop">⚖️ أنا حكم</button>')+'<button class="gate-judge" data-gate="judge-pop">🎬 الفيديو والعرض</button></div>'+
   '</div>';
   g.scrollTop=0;
 }
@@ -1535,10 +1543,18 @@ function hbar(){
     ? '<span class="jpill">⚖️ حكم</span><button class="btn primary" data-gate="switch">🔄 غيّر الشخصية</button><button class="btn" data-act="tour-start">🧭 جولة</button><button class="btn" data-gate="home">🏠 الرئيسية</button>'
     : '<span class="who">'+p.i+' '+p.n+(who?(V.role==='parent'?' · ولي أمر '+who:' · '+who):'')+'</span><button class="btn" data-gate="out">خروج</button>');
 }
+// ضعي هني رابط الفيديو (يوتيوب) ورابط العرض والملف لما يجهزون
+const MEDIA={youtube:'', deck:'', file:''};
+function mediaHTML(){
+  const v=MEDIA.youtube?'<iframe src="https://www.youtube-nocookie.com/embed/'+MEDIA.youtube+'?rel=0" title="فيديو مَدار" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
+    :'<div class="soon"><b>🎬</b>فيديو مَدار (دقيقة ونص)<br>يوصل قريبًا</div>';
+  const l=(u,t)=>u?'<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>':'<span>'+t+'</span>';
+  return '<div class="mvid">'+v+'</div><div class="mlinks">'+l(MEDIA.deck,'📊 العرض التقديمي')+l(MEDIA.file,'📁 ملف المشروع')+'</div>';
+}
 function judgePop(){
   const m=$('#modal'); m.hidden=false;
-  m.innerHTML='<div class="mcard" role="dialog" aria-label="أهلًا بالحكام"><h3>⚖️ أهلًا بالحكام 🤍</h3>'+
-    '<p>مَدار منصة وحدة تربط الطالبة والمعلمة وولي الأمر والمرشدة. هذي نسخة عرض ببيانات تجريبية (شعبة 10/6).</p>'+
+  m.innerHTML='<div class="mcard wide" role="dialog" aria-label="أهلًا بالحكام"><h3>⚖️ أهلًا بالحكام 🤍</h3>'+mediaHTML()+
+    '<p>شوفوا الفيديو أول، بعدين جربوا بنفسكم. مَدار منصة وحدة تربط الطالبة وأهلها ومعلماتها والوكيلة والمشرفة. هذي نسخة عرض ببيانات تجريبية (شعبة 10/6).</p>'+
     '<ul><li>اختاروا أي كوكب وادخلوا.</li><li>بأي وقت: <b>🔄 غيّر الشخصية</b> أو <b>🏠 الرئيسية</b> من فوق.</li><li><b>🧭 الجولة</b> تمشيكم بقصة سارة وقمر بـ 3 دقايق.</li></ul>'+
     '<div class="row2"><button class="btn primary" data-gate="judge-on">ابدأوا</button><button class="btn" data-gate="judge-tour">🧭 خذوني بجولة</button></div>'+
     '<div style="margin-top:10px;text-align:center"><button class="gate-adm" data-gate="judge-no">أنا مو حكم</button></div></div>';
