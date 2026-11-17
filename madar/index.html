@@ -465,13 +465,34 @@ const AST = {draft:{t:'مسودة',c:'none'}, approved:{t:'معتمدة',c:'warn
 const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const TERM = {islamic:'التربية الإسلامية',arabic:'اللغة العربية',eng:'اللغة الإنجليزية',math:'الرياضيات',chem:'الكيمياء',phys:'الفيزياء',bio:'الأحياء',social:'التاريخ',it:'تقنية المعلومات'};
 const DIMS = {research:'بحثي علمي',practical:'عملي تطبيقي',creative:'إبداعي فني',social:'اجتماعي',leading:'قيادي ريادي',organizing:'تنظيمي'};
-const PATHS = [
-  {id:'health', name:'العلوم الصحية', desc:'مسار علمي يتجه للطب والصيدلة والتمريض والعلوم الطبية.', subj:['chem','bio'], dims:['research','social'], explore:'زيارة مختبر المدرسة ومقابلة قصيرة مع صيدلانية أو طبيبة.'},
-  {id:'eng', name:'الهندسة والتقنية', desc:'مسار علمي يتجه للهندسة والحاسوب والتقنية.', subj:['math','phys','it'], dims:['practical','research'], explore:'مشروع صغير في البرمجة أو تصميم دائرة كهربائية.'},
-  {id:'biz', name:'الأعمال والإدارة', desc:'يتجه للإدارة والاقتصاد وريادة الأعمال.', subj:['math','eng'], dims:['leading','organizing'], explore:'المشاركة في تنظيم فعالية مدرسية بميزانية بسيطة.'},
-  {id:'hum', name:'العلوم الإنسانية والإعلام', desc:'يتجه للإعلام والتربية والقانون والعلوم الاجتماعية.', subj:['arabic','social'], dims:['social','creative'], explore:'كتابة مقال للإذاعة المدرسية أو إجراء مقابلة.'},
-  {id:'art', name:'التصميم والفنون التطبيقية', desc:'يتجه للتصميم الجرافيكي والعمارة الداخلية والإنتاج الرقمي.', subj:['math','arabic'], dims:['creative','practical'], explore:'تصميم ملصق لنشاط المدرسة بأداة رقمية.'}
+// كل مجال: تخصصات جامعية (مع الميول اللي تناسبها) + فرص عمل. نوع المدرسة يحدد الكتالوج.
+const PATHS_REG = [
+  {id:'sci', name:'القسم العلمي', desc:'ثانوية عادية: علوم ورياضيات، ويفتح كليات الطب والهندسة والعلوم.', subj:['chem','bio','math','phys'], dims:['research','practical'], explore:'زيارة مختبر المدرسة ومقابلة قصيرة مع خريجة كلية علمية.',
+   uni:[{n:'الطب',d:['research','social'],j:'طبيبة · أخصائية'},{n:'الصيدلة',d:['research','organizing'],j:'صيدلانية · رقابة دوائية'},{n:'الهندسة الكيميائية',d:['research','practical'],j:'مهندسة بالنفط والصناعة'},{n:'علوم الحاسوب',d:['practical','research'],j:'مبرمجة · محللة بيانات'},{n:'العمارة',d:['creative','practical'],j:'مهندسة معمارية · مصممة داخلية'},{n:'العلوم الطبية المساعدة',d:['social','practical'],j:'أخصائية مختبر · علاج طبيعي'},{n:'الرياضيات والإحصاء',d:['organizing','research'],j:'إحصائية · محللة مالية'}]},
+  {id:'lit', name:'القسم الأدبي', desc:'ثانوية عادية: لغات وعلوم إنسانية، ويفتح كليات الحقوق والآداب والتربية.', subj:['arabic','social','eng','islamic'], dims:['social','creative'], explore:'كتابة مقال للإذاعة المدرسية أو إجراء مقابلة.',
+   uni:[{n:'الحقوق',d:['leading','social'],j:'محامية · مستشارة قانونية'},{n:'الإعلام',d:['creative','social'],j:'صحفية · صانعة محتوى'},{n:'علم النفس',d:['social','research'],j:'أخصائية نفسية · موارد بشرية'},{n:'اللغات والترجمة',d:['creative','organizing'],j:'مترجمة · دبلوماسية'},{n:'التربية',d:['social','leading'],j:'معلمة · مرشدة أكاديمية'},{n:'إدارة الأعمال',d:['leading','organizing'],j:'إدارية · رائدة أعمال'},{n:'التصميم الجرافيكي',d:['creative','practical'],j:'مصممة · مخرجة فنية'}]}
 ];
+const PATHS_MAS = [
+  {id:'m-math', name:'مسار الرياضيات', desc:'رياضيات متقدمة وتفكير كمّي.', subj:['math','phys'], dims:['research','organizing'], explore:'مسابقة رياضيات أو مشروع إحصائي صغير.',
+   uni:[{n:'الرياضيات والإحصاء',d:['research','organizing'],j:'إحصائية · محللة بيانات'},{n:'الاقتصاد',d:['organizing','leading'],j:'محللة اقتصادية'},{n:'الهندسة',d:['practical','research'],j:'مهندسة'},{n:'العلوم الاكتوارية',d:['organizing','research'],j:'خبيرة تأمين'}]},
+  {id:'m-sci', name:'مسار العلوم', desc:'كيمياء وأحياء وفيزياء، ويتجه للطب والعلوم والهندسة.', subj:['chem','bio','phys'], dims:['research','practical'], explore:'زيارة مختبر ومقابلة مع طبيبة أو صيدلانية.',
+   uni:[{n:'الطب',d:['research','social'],j:'طبيبة · أخصائية'},{n:'الصيدلة',d:['research','organizing'],j:'صيدلانية'},{n:'الهندسة الكيميائية',d:['research','practical'],j:'مهندسة بالنفط والصناعة'},{n:'العلوم الطبية المساعدة',d:['social','practical'],j:'أخصائية مختبر · علاج طبيعي'},{n:'العمارة',d:['creative','practical'],j:'مهندسة معمارية'}]},
+  {id:'m-lang', name:'مسار اللغات', desc:'العربية والإنجليزية ولغات ثانية.', subj:['arabic','eng'], dims:['creative','social'], explore:'ترجمة نص قصير أو تقديم فقرة بالإذاعة.',
+   uni:[{n:'اللغات والترجمة',d:['creative','organizing'],j:'مترجمة · دبلوماسية'},{n:'اللغة العربية وآدابها',d:['creative','social'],j:'كاتبة · محررة'},{n:'الإعلام',d:['creative','social'],j:'صحفية · مذيعة'}]},
+  {id:'m-biz', name:'المسار التجاري', desc:'محاسبة وإدارة واقتصاد.', subj:['math','eng'], dims:['leading','organizing'], explore:'تنظيم فعالية مدرسية بميزانية بسيطة.',
+   uni:[{n:'إدارة الأعمال',d:['leading','organizing'],j:'إدارية · رائدة أعمال'},{n:'المحاسبة',d:['organizing','research'],j:'محاسبة · مدققة'},{n:'التمويل والمصارف',d:['organizing','leading'],j:'موظفة بنك · محللة مالية'},{n:'التسويق',d:['creative','social'],j:'مسوّقة رقمية'}]},
+  {id:'m-ind', name:'المسار الصناعي', desc:'تطبيقات تقنية ومهنية عملية.', subj:['phys','math'], dims:['practical','organizing'], explore:'تصميم دائرة كهربائية أو نموذج بالطباعة ثلاثية الأبعاد.',
+   uni:[{n:'الهندسة الميكانيكية والكهربائية',d:['practical','research'],j:'مهندسة صيانة وتشغيل'},{n:'التكنولوجيا الصناعية',d:['practical','organizing'],j:'فنية بالقطاع النفطي'},{n:'التصميم الصناعي',d:['creative','practical'],j:'مصممة منتجات'}]},
+  {id:'m-ai', name:'مسار التكنولوجيا والذكاء الاصطناعي', desc:'برمجة وبيانات وذكاء اصطناعي.', subj:['it','math'], dims:['practical','research'], explore:'مشروع صغير بالبرمجة أو تطبيق ذكاء اصطناعي.',
+   uni:[{n:'علوم الحاسوب',d:['practical','research'],j:'مبرمجة · مطوّرة تطبيقات'},{n:'الذكاء الاصطناعي وعلم البيانات',d:['research','organizing'],j:'عالمة بيانات'},{n:'الأمن السيبراني',d:['practical','organizing'],j:'أخصائية أمن معلومات'},{n:'تصميم الألعاب والوسائط',d:['creative','practical'],j:'مصممة تجربة مستخدم'}]},
+  {id:'m-law', name:'مسار القانون', desc:'أسس قانونية ومهارات الحوار والكتابة.', subj:['arabic','social','islamic'], dims:['leading','social'], explore:'مناظرة مدرسية أو زيارة محكمة.',
+   uni:[{n:'الحقوق',d:['leading','social'],j:'محامية · مستشارة قانونية'},{n:'الشريعة',d:['social','research'],j:'قاضية · باحثة شرعية'},{n:'العلوم السياسية',d:['leading','research'],j:'دبلوماسية · باحثة'}]},
+  {id:'m-soc', name:'مسار العلوم الاجتماعية', desc:'تاريخ وجغرافيا وعلم نفس واجتماع.', subj:['social','arabic'], dims:['social','creative'], explore:'بحث ميداني صغير أو مقابلة مع أخصائية.',
+   uni:[{n:'علم النفس',d:['social','research'],j:'أخصائية نفسية · موارد بشرية'},{n:'التربية',d:['social','leading'],j:'معلمة · مرشدة أكاديمية'},{n:'علم الاجتماع والخدمة الاجتماعية',d:['social','organizing'],j:'أخصائية اجتماعية'},{n:'الإعلام',d:['creative','social'],j:'صحفية · صانعة محتوى'}]}
+];
+const SCHOOL = {reg:'ثانوية عادية (علمي / أدبي)', mas:'ثانوية مسارات (8 مسارات)'};
+function curPaths(){return V.school==='mas'?PATHS_MAS:PATHS_REG;}
+function pickUni(p,st){const iv=st.interests||{}; return p.uni.map((u,k)=>({u,sc:u.d.reduce((a,d)=>a+(iv[d]||0),0)-k*0.01})).sort((a,b)=>b.sc-a.sc).slice(0,3).map(x=>x.u);}
 const ROLE = {teacher:'المعلمة', student:'الطالبة', parent:'ولي الأمر', admin:'الإدارة', counselor:'بوصلة', vice:'الوكيلة', monitor:'المشرفة'};
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
 
@@ -1207,8 +1228,8 @@ function rankPaths(st){
   if(!st.interests) return {missing:['نتيجة اختبار الميول']};
   const missingSub=Object.keys(TERM).filter(k=>st.term[k]==null);
   const top=Object.keys(st.interests).sort((a,b)=>st.interests[b]-st.interests[a]).filter(k=>st.interests[k]>=4).slice(0,2);
-  const r=PATHS.map(p=>{const iSup=p.dims.filter(d=>top.includes(d)); const aSup=p.subj.filter(s=>(st.term[s]||0)>=80); const gaps=p.subj.filter(s=>st.term[s]!=null&&st.term[s]<75);
-    let cat=iSup.length&&aSup.length?['good','متوافق مع الميول والأداء']:iSup.length?['warn','ميل واضح ويحتاج دعمًا أكاديميًا']:aSup.length?['none','أداء قوي والميل غير ظاهر']:null;
+  const r=curPaths().map(p=>{const iSup=p.dims.filter(d=>top.includes(d)); const aSup=p.subj.filter(s=>(st.term[s]||0)>=80); const gaps=p.subj.filter(s=>st.term[s]!=null&&st.term[s]<75);
+    let cat=iSup.length&&aSup.length?['good','متوافق مع الميول والأداء']:iSup.length?['warn','ميل واضح ويحتاج دعمًا أكاديميًا']:aSup.length?['none','أداء قوي والميل غير ظاهر']:(V.school==='mas'?null:['none','خيار متاح']);
     return {p,iSup,aSup,gaps,cat,score:iSup.length+aSup.length};}).filter(x=>x.cat).sort((a,b)=>b.score-a.score||b.iSup.length-a.iSup.length);
   return {top,list:r.slice(0,3),missingSub};
 }
@@ -1222,6 +1243,7 @@ function vCounselor(){
       '<div><dt>المواد الداعمة</dt><dd>'+(x.aSup.map(s=>TERM[s]+' ('+st.term[s]+')').join('، ')||'—')+'</dd></div>'+
       '<div><dt>تحتاج تطويرًا</dt><dd>'+(x.gaps.map(s=>TERM[s]+' ('+st.term[s]+')').join('، ')||'لا فجوات ظاهرة')+'</dd></div>'+
 
+      '<div><dt>🎓 تخصصات جامعية تناسبها</dt><dd>'+pickUni(x.p,st).map(u=>'<b>'+u.n+'</b><br><span class="muted">💼 '+u.j+'</span>').join('<br>')+'</dd></div>'+
       '<div><dt>نشاط استكشافي</dt><dd>'+x.p.explore+'</dd></div></dl>'+
       (rv.goal===x.p.id?'<span class="pill acc">الهدف الذي حددته الطالبة</span>':'<button class="btn sm" data-act="goal" data-v="'+x.p.id+'">الطالبة اختارت هذا المسار</button>')+'</article>').join('')+'</div>';
   return '<section class="panel"><div class="panel-h"><h2>🧭 الميول والمسارات</h2><span class="pill none">آخر السنة · بيانات تجريبية</span><span class="spacer"></span>'+pickStudent('')+'</div>'+
@@ -1232,7 +1254,7 @@ function vCounselor(){
    '<section class="panel"><h2>ملخص لبوصلة</h2>'+(cs?'<div class="ai-out">'+aiTag(cs.live)+'<p>'+esc(cs.text)+'</p></div>':'<button class="btn" data-act="csum" '+(st.interests?'':'disabled')+'>✦ لخّصي الحالة بـ Gemini</button>')+'</section>'+
   '</div><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
    talentRadar(true)+
-   '<section class="panel" id="paths"><h2>🎯 أنسب ثلاثة مسارات</h2>'+cards+
+   '<section class="panel" id="paths"><div class="panel-h"><h2>🎯 '+(V.school==='mas'?'أنسب ثلاثة مسارات':'علمي ولا أدبي؟')+'</h2><span class="spacer"></span>'+Object.keys(SCHOOL).map(k=>'<button class="btn sm'+((V.school||'reg')===k?' primary':'')+'" data-act="school" data-v="'+k+'">'+(k==='reg'?'ثانوية عادية':'ثانوية مسارات')+'</button>').join(' ')+'</div><p class="small muted">'+SCHOOL[V.school||'reg']+': الاقتراح + التخصصات الجامعية + فرص العمل. والقرار للطالبة وأهلها.</p>'+cards+
    '<details class="small"><summary>طريقة الترشيح</summary><div class="method"><ol><li>ميول داعمة: أعلى بُعدين (4 من 5 فأكثر).</li><li>مادة داعمة: 80 فأكثر.</li><li>الترتيب بعدد عوامل الدعم، بلا نسب.</li><li>ميل مع درجات منخفضة: خطة دعم، لا استبعاد.</li></ol></div></details></section>'+
    '<section class="panel"><h2>مراجعة بوصلة</h2><textarea id="rvNote" placeholder="ملاحظات بوصلة…">'+esc(rv.note||'')+'</textarea>'+
    '<div class="row"><button class="btn primary" data-act="review">حفظ المراجعة</button>'+(rv.at?'<span class="small muted">رُوجعت '+esc(rv.at)+'</span>':'')+'</div></section>'+
@@ -1401,8 +1423,9 @@ document.addEventListener('click',async e=>{
   else if(a==='refer'){referStudent(b.dataset.sid); render();}
   else if(a==='talg'){const sid=b.dataset.sid, t=talent(sid); const k='tal-'+sid+'-'+V.role; V[k]={live:false,text:'⏳ لحظة…'}; render();
     gem('talent',{name:stu(sid).name, domains:t.dom.map(d=>TAL[d].n), evidence:t.ev.map(e=>e.t), who:V.role}).then(r=>{V[k]=r; render();});}
+  else if(a==='school'){V.school=b.dataset.v;render();}
   else if(a==='review'){S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{note:$('#rvNote').value,at:nowStr()}); live('saveReview',V.sid,S.reviews[V.sid]); render(); toast('حُفظت المراجعة');}
-  else if(a==='goal'){const p=PATHS.find(x=>x.id===b.dataset.v); const st=stu(V.sid); S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{goal:p.id}); st.goal='الاستعداد لمسار '+p.name;
+  else if(a==='goal'){const p=curPaths().find(x=>x.id===b.dataset.v); const st=stu(V.sid); S.reviews[V.sid]=Object.assign(S.reviews[V.sid]||{},{goal:p.id}); st.goal='الاستعداد لـ'+p.name;
     const gaps=rankPaths(st).list.find(x=>x.p.id===p.id).gaps; const today=new Date().getDay();
     [{title:'نشاط استكشافي: '+p.explore,min:45,why:'تجربة عملية تساعدج تتأكدين من اختيار مسار '+p.name+'.'}].concat(gaps.map(g=>({title:'حصة تقوية قصيرة في '+TERM[g],min:25,why:'مادة أساسية لمسار '+p.name+' ودرجتج فيها تحتاج رفع.'}))).forEach((t,i)=>{const nt={id:'t'+Date.now()+i,sid:st.id,subj:p.subj[0],title:t.title,why:t.why,min:t.min,day:(today+2+i)%7,time:'17:00',kind:'path',status:'todo',result:null,src:'بوصلة — هدف المسار'};S.plans.push(nt);live('addTask',nt);});
     live('saveReview',V.sid,S.reviews[V.sid]); render(); toast('حدّثت بوصلة خطة '+st.name+' لهدف المسار');}
