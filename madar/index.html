@@ -479,6 +479,18 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .seg button{all:unset;cursor:pointer;padding:7px 14px;border-radius:999px;font-size:.88rem;color:var(--muted);white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#1A1433;font-weight:600}
 .login optgroup{color:var(--muted)}
+.n18-body.wide{max-width:1100px}
+.n18-thead{display:flex;gap:10px;align-items:baseline;justify-content:center;margin-top:6px}.n18-thead b{font-size:1.15rem}
+.n18-full{width:100%}
+.n18-tone{display:grid;grid-template-columns:1fr 1.2fr;gap:16px;align-items:start}
+.n18-tone-s{display:flex;flex-direction:column;gap:12px}
+.mc-add input[type=checkbox]{width:auto}.mc-add .row label{display:inline-flex;gap:6px;align-items:center}
+.n18-cal .mc-c{min-height:46px}.n18-addf{background:transparent;padding:0}
+.n18-all{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:rgba(255,209,102,.1)}
+.n18-sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.n18-sts label{display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px;font-size:.9rem}
+details.n18-new>summary{display:inline-block;cursor:pointer;padding:9px 16px;border-radius:999px;background:var(--accent);color:#1A1433;font-weight:700;margin:6px 0 10px;list-style:none}
+details.n18-new>summary::-webkit-details-marker{display:none}
+@media (max-width:760px){.n18-tone{grid-template-columns:1fr}.n18-sts{grid-template-columns:repeat(2,1fr)}}
 /* 18 نوفمبر */
 .mlinks .mx-open{flex:1;min-width:140px;padding:10px;border-radius:12px;border:1px solid #FFD166;background:rgba(255,209,102,.12);color:#FFD166;font:inherit;font-weight:700;cursor:pointer}
 #magx{position:fixed;inset:0;z-index:300;background:radial-gradient(ellipse at 50% 0%,#221C55,#07061A 70%);display:flex;flex-direction:column;padding:10px}
@@ -2519,6 +2531,7 @@ function qDraw(){const m=$('#modal'); m.hidden=false; const z=QZ[QV.k], it=QV.it
 
 /* ---- ٧) نجمة كوكبتي: صندوق ظاهر + صورة/صوت ---- */
 (function(){const _c=constellation; constellation=function(sid){let h=_c(sid);
+  h=h.replace(/<p class="k-note">كل شي تفتخرين فيه[\s\S]*?<\/p>/,'').replace(/<div style="display:flex;flex-direction:column;gap:6px">(<div class="k-up small">[\s\S]*?<\/div>)+<\/div>/,'');
   h=h.replace(/<details[^>]*><summary class="k-sub">⭐ أضيفي نجمة[\s\S]*?<\/details>/,
    '<div class="n18-star"><b>⭐ أضيفي نجمة</b><span class="small">شنو سويتي وتفتخرين فيه؟ ينضاف لكوكبتج على طول</span>'+
    '<textarea id="snNote" maxlength="160" placeholder="مثال: صممت شعار نادي العلوم، برمجت لعبة، كتبت قصة…"></textarea>'+
@@ -2723,6 +2736,192 @@ try{STEPS.forEach(s=>{if(s.spot==='#tower'){s.spot='#pmap'; s.t='التدريب 
 /* أول تحميل: نعيد الرسم بعد ما تجهز كل الإضافات، والبوب أب يطلع كل مرة */
 if(GATE.who){render();}
 if(!new URLSearchParams(location.search).has('student')&&$('#modal').hidden) judgePop();
+
+/* ================= المعلمة (18 نوفمبر): مادة وحدة، تبويبات، صفحة البنت مرتبة ================= */
+const TV={tab:'st',one:'prog',tb:{day:null,slot:null,mode:'f2f',w:'p'},tn:(()=>{try{return JSON.parse(localStorage.getItem('madar.tn')||'[]')}catch(e){return []}})(),cal:{cls:null,pick:null}};
+function tnSave(){try{localStorage.setItem('madar.tn',JSON.stringify(TV.tn.slice(-80)))}catch(e){}}
+function allStu(){return (S.ALL&&S.ALL.students)||S.students||[];}
+function mySubj(){return (typeof tSubj==='function'&&tSubj())||V.subj||'chem';}
+// المعلمة لها مادة وحدة
+(function(){const _r=render; render=function(){if(V.role==='teacher'&&S.mode!=='live') V.subj='chem'; _r();};})();
+
+/* ---- إضافة موعد: الشعبة ← البنات (الكل أو وحدة وحدة) ← البنات و/أو أولياء الأمور ---- */
+calAddForm=function(){const cls=(S.classes||[]).map(c=>c.id), c=TV.cal.cls||S.cls||cls[0], st=allStu().filter(s=>s.cls===c), isT=V.role==='teacher', pk=TV.cal.pick||{};
+  const all=st.every(s=>pk[s.id]!==false);
+  return '<form class="mc-add" data-cal="addf2"><div class="mc-row"><label class="field">النوع<select id="caT">'+Object.keys(CAL_T).filter(k=>k!=='appt').map(k=>'<option value="'+k+'">'+CAL_T[k].i+' '+CAL_T[k].n+'</option>').join('')+'</select></label>'+
+   '<label class="field">العنوان<input id="caN" required placeholder="مثلاً: اختبار قصير على الروابط"></label></div>'+
+   '<div class="mc-row"><label class="field">اليوم<input type="date" id="caD" required value="'+cIso(cWork(2))+'"></label><label class="field">الوقت<input type="time" id="caH" value="08:00"></label><label class="field">الحصة<select id="caP"><option value="">—</option>'+['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة'].map(x=>'<option>الحصة '+x+'</option>').join('')+'</select></label></div>'+
+   '<p class="small muted" style="margin:4px 0">١) الشعبة</p><div class="n18-chips">'+(S.classes||[]).map(x=>'<button type="button" data-n18t="ccls" data-v="'+x.id+'" aria-pressed="'+(x.id===c)+'">👥 '+esc(x.name)+'</button>').join('')+'</div>'+
+   '<p class="small muted" style="margin:8px 0 4px">٢) البنات</p><label class="n18-all"><input type="checkbox" data-n18t="call"'+(all?' checked':'')+'> <b>كل البنات ('+st.length+')</b></label>'+
+   '<div class="n18-sts">'+st.map(s=>'<label><input type="checkbox" data-n18t="cst" data-v="'+s.id+'"'+(pk[s.id]!==false?' checked':'')+'> '+esc(s.name)+'</label>').join('')+'</div>'+
+   '<p class="small muted" style="margin:8px 0 4px">٣) يوصل لـ</p><div class="row"><label><input type="checkbox" id="caToS" checked> 👧 البنات</label><label><input type="checkbox" id="caToP" checked> 👨‍👩‍👧 أولياء أمورهم</label>'+(isT?'':'<label><input type="checkbox" id="caToF"> 🏫 المعلمات والإدارة</label>')+'</div>'+
+   '<label class="field">ملاحظة<input id="caX" placeholder="اختياري"></label>'+
+   '<div class="row"><button class="btn primary">إرسال وإضافة للتقويم</button><button class="btn" type="button" data-cal="add">إلغاء</button></div></form>';};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18t="ccls"]'); if(!b) return; e.preventDefault(); TV.cal.cls=b.dataset.v; TV.cal.pick={}; render();},true);
+document.addEventListener('change',e=>{const t=e.target; if(!t.dataset) return; const a=t.dataset.n18t; if(a!=='call'&&a!=='cst') return;
+  const c=TV.cal.cls||S.cls||(S.classes||[])[0].id, st=allStu().filter(s=>s.cls===c), pk=TV.cal.pick=TV.cal.pick||{};
+  if(a==='call') st.forEach(s=>pk[s.id]=t.checked); else pk[t.dataset.v]=t.checked;
+  document.querySelectorAll('[data-n18t="cst"]').forEach(x=>x.checked=pk[x.dataset.v]!==false); const al=document.querySelector('[data-n18t="call"]'); if(al) al.checked=st.every(s=>pk[s.id]!==false);},true);
+document.addEventListener('submit',e=>{if(e.target.dataset.cal!=='addf2'||V.role==='student'||V.role==='parent') return; e.preventDefault(); e.stopPropagation();
+  const c=TV.cal.cls||S.cls||(S.classes||[])[0].id, st=allStu().filter(s=>s.cls===c), pk=TV.cal.pick||{}, ids=st.filter(s=>pk[s.id]!==false).map(s=>s.id);
+  const toS=$('#caToS').checked, toP=$('#caToP').checked, toF=$('#caToF')&&$('#caToF').checked;
+  if(!ids.length&&!toF){toast('اختاري بنت وحدة على الأقل');return;} if(!toS&&!toP&&!toF){toast('اختاري يوصل لمنو');return;}
+  const to=toF&&!toS&&!toP?{k:'staff'}:ids.length===st.length?{k:'cls',v:c}:ids.length===1?{k:'sid',v:ids[0]}:{k:'list',v:ids};
+  const ev={id:'x'+Date.now(),t:$('#caT').value,subj:V.role==='teacher'?mySubj():null,title:$('#caN').value.trim(),date:$('#caD').value,time:$('#caH').value||'08:00',period:$('#caP').value||'',to,note:$('#caX').value.trim(),ns:!toS,np:!toP};
+  if(!ev.title||!ev.date) return; CALX.push(ev); calSave(); CV.add=false; TV.cal.pick={}; CV.day=ev.date; const d=new Date(ev.date+'T12:00:00'); CV.y=d.getFullYear(); CV.m=d.getMonth(); render();
+  toast('📨 انرسل لـ '+(to.k==='cls'?'كل '+clsName(c):to.k==='staff'?'المعلمات':ids.length+' بنات')+(toS&&toP?' وأولياء أمورهم':toP?' (أولياء الأمور)':'')+'، ونزل بتقويمهم');},true);
+(function(){const _s=calSees; calSees=function(e){const r=V.role; if(r==='student'&&e.ns) return false; if(r==='parent'&&e.np) return false;
+  if(e.to&&e.to.k==='list'){if(r==='student'||r==='parent') return e.to.v.includes(cStu(cSid()).id); return true;} return _s(e);};
+  const _l=calToLbl; calToLbl=function(e){if(e.to&&e.to.k==='list') return e.to.v.map(i=>(allStu().find(x=>x.id===i)||{}).name||'').join('، '); return _l(e);};})();
+
+/* ---- صفحة البنت عند المعلمة: موعد لها، ملاحظات (كتابة/صوت)، وأضيفي لها تدريب ---- */
+function tbookPanel(sid){const st=stu(sid), B=TV.tb, days=bkDays('teacher');
+  const mine=BK.filter(b=>b.sid===sid);
+  return '<section class="panel" id="tbook"><h2>🗓️ موعد مع '+(B.w==='p'?'ولي أمر ':'')+esc(st.name)+'</h2>'+
+   '<div class="seg" role="group" style="margin-bottom:8px"><button data-n18t="tbw" data-v="p" aria-pressed="'+(B.w==='p')+'">👨‍👩‍👧 ولي الأمر</button><button data-n18t="tbw" data-v="s" aria-pressed="'+(B.w==='s')+'">👧 '+esc(st.name)+'</button></div>'+
+   '<div class="bk-days">'+days.map(iso=>'<button class="bk-d'+(B.day===iso?' on':'')+'" data-n18t="tbd" data-v="'+iso+'"><b>'+cFmt(iso)+'</b></button>').join('')+'</div>'+
+   (B.day?'<div class="bk-slots" style="margin-top:8px">'+STAFF.teacher.h.map(h=>{const t=bkTaken('teacher',B.day,h); return '<button class="bk-s'+(B.slot===h?' on':'')+'" data-n18t="tbs" data-v="'+h+'"'+(t?' disabled':'')+'>'+h+'</button>';}).join('')+'</div>':'')+
+   (B.day&&B.slot?'<div class="seg" role="group" style="margin:10px 0"><button data-n18t="tbm" data-v="f2f" aria-pressed="'+(B.mode==='f2f')+'">🏫 حضوري</button><button data-n18t="tbm" data-v="meet" aria-pressed="'+(B.mode==='meet')+'">🎥 Meet</button></div><button class="btn primary" data-n18t="tbgo" data-v="'+sid+'">✓ أرسلي الموعد</button>':'')+
+   (mine.length?'<h3 class="mc-st">مواعيدها</h3>'+mine.map(b=>'<div class="row small"><span class="pill good">مؤكد</span>'+cFmt(b.date)+' · '+b.time+' · '+(b.mode==='meet'?'🎥 Meet':'🏫 حضوري')+(b.by==='teacher'?' · منج':'')+'</div>').join(''):'')+'</section>';}
+function tnBox(sid,kind,ph){const l=TV.tn.filter(n=>n.sid===sid&&n.kind===kind);
+  return (l.length?l.slice().reverse().map(n=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">👩‍🏫</span><span style="flex:1">'+esc(n.text||'')+(n.img?'<img class="g2-mimg" src="'+n.img+'" alt="">':'')+(n.sec?(n.aud?'<audio controls src="'+n.aud+'"></audio>':' 🎤 '+n.sec+' ث'):'')+'</span><span class="muted num">'+esc(n.t)+'</span></div>').join(''):'')+
+   '<div class="n18-star"><textarea id="tn_'+kind+'" placeholder="'+esc(ph)+'"></textarea>'+attBar('tn'+kind)+'<button class="btn primary" data-n18t="tnadd" data-k="'+kind+'" data-v="'+sid+'">➕ أضيفي</button></div>';}
+function tpracBox(sid){const k=mySubj(), opts=k==='chem'?ORDER_SK.map(s=>[s,GAMES[s].name]):QZ[k]?[[QZ[k].t,QZ[k].t]]:[];
+  if(!opts.length) return '';
+  const pl=S.plans.filter(p=>p.sid===sid&&p.src==='المعلمة');
+  return '<div class="n18-star"><b>➕ أضيفي لها تدريب</b><div class="mc-row"><label class="field">التدريب<select id="tpS">'+opts.map(o=>'<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>').join('')+'</select></label>'+
+   '<label class="field">اليوم<select id="tpD">'+[0,1,2,3,4].map(d=>'<option value="'+d+'"'+(d===(new Date().getDay()+1)%7?' selected':'')+'>'+DAYS[d]+'</option>').join('')+'</select></label></div>'+
+   '<input id="tpW" placeholder="ملاحظة لها (اختياري): مثلاً ركزي على 4s و 3d"><button class="btn primary" data-n18t="tpadd" data-v="'+sid+'">نزّليه بخطتها وتقويمها</button></div>'+
+   (pl.length?pl.map(p=>'<div class="row small"><span class="pill '+(p.status==='done'?'good':'none')+'">'+(p.status==='done'?'✓ خلصته':'بخطتها')+'</span>'+esc(p.title)+' · '+DAYS[p.day]+'</div>').join(''):'');}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18t]'); if(!b||b.tagName==='INPUT'||b.dataset.n18t==='ccls') return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.n18t, v=b.dataset.v, B=TV.tb;
+  if(a==='ttab'){TV.tab=v; render(); return;}
+  if(a==='otab'){TV.one=v; render(); return;}
+  if(a==='tbw'){B.w=v;} else if(a==='tbd'){B.day=v;B.slot=null;} else if(a==='tbs'){B.slot=v;} else if(a==='tbm'){B.mode=v;}
+  else if(a==='tbgo'){const st=stu(v); BK.push({who:'teacher',date:B.day,time:B.slot,mode:B.mode,why:'بطلب من المعلمة',sid:v,by:'teacher'}); bkSave();
+    CALX.push({id:'b'+Date.now(),t:'appt',subj:mySubj(),title:'موعد مع '+sTeach(mySubj())+(B.w==='p'?' (ولي أمر '+st.name+')':''),date:B.day,time:B.slot,to:B.w==='p'?{k:'parent',v:v}:{k:'sid',v:v},note:B.mode==='meet'?'عن طريق Google Meet':'حضوري بالمدرسة',meet:B.mode==='meet'}); calSave();
+    toast('✅ وصل الموعد لـ'+(B.w==='p'?'ولي أمر ':'')+st.name+' ونزل بتقويمها'); B.day=null;B.slot=null;}
+  else if(a==='tnadd'){const k=b.dataset.k, ta=$('#tn_'+k), t=ta?ta.value.trim():'', at=G2.att['tn'+k]||{}; if(!t&&!at.img&&!at.sec){toast('اكتبي أو سجلي فويس');return;}
+    TV.tn.push({sid:v,kind:k,text:t,img:at.img,sec:at.sec,aud:at.aud,t:new Date().toLocaleDateString('ar-KW',{day:'numeric',month:'numeric'})}); tnSave(); G2.att['tn'+k]={}; toast(k==='al'?'🔔 انضاف التنبيه، ويوصل لبوصلة':'💪 انضافت الملاحظة، وتوصل لولي الأمر');}
+  else if(a==='tpadd'){const sk=$('#tpS').value, d=+$('#tpD').value, w=$('#tpW').value.trim(), k=mySubj();
+    S.plans.push({id:'tp'+Date.now(),sid:v,subj:k,skill:sk,title:'تدريب على '+sk,why:(w||'تدريب من معلمتج')+' — '+sTeach(k),min:15,day:d,time:'17:00',kind:'practice',status:'todo',result:null,src:'المعلمة'});
+    toast('🎮 نزل التدريب بخطة '+stu(v).name+' يوم '+DAYS[d]);}
+  render();},true);
+// ملاحظات المعلمة (القوة) تبين لولي الأمر
+(function(){const _h=homeList; homeList=function(sid){return _h(sid).concat(TV.tn.filter(n=>n.sid===sid&&n.kind==='sn').map(n=>({kind:'s',text:'👩‍🏫 '+(n.text||'🎤')})));};})();
+
+/* ---- ترتيب الصفحة بعد الرسم ---- */
+function secByH(root,re){return [...root.querySelectorAll('section')].find(s=>{const h=s.querySelector('h2,h3'); return h&&re.test(h.textContent);});}
+function tabBar(list,cur,act){return '<div class="n18-tabs" role="tablist">'+list.map(t=>'<button role="tab" data-n18t="'+act+'" data-v="'+t[0]+'" aria-selected="'+(cur===t[0])+'">'+t[1]+'</button>').join('')+'</div>';}
+function teacherLayout(){const M=$('#main'); if(!M) return; const k=mySubj(), one=V.view==='one';
+  M.querySelectorAll(':scope > .mc-wrap').forEach(x=>x.remove());
+  // رأس الصفحة القديم (فيه اختيار المادة) ما نحتاجه
+  [...M.children].forEach(c=>{if(c.tagName==='SECTION'&&c.querySelector('select[data-act="subj"]')) c.remove();});
+  const box=document.createElement('div'); box.className='n18-body wide';
+  if(!one){
+    const S_={kpi:M.querySelector('.kpis'),ov:M.querySelector('#overview'),obs:M.querySelector('#obs'),as:M.querySelector('#assess'),al:M.querySelector('#alerts'),rd:M.querySelector('#radar'),gt:M.querySelector('#gtools'),inb:M.querySelector('#tinbox'),gf:M.querySelector('#gforms'),gn:M.querySelector('#gnom')};
+    const T=[['st','👥 طالباتي'],['obs','📝 رصد الحصة'],['gr','📊 الدرجات'],['al','🔔 تحتاج متابعة'+(S_.al&&S_.al.querySelector('.pill')?' ('+S_.al.querySelector('.pill').textContent+')':'')],['msg','✉️ الرسائل'],['cal','📅 التقويم'],['tal','🌟 الموهبة']];
+    const pick={st:[S_.kpi,S_.ov],obs:[S_.obs],gr:[S_.as,S_.gf,S_.gt],al:[S_.al],msg:[S_.inb],cal:[],tal:[S_.rd,S_.gn]}[TV.tab]||[];
+    // الدرجات: زر «أضيفي درجات» واضح فوق
+    if(TV.tab==='gr'&&S_.as){const d=[...S_.as.querySelectorAll('details')].find(x=>/تقييم جديد/.test(x.querySelector('summary').textContent)); if(d){d.classList.add('n18-new'); d.querySelector('summary').textContent='➕ أضيفي درجات (تقييم جديد)'; S_.as.querySelector('h2').closest('.panel-h')?S_.as.querySelector('.panel-h').after(d):S_.as.prepend(d);}
+      if(!S_.as.querySelector('table')) {const dd=S_.as.querySelector('details'); if(dd) dd.open=true;}}
+    const head=document.createElement('div'); head.className='n18-thead'; head.innerHTML='<b>'+(SUBJ_ICON[k]||'')+' '+esc(sName(k))+'</b><span class="small muted">'+esc(sTeach(k))+'</span>';
+    box.innerHTML=tabBar(T,TV.tab,'ttab'); box.prepend(head);
+    if(TV.tab==='cal') box.insertAdjacentHTML('beforeend',calPanel()+staffBookings());
+    pick.filter(Boolean).forEach(x=>{x.classList.add('n18-full'); box.appendChild(x);});
+    [...M.children].forEach(c=>{if(!c.classList.contains('scope')) c.remove();}); M.appendChild(box);
+  } else {
+    const sid=V.sid, st=stu(sid);
+    const hd=[...M.children].find(c=>c.tagName==='SECTION'&&/👤/.test((c.querySelector('h2')||{}).textContent||''));
+    const sky=secByH(M,/كوكبتها/), sum=M.querySelector('#tsum'), pr=M.querySelector('#tprog'), msg=M.querySelector('#tmsg'), inb=M.querySelector('#tinbox'),
+      gAll=secByH(M,/درجات الفصل/), gq=secByH(M,/آخر الاختبارات/), sn=secByH(M,/القوة والدعم/), al=secByH(M,/تنبيهاتها/), tr=secByH(M,/التدريب/);
+    if(gq){gq.querySelector('h2').textContent='📊 درجاتها بـ'+sName(k); gq.querySelectorAll('tbody tr').forEach(r=>{if(!r.textContent.includes(sName(k))) r.remove();}); if(!gq.querySelector('tbody tr')) gq.querySelector('h2').insertAdjacentHTML('afterend','<div class="empty">ما في درجات منشورة لين الحين.</div>');}
+    if(gAll) gAll.querySelector('h2').textContent='📚 درجاتها بكل المواد';
+    if(inb){inb.querySelectorAll('.row').forEach(r=>{if(!r.textContent.includes(st.name)) r.remove();}); inb.querySelector('h2').textContent='📥 رسائلها لج';}
+    const T=[['prog','📈 تحسّنها'],['msg','✉️ الرسائل'],['book','🗓️ موعد'],['gr','📊 درجاتها'],['sn','💪 القوة والدعم'],['al','🔔 التنبيهات'],['tr','🎮 التدريب']];
+    const add=(sec,html)=>{if(sec) sec.insertAdjacentHTML('beforeend',html); return sec;};
+    const pick={prog:[pr],msg:[inb,msg],book:[],gr:[gq,gAll],sn:[add(sn,tnBox(sid,'sn','اكتبي ملاحظة: قوية بالحل الجماعي، تحتاج دعم بالمسائل…'))],al:[add(al,tnBox(sid,'al','تنبيه جديد: مثلاً تأخرت بتسليم الواجبين الأخيرين'))],tr:[add(tr,tpracBox(sid))]}[TV.one]||[];
+    const top=document.createElement('div'); top.className='n18-tone';
+    if(sky){const h2=sky.querySelector('h2'); if(h2) h2.textContent='🌌 كوكبة '+st.name; top.appendChild(sky);}
+    const hero=document.createElement('div'); hero.className='n18-tone-s'; if(hd) hero.appendChild(hd); if(sum) hero.appendChild(sum); top.appendChild(hero);
+    box.appendChild(top); box.insertAdjacentHTML('beforeend',tabBar(T,TV.one,'otab'));
+    if(TV.one==='book') box.insertAdjacentHTML('beforeend',tbookPanel(sid));
+    pick.filter(Boolean).forEach(x=>{x.classList.add('n18-full'); box.appendChild(x);});
+    [...M.children].forEach(c=>{if(!c.classList.contains('scope')) c.remove();}); M.appendChild(box);
+  }
+}
+(function(){const _r=render; render=function(){const keep={}; ['tn_sn','tn_al','tpW','caN','caX'].forEach(i=>{const x=document.getElementById(i); if(x&&x.value) keep[i]=x.value;}); _r(); try{ if(V.role==='teacher'&&!(typeof T!=='undefined'&&T.on)) teacherLayout(); }catch(err){console.warn('t18',err);} Object.keys(keep).forEach(i=>{const x=document.getElementById(i); if(x&&!x.value) x.value=keep[i];});};})();
+if(GATE.who==='teacher') render();
+
+/* ================= بوصلة (المرشدة) 18 نوفمبر ================= */
+CAL_T.guid={i:'🧭',n:'إرشاد',c:'#00897B'};
+(function(){const _s=calSeed; calSeed=function(){const c=cStu('s1').cls||'10-6', W=o=>cIso(cWork(o));
+  return _s().concat([
+   {id:'g1',t:'guid',title:'لقاء تعريفي: شنو يعني مسار؟',date:W(2),time:'09:30',to:{k:'all'},note:'لكل طالبات العاشر بالمسرح. نعرّفهم على المسارات والتخصصات 🎓'},
+   {id:'g2',t:'guid',title:'جلسة إرشادية فردية مع قمر',date:W(4),time:'10:30',to:{k:'sid',v:'s1'},note:'نتكلم عن كوكبة التصميم والفن وشلون نكبرها 🎨'},
+   {id:'g3',t:'guid',title:'لقاء أولياء الأمور: اختيار المسار',date:W(7),time:'12:30',to:{k:'all'},note:'حضوري أو Google Meet'},
+   {id:'g4',t:'trip',title:'زيارة اليوم المفتوح بجامعة الكويت',date:W(11),time:'08:00',to:{k:'cls',v:c},note:'تحتاج موافقة ولي الأمر.'}]);};})();
+(function(){const _s=calSees; calSees=function(e){if(V.role==='counselor'&&(e.t==='exam'||e.t==='due')) return false; return _s(e);};})();
+(function(){const _f=calAddForm; calAddForm=function(){let h=_f(); if(V.role==='counselor'){h=h.replace('<option value="guid">','<option value="guid" selected>').replace('مثلاً: اختبار قصير على الروابط','مثلاً: لقاء تعريفي بالمسارات، جلسة إرشادية، زيارة جامعة');} return h;};})();
+function coMsgPanel(sid){const st=stu(sid), l=MSGS.filter(m=>m.sid===sid&&m.by==='بوصلة').slice().reverse().slice(0,4);
+  return '<section class="panel" id="comsg"><h2>✉️ أرسلي رسالة</h2><div class="row"><label><input type="checkbox" id="coS" checked> 👧 '+esc(st.name)+'</label><label><input type="checkbox" id="coP" checked> 👨‍👩‍👧 ولي أمرها</label></div>'+
+   '<textarea id="coTxt" placeholder="مثلاً: حياكم بلقاء تعريفي عن المسارات يوم الثلاثاء 🤍"></textarea>'+attBar('tmsg')+'<button class="btn primary" data-n18c="send" data-v="'+sid+'">إرسال</button>'+
+   (l.length?l.map(m=>'<div class="row small"><span class="pill acc">'+m.to.map(t=>t==='student'?'👧':'👨‍👩‍👧').join('')+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join(''):'')+'</section>';}
+function coNotesPanel(sid){return '<section class="panel" id="conotes"><h2>📝 ملاحظاتي على '+esc(stu(sid).name)+'</h2>'+tnBox(sid,'co','اكتبي ملاحظتج أو سجلي فويس: مثلاً تحب التصميم، تحتاج تشجيع بالرياضيات…')+'</section>';}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18c]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const sid=b.dataset.v, t=($('#coTxt')||{}).value||'', to=[];
+  if($('#coS').checked) to.push('student'); if($('#coP').checked) to.push('parent'); if(!to.length){toast('اختاري منو توصله');return;}
+  const a=G2.att.tmsg||{}; if(!t.trim()&&!a.img&&!a.sec){toast('اكتبي الرسالة أول');return;}
+  MSGS.push({sid,to,text:t.trim(),by:'بوصلة',t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); render(); toast('📨 وصلت لـ'+to.map(x=>x==='student'?stu(sid).name:'ولي أمرها').join(' و'));},true);
+(function(){const _r=render; render=function(){const keep={}; ['coTxt','tn_co'].forEach(i=>{const x=document.getElementById(i); if(x&&x.value) keep[i]=x.value;}); _r(); try{
+  const M=$('#main'); if(!M) return; const r=V.role;
+  if(['counselor','vice','admin'].includes(r)){const w=M.querySelector(':scope > .mc-wrap'); if(w){ if(r==='counselor'&&V.view==='one') w.remove(); else M.appendChild(w);} }
+  if(r==='counselor'&&V.view==='one'&&!(typeof T!=='undefined'&&T.on)){const first=[...M.children].find(c=>c.tagName==='SECTION'&&!c.classList.contains('scope'));
+    const d=document.createElement('div'); d.className='cols'; d.innerHTML='<div class="c7" style="display:flex;flex-direction:column;gap:16px">'+coNotesPanel(V.sid)+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+coMsgPanel(V.sid)+'</div>';
+    if(first) first.after(d); else M.prepend(d);}
+ }catch(err){console.warn('c18',err);} Object.keys(keep).forEach(i=>{const x=document.getElementById(i); if(x&&!x.value) x.value=keep[i];});};})();
+if(GATE.who==='counselor') render();
+
+/* ================= تقويم واحد بسيط لكل الشخصيات (18 نوفمبر) ================= */
+const CAL_EX={teacher:['exam','مثلاً: اختبار قصير على الروابط'],student:['due','مثلاً: مذاكرة مع صديقتي للكيمياء'],parent:['appt','مثلاً: زيارة الوكيلة'],vice:['meet','مثلاً: استدعاء ولي أمر'],counselor:['guid','مثلاً: لقاء تعريفي بالمسارات'],admin:['act','مثلاً: اليوم المفتوح للمدرسة'],monitor:['meet','مثلاً: متابعة مع ولي أمر']};
+function calPanel3(){
+  const now=new Date(), todayIso=cIso(now), sid=cSid(), r=V.role, isS=r==='student', kid=isS;
+  if(!CV.day) CV.day=todayIso; const sel=CV.day, sd=new Date(sel+'T12:00:00'); if(CV.y==null||CV.y!==sd.getFullYear()||CV.m!==sd.getMonth()){CV.y=sd.getFullYear(); CV.m=sd.getMonth();}
+  const first=new Date(CV.y,CV.m,1,12), days=new Date(CV.y,CV.m+1,0).getDate(), lead=first.getDay();
+  const evs=calEvents().filter(calSees), by={}; evs.forEach(e=>{(by[e.date]=by[e.date]||[]).push(e);});
+  let cells=''; for(let i=0;i<lead;i++) cells+='<div class="mc-c off"></div>';
+  for(let d=1;d<=days;d++){const iso=CV.y+'-'+String(CV.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'), l=by[iso]||[], wd=(lead+d-1)%7;
+    cells+='<button class="mc-c'+(iso===todayIso?' today':'')+(iso===sel?' sel':'')+(wd>=5?' wkend':'')+(l.length?' has':'')+'" data-cal="day2" data-v="'+iso+'"><span class="mc-n num">'+d+'</span><span class="mc-i">'+l.slice(0,2).map(e=>'<i style="background:'+CAL_T[e.t].c+'22;border-color:'+CAL_T[e.t].c+'">'+cIcon(e)+'</i>').join('')+(l.length>2?'<b>+'+(l.length-2)+'</b>':'')+'</span></button>';}
+  const dl=(by[sel]||[]).sort((a,b)=>(a.time||'').localeCompare(b.time||'')), tl=isS?dayTasks(sid,sel):[];
+  const row=e=>'<button class="mc-e" data-cal="ev" data-v="'+e.id+'" style="border-inline-start-color:'+CAL_T[e.t].c+'"><span class="mc-ei">'+cIcon(e)+'</span><span class="mc-eb"><b>'+esc(e.title)+'</b><small>'+esc(e.time||'')+'</small></span></button>';
+  const H=kid?'h3':'h2', ttl=isS?'تقويمي':r==='parent'?'تقويم '+esc(cStu(sid).name):'التقويم';
+  const g=(isS||r==='parent')?(lsGet('madar.gsub')==='1'?'<span class="pill good" title="مربوط بتقويم جوجل">✓ جوجل</span>':'<button class="btn sm" data-n18="gsub" title="اربط بتقويم جوجل">🔗 جوجل</button>'):'<a class="btn sm" href="https://calendar.google.com/calendar/r/month" target="_blank" rel="noopener">↗ جوجل</a>';
+  return '<section class="'+(kid?'k-card':'panel')+' mc n18-cal" id="mcal"><div class="'+(kid?'k-h':'panel-h')+'"><'+H+'>📅 '+ttl+'</'+H+'><span class="spacer"></span>'+g+'<button class="btn sm primary" data-n18k="add" aria-label="أضيفي موعد">＋</button></div>'+
+    '<div class="mc-nav"><button class="btn sm" data-cal="m2" data-v="-1" aria-label="الشهر السابق">›</button><b>'+MN18[CV.m]+' '+CV.y+'</b><button class="btn sm" data-cal="m2" data-v="1" aria-label="الشهر الجاي">‹</button></div>'+
+    '<div class="mc-g">'+['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'].map(x=>'<div class="mc-h">'+x+'</div>').join('')+cells+'</div>'+
+    '<div class="n18-dnav"><button class="btn sm" data-cal="d2" data-v="-1" aria-label="اليوم السابق">›</button><b>'+(sel===todayIso?'اليوم · ':'')+cFmt(sel)+'</b><button class="btn sm" data-cal="d2" data-v="1" aria-label="اليوم التالي">‹</button></div>'+
+    (dl.length||tl.length?dl.map(row).join('')+tl.map(t=>'<div class="mc-e" style="border-inline-start-color:'+((SUBJ_COLOR[t.subj]||{}).hex||'#999')+'"><span class="mc-ei">'+(SUBJ_ICON[t.subj]||'📌')+'</span><span class="mc-eb"><b>'+esc(t.title)+'</b><small>'+t.time+'</small></span>'+(t.status==='done'?'<span class="pill good">✓</span>':'')+'</div>').join(''):'<div class="empty">فاضي 🌿</div>')+'</section>';}
+calPanel=calPanel3; calPanel2=calPanel3;
+function calAddPop(){const r=V.role, ex=CAL_EX[r]||CAL_EX.admin, m=$('#modal'); m.hidden=false; const sid=cSid(), st=cStu(sid);
+  const personal=r==='student'||r==='parent';
+  let f=calAddForm().replace('class="mc-add"','class="mc-add n18-addf"').replace('<option value="'+ex[0]+'">','<option value="'+ex[0]+'" selected>').replace('مثلاً: اختبار قصير على الروابط',ex[1]).replace('<button class="btn" type="button" data-cal="add">إلغاء</button>','<button class="btn" type="button" data-gate="close">إلغاء</button>');
+  if(personal){ // الطالبة وولي الأمر: موعد لهم، بدون اختيار شعب
+    f=f.replace(/<label class="field">النوع<select id="caT">[\s\S]*?<\/select><\/label>/,'<input type="hidden" id="caT" value="'+ex[0]+'">').replace(/<label class="field">الحصة[\s\S]*?<\/select><\/label>/,'');
+    f=f.replace(/<p class="small muted" style="margin:4px 0">١\) الشعبة[\s\S]*?<label class="field">ملاحظة/,(r==='parent'?'<label class="n18-all"><input type="checkbox" id="caVice" checked> أبلغ الوكيلة والمعلمة بالموعد</label>':'')+'<label class="field">ملاحظة').replace('إرسال وإضافة للتقويم','أضيفيه لتقويمي');}
+  if(r==='vice') f=f.replace('id="caToS" checked','id="caToS"');
+  m.innerHTML='<div class="mcard wide" role="dialog" aria-label="موعد جديد"><h3>＋ موعد جديد</h3>'+f+'</div>';
+  const n=$('#caN'); if(n) n.focus();}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18k="add"]'); if(!b) return; e.preventDefault(); e.stopPropagation(); if(V.role!=='vice') TV.cal.pick={}; else if(!TV.cal.pick||!Object.keys(TV.cal.pick).length){TV.cal.pick={}; allStu().forEach(s=>TV.cal.pick[s.id]=false);} calAddPop();},true);
+// تغيير الشعبة داخل النافذة يعيد رسم النافذة بس
+document.addEventListener('click',e=>{const b=e.target.closest('#modal [data-n18t="ccls"]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); TV.cal.cls=b.dataset.v; TV.cal.pick={}; if(V.role==='vice') allStu().forEach(s=>TV.cal.pick[s.id]=false); calAddPop();},true);
+document.addEventListener('submit',e=>{const f=e.target; if(f.dataset.cal!=='addf2') return; const r=V.role; if(r!=='student'&&r!=='parent') {const l=CALX[CALX.length-1]; if(l&&Date.now()-(+String(l.id).slice(1))<3000) closeModal(); return;}
+  e.preventDefault(); e.stopImmediatePropagation(); const sid=cSid();
+  const ev={id:'x'+Date.now(),t:$('#caT').value,title:$('#caN').value.trim(),date:$('#caD').value,time:$('#caH').value||'08:00',period:($('#caP')||{}).value||'',note:$('#caX').value.trim(),
+    to:r==='student'?{k:'sid',v:sid}:{k:'parent',v:sid},np:r==='student',ns:r==='parent',mine:r};
+  if(!ev.title||!ev.date){toast('اكتبي العنوان');return;} if(r==='parent'&&$('#caVice')&&$('#caVice').checked) ev.note=(ev.note?ev.note+' · ':'')+'وصل للوكيلة والمعلمة';
+  CALX.push(ev); calSave(); CV.day=ev.date; closeModal(); render(); toast('📅 انضاف لتقويم'+(r==='student'?'ج':'كم')+(r==='parent'&&$('#caVice')?'':''));},true);
+// الطالبة: الموعد الشخصي ما يطلع للأهل؛ ولي الأمر: موعده يطلع له بس
+(function(){const _s=calSees; calSees=function(e){if(e.mine==='student') return V.role==='student'&&e.to.v===cStu(cSid()).id; if(e.mine==='parent') return V.role!=='student'&&(V.role!=='parent'||e.to.v===cStu(cSid()).id); return _s(e);};})();
+
+if(GATE.who) render();
 </script>
 
 </body></html>
