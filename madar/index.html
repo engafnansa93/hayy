@@ -479,6 +479,50 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .seg button{all:unset;cursor:pointer;padding:7px 14px;border-radius:999px;font-size:.88rem;color:var(--muted);white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#1A1433;font-weight:600}
 .login optgroup{color:var(--muted)}
+/* 18 نوفمبر */
+.mlinks .mx-open{flex:1;min-width:140px;padding:10px;border-radius:12px;border:1px solid #FFD166;background:rgba(255,209,102,.12);color:#FFD166;font:inherit;font-weight:700;cursor:pointer}
+#magx{position:fixed;inset:0;z-index:300;background:radial-gradient(ellipse at 50% 0%,#221C55,#07061A 70%);display:flex;flex-direction:column;padding:10px}
+#magx[hidden]{display:none}
+.mx-top,.mx-nav{display:flex;align-items:center;gap:10px;justify-content:space-between;color:#fff;padding:4px 6px}
+.mx-n{font-variant-numeric:tabular-nums;opacity:.8}
+.mx-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0}
+.mx-book .page{background:#0B0A26;overflow:hidden}.mx-book .page img{width:100%;height:100%;object-fit:cover;display:block}
+.mx-back{display:grid!important;place-items:center;color:#FFD166;font-size:1.6rem;font-weight:800;text-align:center;background:linear-gradient(135deg,#1A1550,#0B0A26)!important}
+.n18-who{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.n18-who button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:14px;border:1px solid rgba(255,255,255,.14);text-align:center}
+.n18-who button span{font-size:1.4rem}.n18-who button small{opacity:.7;font-size:.72rem}
+.n18-who button.on,.n18-who button:hover{border-color:#FFD166;background:rgba(255,209,102,.1)}
+.n18-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.n18-chips button{all:unset;cursor:pointer;white-space:nowrap;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:.85rem}
+.n18-chips button[aria-pressed="true"]{background:var(--accent);color:#1A1433;border-color:transparent;font-weight:700}
+.n18-q{font-size:1.1rem;font-weight:700;margin:14px 0}
+.n18-ch{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.n18-ch button{all:unset;cursor:pointer;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18)}
+.n18-ch button:hover:not([disabled]){border-color:#FFD166}.n18-ch button.ok{background:rgba(107,203,156,.25);border-color:#6BCB9C}.n18-ch button.no{background:rgba(255,120,110,.22);border-color:#FF786E}
+.n18-big{font-size:2.4rem;font-weight:800;text-align:center;margin:6px 0}
+.n18-star{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;border:1.5px dashed rgba(255,209,102,.55);background:rgba(255,209,102,.05)}
+.n18-star textarea{min-height:60px}
+.n18-dnav{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:10px 0 4px}
+.n18-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.n18-sug{margin:6px 0;padding:8px 12px;border-radius:12px;background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.35);font-size:.9rem}
+.mc-rem label.n18-rec{outline:1.5px solid #FFD166;border-radius:12px}
+.mc-rem label.n18-rec b::after{content:" ✨ مقترح";color:#FFD166;font-size:.75rem;font-weight:600}
+.n18-prog{grid-template-columns:auto 1fr auto!important}
+.n18-sum .n18-ks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.n18-k{border-radius:14px;padding:10px;text-align:center;border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.n18-k b{font-size:1.6rem}.n18-k small{font-size:1rem;letter-spacing:2px}
+.n18-k.good{background:rgba(107,203,156,.12)}.n18-k.acc{background:rgba(127,178,255,.12)}.n18-k.warn{background:rgba(255,209,102,.13)}
+.n18-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;margin:8px 0}
+.n18-tabs{display:flex;gap:6px;overflow-x:auto;margin:16px 0 12px;padding:4px;border-radius:999px;background:rgba(255,255,255,.05);position:sticky;top:60px;z-index:5;backdrop-filter:blur(8px)}
+.n18-tabs button{all:unset;cursor:pointer;white-space:nowrap;padding:9px 14px;border-radius:999px;font-size:.9rem;color:var(--muted)}
+.n18-tabs button[aria-selected="true"]{background:var(--accent);color:#1A1433;font-weight:700}
+.n18-body{width:100%;display:flex;flex-direction:column;gap:16px;max-width:820px;margin:0 auto}
+.n18-sum{max-width:820px;margin:0 auto;width:100%}
+.n18-g{border-bottom:1px solid var(--line);padding:4px 0}.n18-g summary{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;cursor:pointer;list-style:none;padding:6px 0}
+.n18-g summary::-webkit-details-marker{display:none}.n18-g .row{padding:4px 8px}
+.n18-pr{display:grid;grid-template-columns:150px auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.n18-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media (max-width:620px){.n18-who{grid-template-columns:repeat(2,1fr)}.n18-g summary{grid-template-columns:110px 1fr auto}.n18-pr{grid-template-columns:1fr auto}.n18-two{grid-template-columns:1fr}.n18-tabs{top:52px}}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -2394,6 +2438,291 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act="gclas
     const ul=c.querySelector('ul'); if(ul&&!ul.dataset.g2){ul.dataset.g2=1; ul.insertAdjacentHTML('beforeend','<li>📅 تقويم ذكي وحجز موعد، و🔗 ١٢ أداة جوجل: Forms، Meet، NotebookLM، Translate، Classroom، Looker…</li>');}};
   kids[vi+1].after(nx);};})();
 
+
+/* ================= تعديلات 18 نوفمبر: الطالبة + ولي الأمر + المجلة + البوب أب ================= */
+const N18={tab:'sum',pt:'grades',prac:'chem',rev:null,ask:null,home:(()=>{try{return JSON.parse(localStorage.getItem('madar.home')||'[]')}catch(e){return []}})()};
+function homeSave(){try{localStorage.setItem('madar.home',JSON.stringify(N18.home.slice(-60)))}catch(e){}}
+function subjKeys(){return Object.keys(S.subjects);}
+function sName(k){return (S.subjects[k]&&S.subjects[k].name)||TERM[k]||k;}
+function sTeach(k){return (S.subjects[k]&&S.subjects[k].teacher)||'المعلمة';}
+// حالة المادة: ممتازة / زينة / تحتاج متابعة
+function lvlOf(r){return r>=0.9?['good','ممتازة 🌟']:r>=0.8?['acc','زينة 👍']:['warn','تحتاج متابعة'];}
+function subjRows(sid){const {res}=studentSummary(sid), t=(stu(sid)||{}).term||{}; return Object.keys(res).map(k=>({k,r:t[k]!=null?t[k]/100:res[k].c.r,v:res[k].c.v,max:res[k].c.max,d:res[k].d}));}
+
+/* ---- ١) المجلة (العرض التقديمي) ---- */
+const DECK_N=26, ABASE=/github\.io$|localhost/.test(location.hostname)?'':'https://engafnansa93.github.io/hayy/madar/';
+function loadFlip(cb){if(window.St) return cb(); const s=document.createElement('script'); s.src=ABASE+'pageflip.js?v=1'; s.onload=cb; s.onerror=()=>toast('ما قدرت أحمّل المجلة'); document.head.appendChild(s);}
+function openMag(){
+  let o=$('#magx'); if(!o){o=document.createElement('div'); o.id='magx'; document.body.appendChild(o);}
+  o.hidden=false; document.body.style.overflow='hidden';
+  o.innerHTML='<div class="mx-top"><b>📖 عرض مَدار</b><span class="mx-n" id="mxNum">1 / '+DECK_N+'</span><button class="btn" data-mx="close">✕ إغلاق</button></div><div class="mx-stage" id="mxStage"></div>'+
+    '<div class="mx-nav"><button class="btn" data-mx="prev">→ السابق</button><span class="small" style="opacity:.75">اسحبوا الصفحة أو اضغطوا الأسهم</span><button class="btn primary" data-mx="next">التالي ←</button></div>';
+  loadFlip(()=>{
+    const stage=$('#mxStage'), W=stage.clientWidth, H=stage.clientHeight, single=W<760;
+    let pw=single?Math.min(W-8,980):Math.floor(Math.min(W-16,1400)/2); let ph=Math.round(pw*9/16); if(ph>H-10){ph=H-10; pw=Math.round(ph*16/9);}
+    const h=document.createElement('div'); h.className='mx-book'; h.dir='ltr'; stage.appendChild(h);
+    const back=document.createElement('div'); back.className='page mx-back'; back.dataset.density='hard'; back.innerHTML='<div>مَدار<br><small>لكل بنت مدارها 🤍</small></div>'; h.appendChild(back);
+    const PAD=DECK_N%2===0?1:0; if(PAD){const p=document.createElement('div'); p.className='page mx-back'; p.innerHTML='<div><small>By Afnan</small></div>'; h.appendChild(p);}
+    for(let i=DECK_N;i>=1;i--){const p=document.createElement('div'); p.className='page'; if(i===1) p.dataset.density='hard'; p.innerHTML='<img src="'+ABASE+'deck/s-'+String(i).padStart(2,'0')+'.jpg?v=1" alt="سلايد '+i+'" decoding="async">'; h.appendChild(p);}
+    const book=new St.PageFlip(h,{width:pw,height:ph,size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:false,flippingTime:900});
+    book.loadFromHTML(h.querySelectorAll('.page')); book.turnToPage(DECK_N+PAD);
+    const slideOf=k=>k<=PAD?0:DECK_N+1+PAD-k;
+    const lab=k=>{const port=book.getOrientation&&book.getOrientation()==='portrait'; const a=[slideOf(k),port?0:slideOf(k+1)].filter(x=>x>0&&x<=DECK_N).sort((x,y)=>x-y); const n=$('#mxNum'); if(n) n.textContent=a.length?a.join('–')+' / '+DECK_N:'النهاية 🤍';};
+    lab(book.getCurrentPageIndex()); book.on('flip',e=>lab(e.data)); o._book=book;
+  });
+}
+function closeMag(){const o=$('#magx'); if(!o) return; try{o._book&&o._book.destroy();}catch(e){} o.hidden=true; o.innerHTML=''; document.body.style.overflow='';}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mx]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const o=$('#magx'), bk=o&&o._book, a=b.dataset.mx;
+  if(a==='open'){closeModal(); openMag();} else if(a==='close') closeMag(); else if(a==='next'&&bk) bk.flipPrev('top'); else if(a==='prev'&&bk) bk.flipNext('top');},true);
+document.addEventListener('keydown',e=>{const o=$('#magx'); if(!o||o.hidden||!o._book) return; if(e.key==='Escape') closeMag(); if(e.key==='ArrowLeft') o._book.flipPrev('top'); if(e.key==='ArrowRight') o._book.flipNext('top');});
+mediaHTML=function(){
+  const v=MEDIA.youtube?'<iframe src="https://www.youtube-nocookie.com/embed/'+MEDIA.youtube+'?rel=0" title="فيديو مَدار" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>':'<div class="soon"><b>🎬</b>فيديو مَدار<br>يوصل قريبًا</div>';
+  return '<div class="mvid">'+v+'</div><div class="mlinks"><button type="button" class="mx-open" data-mx="open">📖 العرض التقديمي (مجلة)</button>'+(MEDIA.file?'<a href="'+MEDIA.file+'" target="_blank" rel="noopener">📁 ملف المشروع</a>':'')+'</div>';};
+(function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&GATE.judge&&!el.querySelector('[data-mx]')) el.insertAdjacentHTML('beforeend','<button class="btn" data-mx="open">📖 العرض</button>');};})();
+
+/* ---- ٢) البوب أب يطلع كل مرة ---- */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gate="judge-on"],[data-gate="judge-no"]'); if(!b||!GATE.who) return; e.preventDefault(); e.stopImmediatePropagation(); setJudge(b.dataset.gate==='judge-on'); closeModal(); render();},true);
+
+/* ---- ٣) أحتاج مساعدة: لمنو؟ ---- */
+function helpPop(){const sid=cSid(), m=$('#modal'); m.hidden=false; const k=N18.ask;
+  m.innerHTML='<div class="mcard wide" role="dialog" aria-label="أحتاج مساعدة"><h3>🙋‍♀️ تبين مساعدة من منو؟</h3>'+
+   '<div class="n18-who"><button class="'+(k==='coach'?'on':'')+'" data-n18="ask" data-v="coach"><span>✨</span><b>بوصلة</b><small>ترتيب وقتي وخطتي</small></button>'+
+   subjKeys().map(s=>'<button class="'+(k===s?'on':'')+'" data-n18="ask" data-v="'+s+'"><span>'+(SUBJ_ICON[s]||'📘')+'</span><b>'+esc(sName(s))+'</b><small>'+esc(sTeach(s))+'</small></button>').join('')+'</div>'+
+   (k&&k!=='coach'?'<label class="field" style="margin-top:10px">رسالتج لـ '+esc(sTeach(k))+'<textarea id="hpTxt" placeholder="'+esc(askHint(k))+'"></textarea></label><div class="row2" style="margin-top:8px"><button class="btn primary" data-n18="asksend" data-v="'+k+'">إرسال</button><button class="btn" data-gate="close">إلغاء</button></div>':'<button class="btn" style="width:100%;margin-top:10px" data-gate="close">إغلاق</button>')+'</div>';
+  const t=$('#hpTxt'); if(t) t.focus();}
+function askHint(k){return ({chem:'مثلاً: ما فهمت ليش 4s تتعبى قبل 3d',phys:'مثلاً: شلون أحوّل كم/ساعة لـ م/ث؟',math:'مثلاً: ممكن تعيدين حل المتباينات؟',bio:'مثلاً: شنو الفرق بين الخلية النباتية والحيوانية؟',arabic:'مثلاً: ما فهمت إعراب خبر كان',eng:'e.g. When do I use since and for?',social:'مثلاً: متى صدر دستور الكويت؟',islamic:'مثلاً: أبي أراجع أحكام التجويد',it:'مثلاً: شنو فرق الحلقة for و while؟'})[k]||'اكتبي سؤالج…';}
+
+/* ---- ٦) تدريباتي لكل المواد ---- */
+const QZ={
+  phys:{t:'الحركة في خط مستقيم',q:[['السرعة المتوسطة = ؟','المسافة ÷ الزمن',['الزمن ÷ المسافة','المسافة × الزمن','الكتلة ÷ الزمن']],['سيارة قطعت 100 م في 5 ث. سرعتها المتوسطة؟','20 م/ث',['500 م/ث','5 م/ث','0.05 م/ث']],['وحدة التسارع بالنظام الدولي؟','م/ث²',['م/ث','كم/ساعة','نيوتن']],['72 كم/ساعة تساوي؟','20 م/ث',['72 م/ث','7.2 م/ث','36 م/ث']],['جسم يتحرك بسرعة ثابتة بخط مستقيم، تسارعه؟','صفر',['يزيد','ينقص','يساوي سرعته']]]},
+  math:{t:'المعادلات والمتباينات',q:[['حل المعادلة: 2س + 3 = 11','س = 4',['س = 7','س = 5.5','س = 8']],['حل المعادلة: 3س − 5 = 10','س = 5',['س = 15','س = 3','س = 1.6']],['حلول المعادلة س² = 49','س = 7 أو س = −7',['س = 7 فقط','س = 24.5','س = 49']],['حل المتباينة: 2س > 8','س > 4',['س < 4','س > 16','س > 6']],['ميل المستقيم ص = 3س + 2','3',['2','5','−3']]]},
+  bio:{t:'الخلية',q:[['مركز التحكم في الخلية؟','النواة',['الغشاء البلازمي','الفجوة','الريبوسوم']],['«مصنع الطاقة» في الخلية؟','الميتوكندريا',['جهاز جولجي','النواة','الشبكة الإندوبلازمية']],['عضية البناء الضوئي؟','البلاستيدات الخضراء',['الميتوكندريا','الليسوسوم','الريبوسوم']],['شنو يميّز الخلية النباتية عن الحيوانية؟','الجدار الخلوي',['النواة','الغشاء البلازمي','الريبوسومات']],['وين يُصنع البروتين؟','الريبوسومات',['الفجوة','الجدار الخلوي','الليسوسوم']]]},
+  eng:{t:'Grammar',q:[['She ___ to school every day.','goes',['go','going','gone']],['They ___ playing football now.','are',['is','was','be']],['Past simple of "write":','wrote',['writed','written','writes']],['I have lived here ___ 2020.','since',['for','from','at']],['Plural of "child":','children',['childs','childes','child']]]},
+  arabic:{t:'النحو',q:[['علامة رفع الفعل المضارع صحيح الآخر؟','الضمة',['الفتحة','الكسرة','السكون']],['«كان» وأخواتها:','ترفع الاسم وتنصب الخبر',['تنصب الاسم وترفع الخبر','ترفعهما معًا','تنصبهما معًا']],['إعراب «الطالبةُ» في: نجحت الطالبةُ','فاعل مرفوع',['مبتدأ مرفوع','مفعول به منصوب','خبر مرفوع']],['«إنّ» وأخواتها:','تنصب الاسم وترفع الخبر',['ترفع الاسم وتنصب الخبر','تجزم الفعل','تنصبهما معًا']],['جمع «كتاب»:','كُتُب',['كتابات فقط','كتابون','كتابين']]]},
+  social:{t:'تاريخ الكويت',q:[['سنة استقلال الكويت؟','1961',['1950','1971','1945']],['صدر دستور الكويت سنة؟','1962',['1961','1975','1990']],['العيد الوطني للكويت؟','25 فبراير',['26 فبراير','19 يونيو','11 نوفمبر']],['يوم التحرير؟','26 فبراير 1991',['25 فبراير 1990','2 أغسطس 1990','1 يناير 1992']],['أول انتخابات لمجلس الأمة كانت سنة؟','1963',['1961','1970','1981']]]},
+  it:{t:'أساسيات البرمجة',q:[['الخوارزمية هي…','خطوات مرتبة لحل مشكلة',['لغة برمجة','جهاز حاسوب','برنامج رسم']],['1 بايت = ؟','8 بت',['10 بت','4 بت','16 بت']],['الحلقة التكرارية نستخدمها عشان…','نكرر أوامر',['نحذف ملف','نرسم شكل','نطفي الجهاز']],['ناتج 7 % 2 في بايثون؟','1',['3.5','3','0']],['نوع البيانات لـ "مرحبا"؟','نص (string)',['رقم صحيح','منطقي','عشري']]]}
+};
+let QLOG=(()=>{try{return JSON.parse(localStorage.getItem('madar.qlog')||'[]')}catch(e){return []}})();
+function qlogSave(){try{localStorage.setItem('madar.qlog',JSON.stringify(QLOG.slice(-80)))}catch(e){}}
+function qStars(sid,k){const b=Math.max(-1,...QLOG.filter(x=>x.sid===sid&&x.subj===k).map(x=>x.score)); return b>=5?3:b>=4?2:b>=3?1:0;}
+function allStars(sid){return totalStars(sid)+Object.keys(QZ).reduce((n,k)=>n+qStars(sid,k),0);}
+const QV={k:null,i:0,ok:0,pick:null,items:[],wrong:[]};
+function qOpen(k){QV.k=k;QV.i=0;QV.ok=0;QV.pick=null;QV.wrong=[];QV.items=shuffle(QZ[k].q).map(x=>({q:x[0],a:x[1],ch:shuffle([x[1]].concat(x[2]))})); qDraw();}
+function qDraw(){const m=$('#modal'); m.hidden=false; const z=QZ[QV.k], it=QV.items[QV.i];
+  if(!it){const sid=cSid(), before=qStars(sid,QV.k); QLOG.push({sid,subj:QV.k,topic:z.t,score:QV.ok,total:5,wrong:QV.wrong,at:new Date().toISOString()}); qlogSave(); const now=qStars(sid,QV.k);
+    m.innerHTML='<div class="mcard" role="dialog"><h3>'+(QV.ok>=4?'🎉':'💪')+' خلصتي '+esc(z.t)+'</h3><p class="n18-big num">'+QV.ok+' / 5</p><p style="text-align:center;font-size:1.6rem;margin:0;color:#FFD166">'+'★'.repeat(now)+'<span style="opacity:.25">'+'★'.repeat(3-now)+'</span></p>'+
+      (now>before?'<p style="text-align:center">⭐ نجوم جديدة!</p>':'')+'<div class="row2" style="margin-top:12px"><button class="btn primary" data-n18="qagain">↻ مرة ثانية</button><button class="btn" data-n18="qclose">تم</button></div></div>'; return;}
+  const ans=QV.pick!=null;
+  m.innerHTML='<div class="mcard" role="dialog" aria-label="تدريب"><div class="row"><b>'+(SUBJ_ICON[QV.k]||'')+' '+esc(sName(QV.k))+' · '+esc(z.t)+'</b><span class="spacer"></span><span class="pill none num">'+(QV.i+1)+' / 5</span></div>'+
+   '<p class="n18-q" dir="auto">'+esc(it.q)+'</p><div class="n18-ch">'+it.ch.map((c,j)=>'<button dir="auto" class="'+(ans?(c===it.a?'ok':j===QV.pick?'no':''):'')+'" data-n18="qpick" data-v="'+j+'"'+(ans?' disabled':'')+'>'+esc(c)+'</button>').join('')+'</div>'+
+   (ans?'<p class="small">'+(it.ch[QV.pick]===it.a?'✅ صح!':'❌ الصح: <b dir="auto">'+esc(it.a)+'</b>')+'</p><button class="btn primary" style="width:100%" data-n18="qnext">'+(QV.i<4?'التالي ←':'النتيجة')+'</button>':'')+'</div>';}
+
+/* ---- ٧) نجمة كوكبتي: صندوق ظاهر + صورة/صوت ---- */
+(function(){const _c=constellation; constellation=function(sid){let h=_c(sid);
+  h=h.replace(/<details[^>]*><summary class="k-sub">⭐ أضيفي نجمة[\s\S]*?<\/details>/,
+   '<div class="n18-star"><b>⭐ أضيفي نجمة</b><span class="small">شنو سويتي وتفتخرين فيه؟ ينضاف لكوكبتج على طول</span>'+
+   '<textarea id="snNote" maxlength="160" placeholder="مثال: صممت شعار نادي العلوم، برمجت لعبة، كتبت قصة…"></textarea>'+
+   '<select id="snDom" aria-label="المجال">'+Object.keys(TAL).filter(k=>k!=='acad').map(k=>'<option value="'+k+'">'+TAL[k].i+' '+TAL[k].n+'</option>').join('')+'</select>'+
+   attBar('star')+'<input type="hidden" id="snLink" value=""><button class="k-play" data-act="nomS" data-sid="'+sid+'">✨ أطلقي النجمة</button></div>');
+  return h;};})();
+(function(){const P=saveNom; saveNom=function(n){const k=n.role==='self'?'star':n.role==='parent'?'pnom':null, a=k&&G2.att[k]; if(a&&(a.img||a.sec)){n.img=a.img; n.sec=a.sec; n.aud=a.aud; G2.att[k]={};} return P(n);};})();
+
+/* ---- ١٢) مراجعتي الذكية لكل مادة ---- */
+const LES={chem:'التوزيع الإلكتروني',phys:'الحركة في خط مستقيم',math:'المعادلات والمتباينات',bio:'الخلية',arabic:'النحو',eng:'English Grammar',social:'تاريخ الكويت',islamic:'أحكام التجويد',it:'أساسيات البرمجة'};
+function reviewPanel2(sid){const w=g2Weak(sid), k=N18.rev||w[0]||'chem', ls=LES[k]||sName(k), q=s=>'https://www.youtube.com/results?search_query='+encodeURIComponent(s);
+  return '<section class="k-card" id="grev"><div class="k-h"><h3>🎧 مراجعتي الذكية</h3></div>'+
+   '<div class="n18-chips">'+subjKeys().map(s=>'<button data-n18="rev" data-v="'+s+'" aria-pressed="'+(s===k)+'">'+(SUBJ_ICON[s]||'')+' '+esc(sName(s))+(w.includes(s)?' •':'')+'</button>').join('')+'</div>'+
+   '<p class="small" style="margin:0">'+(w.includes(k)?'🎯 بوصلة تقترح تراجعين <b>'+esc(ls)+'</b>':'📘 <b>'+esc(ls)+'</b>')+'</p>'+
+   '<a class="mc-e" style="border-inline-start-color:#3F51B5;text-decoration:none" href="'+(PODCAST||'https://notebooklm.google.com/')+'" target="_blank" rel="noopener"><span class="mc-ei">🎧</span><span class="mc-eb"><b>بودكاست الدرس</b><small>NotebookLM</small></span></a>'+
+   [['شرح '+ls+' '+sName(k)+' الصف العاشر','▶️ شرح الدرس'],[ls+' '+sName(k)+' تمارين محلولة','▶️ تمارين محلولة'],[ls+' مراجعة سريعة','▶️ مراجعة ٥ دقايق']].map(v=>'<a class="mc-e" style="border-inline-start-color:#FF0000;text-decoration:none" href="'+q(v[0])+'" target="_blank" rel="noopener"><span class="mc-ei">📺</span><span class="mc-eb"><b>'+v[1]+'</b><small>YouTube</small></span></a>').join('')+'</section>';}
+
+/* ---- ١١) أرسلي لمعلمتج: الرسائل والمثال يتغيرون مع المادة ---- */
+function stuMsg2(sid){const k=SV.subj||'chem', mine=MSGS.filter(m=>m.from==='student'&&m.sid===sid&&m.subj===k).slice().reverse().slice(0,4);
+  return '<section class="k-card" id="smsg"><div class="k-h"><h3>✉️ أرسلي لمعلمتج</h3></div>'+
+   '<select id="smSubj" aria-label="المادة">'+subjKeys().map(s=>'<option value="'+s+'"'+(k===s?' selected':'')+'>'+(SUBJ_ICON[s]||'')+' '+esc(sName(s))+' — '+esc(sTeach(s))+'</option>').join('')+'</select>'+
+   '<textarea id="smTxt" placeholder="'+esc(askHint(k))+'">'+esc(SV.txt||'')+'</textarea>'+
+   '<div class="row"><button class="k-play" data-act="ssend">إرسال</button><span class="small muted">توصل لـ '+esc(sTeach(k))+' بس</span></div>'+
+   (mine.length?mine.map(m=>'<div class="row small" style="align-items:flex-start"><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span>'+(m.read?'<span class="pill good">✓ انقرت</span>':'')+'</div>').join(''):'')+'</section>';}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='smSubj'){const ta=$('#smTxt'); SV.txt=ta?ta.value:''; SV.subj=e.target.value; render(); const s=$('#smsg'); s&&s.scrollIntoView({block:'nearest'});}});
+
+/* ---- ٤ + ٥ + ٩ + ١٠) تقويم واحد: تتمشين بالأيام، المهام فيه، والحصة + التذكير المقترح ---- */
+const PERIOD={e2:'الحصة الثانية',e5:'الحصة الثالثة',e9:'الحصة الأولى',e11:'الحصة الأولى'};
+(function(){const _s=calSeed; calSeed=function(){return _s().map(e=>Object.assign(e,PERIOD[e.id]?{period:PERIOD[e.id]}:{}));};})();
+const MN18=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function dayTasks(sid,iso){const d=new Date(iso+'T12:00:00').getDay(); return S.plans.filter(p=>p.sid===sid&&p.day===d).sort((a,b)=>a.time.localeCompare(b.time));}
+function calPanel2(){
+  const now=new Date(), todayIso=cIso(now), sid=cSid(), isS=V.role==='student';
+  if(!CV.day) CV.day=todayIso; const sel=CV.day, sd=new Date(sel+'T12:00:00'); if(CV.y==null||CV.y!==sd.getFullYear()||CV.m!==sd.getMonth()){CV.y=sd.getFullYear(); CV.m=sd.getMonth();}
+  const first=new Date(CV.y,CV.m,1,12), days=new Date(CV.y,CV.m+1,0).getDate(), lead=first.getDay();
+  const evs=calEvents().filter(calSees), by={}; evs.forEach(e=>{(by[e.date]=by[e.date]||[]).push(e);});
+  let cells=''; for(let i=0;i<lead;i++) cells+='<div class="mc-c off"></div>';
+  for(let d=1;d<=days;d++){const iso=CV.y+'-'+String(CV.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'), l=by[iso]||[], wd=(lead+d-1)%7, tk=isS&&wd<5?dayTasks(sid,iso).length:0;
+    cells+='<button class="mc-c'+(iso===todayIso?' today':'')+(iso===sel?' sel':'')+(wd>=5?' wkend':'')+(l.length?' has':'')+'" data-cal="day2" data-v="'+iso+'"><span class="mc-n num">'+d+'</span><span class="mc-i">'+l.slice(0,2).map(e=>'<i style="background:'+CAL_T[e.t].c+'22;border-color:'+CAL_T[e.t].c+'">'+cIcon(e)+'</i>').join('')+(l.length>2?'<b>+'+(l.length-2)+'</b>':'')+(tk&&!l.length?'<em class="n18-dot"></em>':'')+'</span></button>';}
+  const dl=by[sel]||[], tl=isS?dayTasks(sid,sel):[], upc=evs.filter(e=>e.date>sel).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,3);
+  const evRow=e=>{const need=(isS||V.role==='parent')&&cNeed(sid,e), rem=CALR[e.id+'|'+sid];
+    return '<button class="mc-e" data-cal="ev" data-v="'+e.id+'" style="border-inline-start-color:'+CAL_T[e.t].c+'"><span class="mc-ei">'+cIcon(e)+'</span><span class="mc-eb"><b>'+esc(e.title)+'</b><small>'+cFmt(e.date)+' · '+esc(e.time||'')+(e.period?' · '+esc(e.period):'')+'</small></span>'+(need?'<span class="pill warn">تذكير ذكي</span>':'')+(rem?'<span class="pill good">🔔</span>':'')+'</button>';};
+  const linked=lsGet('madar.gsub')==='1';
+  return '<section class="'+(isS?'k-card':'panel')+' mc" id="mcal"><div class="'+(isS?'k-h':'panel-h')+'"><'+(isS?'h3':'h2')+'>📅 '+(isS?'تقويمي':'تقويم '+esc(cStu(sid).name))+'</'+(isS?'h3':'h2')+'><span class="spacer"></span>'+
+    (linked?'<span class="pill good">✓ مربوط بتقويم جوجل</span>':'<button class="btn sm primary" data-n18="gsub">🔗 '+(isS?'اربطي':'اربطوا')+' تقويم جوجل</button>')+'</div>'+
+    '<div class="mc-nav"><button class="btn sm" data-cal="m2" data-v="-1" aria-label="الشهر السابق">›</button><b>'+MN18[CV.m]+' '+CV.y+'</b><button class="btn sm" data-cal="m2" data-v="1" aria-label="الشهر الجاي">‹</button></div>'+
+    '<div class="mc-g">'+['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'].map(x=>'<div class="mc-h">'+x+'</div>').join('')+cells+'</div>'+
+    '<div class="n18-dnav"><button class="btn sm" data-cal="d2" data-v="-1">› أمس</button><b>'+(sel===todayIso?'اليوم · ':'')+cFmt(sel)+'</b>'+(sel!==todayIso?'<button class="btn sm" data-cal="d2" data-v="0">اليوم</button>':'')+'<button class="btn sm" data-cal="d2" data-v="1">بكرة ‹</button></div>'+
+    (dl.length||tl.length?dl.map(evRow).join('')+tl.map(t=>'<div class="mc-e" style="border-inline-start-color:'+((SUBJ_COLOR[t.subj]||{}).hex||'#999')+'"><span class="mc-ei">'+(SUBJ_ICON[t.subj]||'📌')+'</span><span class="mc-eb"><b>'+esc(t.title)+'</b><small>⏰ '+t.time+' · ⏳ '+t.min+' د · مذاكرة</small></span>'+(t.status==='done'?'<span class="pill good">✓</span>':'')+'</div>').join(''):'<div class="empty">'+(isS?'ما عندج شي بهاليوم 🌿':'ما عندها شي بهاليوم 🌿')+'</div>')+
+    (upc.length?'<h4 class="mc-st">⏳ الجاي</h4>'+upc.map(evRow).join(''):'')+
+    (linked?'':'<p class="k-note">🔗 '+(isS?'اربطيه':'اربطوه')+' مرة وحدة، وبعدها كل موعد جديد ينزل بتقويم جوجل تلقائي، بلون مادته.</p>')+'</section>';}
+function subUrl(){const s=cStu(cSid()), base=(location.host.endsWith('github.io')?location.origin+location.pathname.replace(/[^\/]*$/,''):'https://engafnansa93.github.io/hayy/madar/'); const id=(s.id||'s1').split('_')[0];
+  return 'https://calendar.google.com/calendar/r?cid='+encodeURIComponent(base.replace(/^https?:/,'webcal:')+'cal/'+id+'.ics');}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-cal="day2"],[data-cal="d2"],[data-cal="m2"]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); const a=b.dataset.cal, v=b.dataset.v;
+  if(a==='day2') CV.day=v;
+  else if(a==='d2'){const d=v==='0'?new Date():new Date((CV.day||cIso(new Date()))+'T12:00:00'); if(v!=='0') d.setDate(d.getDate()+(+v)); CV.day=cIso(d);}
+  else {const d=new Date(CV.y,CV.m+(+v),1,12); CV.day=cIso(d);}
+  render(); const s=$('#mcal .n18-dnav'); s&&s.scrollIntoView({block:'nearest',behavior:'smooth'});},true);
+(function(){const _o=calOpen; calOpen=function(id){_o(id); const e=calEvents().find(x=>x.id===id); const card=$('#modal .mcard'); if(!e||!card) return;
+  if(e.period){const p=card.querySelector('p'); if(p) p.insertAdjacentHTML('beforeend','<br>📍 '+esc(e.period));}
+  const isS=V.role==='student', isP=V.role==='parent', h=card.querySelector('h4.mc-st'); if(!h) return;
+  const sid=cSid(), st=cStu(sid), need=cNeed(sid,e), cur=CALR[id+'|'+sid];
+  if((isS||isP)&&(e.t==='exam'||e.t==='due')){const t=(st.term||{})[e.subj];
+    h.innerHTML='🔔 متى '+(isP?'نذكّركم':'أذكّرج')+'؟';
+    h.insertAdjacentHTML('afterend','<p class="n18-sug">✨ <b>مقترح من بوصلة</b> بناءً على '+(isP?'درجاتها':'درجاتج')+(e.subj&&t!=null?' بـ'+esc(sName(e.subj))+' ('+t+'%)':'')+': '+(need?'تبدين قبل بأسبوع':'يكفي قبل بيوم')+'. '+(isP?'تقدرون تغيرونه.':'تقدرين تغيرينه 🤍')+'</p>');
+    if(!cur) card.querySelectorAll('.mc-rem label').forEach(l=>{const c=l.querySelector('input'); if(c&&c.checked) l.classList.add('n18-rec');});}};})();
+
+/* ---- الطالبة: الشاشة الجديدة ---- */
+vStudent=function(){
+  const sid=cSid(); const {st,res,strong,need}=studentSummary(sid);
+  const today=new Date().getDay(), mine=S.plans.filter(p=>p.sid===sid);
+  const todayT=mine.filter(p=>p.day===today).sort((a,b)=>(a.status==='done')-(b.status==='done')||a.time.localeCompare(b.time));
+  const doneN=todayT.filter(t=>t.status==='done').length, pct=todayT.length?doneN/todayT.length:0, stars=allStars(sid);
+  const pdays=new Set((S.practice||[]).concat(QLOG).filter(p=>p.sid===sid&&Date.now()-Date.parse(p.at)<7*864e5).map(p=>new Date(p.at).getDay())).size;
+  const ring='<svg viewBox="0 0 44 44" class="ring"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--k-ring)" stroke-width="5"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+(113*pct).toFixed(1)+' 113" transform="rotate(-90 22 22)"/><text x="22" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)">'+doneN+'/'+todayT.length+'</text></svg>';
+  const hero='<section class="k-hero"><div class="k-av">👩‍🎓</div><div class="k-hi"><h2>هلا '+esc(st.name)+' 🌸</h2><p>'+(todayT.length-doneN?'باقي لج '+(todayT.length-doneN)+' مهام اليوم، تقدرين!':'خلّصتي كل مهام اليوم 🎉')+'</p>'+
+    '<div class="k-stats"><span>⭐ <b class="num">'+stars+'</b> نجمة</span><span>🔥 <b class="num">'+pdays+'</b> أيام تدريب</span></div></div>'+ring+(S.mode==='live'?'':'<div class="k-pick">'+pickStudent('')+'</div>')+'</section>';
+  const task=t=>{const sk=taskSkill(t), g=t.kind==='practice'&&GAMES[sk];
+    return '<div class="k-task'+(t.status==='done'?' done':'')+'" id="task-'+t.id+'"><span class="k-ic">'+(g?GAME_ICON[sk]:SUBJ_ICON[t.subj]||'📌')+'</span>'+
+    '<div class="k-tb"><div class="k-tt">'+esc(t.title)+'</div><div class="k-tm"><span>'+(SUBJ_ICON[t.subj]||'')+' '+esc(sName(t.subj))+'</span><span class="num">⏰ '+t.time+'</span><span class="num">⏳ '+t.min+' د</span>'+(t.result!=null?'<span class="pill '+(t.result>=4?'good':t.result>=3?'warn':'crit')+'">'+t.result+'/5</span>':'')+'</div>'+
+    '<div class="k-why">💡 '+esc(t.why)+'</div>'+
+    '<div class="k-ta">'+(g&&t.status!=='done'?'<button class="k-play" data-act="play" data-skill="'+esc(sk)+'" data-id="'+t.id+'">▶ العبي '+GAMES[sk].name+'</button>':'')+
+    (t.kind==='practice'&&t.status!=='done'&&!g?'<label class="small">نتيجتي <select data-act="pres" data-id="'+t.id+'" id="pres-'+t.id+'"><option value="">—</option>'+[0,1,2,3,4,5].map(n=>'<option>'+n+'</option>').join('')+'</select> /5</label>':'')+
+    (t.status!=='done'?'<a class="k-link" href="'+calLink(t)+'" target="_blank" rel="noopener">＋ تقويم جوجل</a>':'')+'</div></div>'+
+    '<button class="k-chk" data-act="task" data-id="'+t.id+'" aria-label="'+(t.status==='done'?'رجّعيها':'أنجزتها')+'">'+(t.status==='done'?'✓':'')+'</button></div>';};
+  const plan='<section class="k-card" id="plan"><div class="k-h"><h3>✅ خطتي اليوم</h3><span class="spacer"></span><span class="k-sub">'+DAYS[today]+'</span></div>'+
+    (todayT.length?todayT.map(task).join(''):'<div class="k-empty">🌿 ما عندج مهام اليوم</div>')+
+    '<div class="k-btns"><button class="k-soft" data-n18="help">🙋‍♀️ أحتاج مساعدة</button><button class="k-soft" data-act="coachq" data-q="عدّل خطتي، اليوم عندي ضغط">🔄 خففي خطتي</button></div></section>';
+  const pk=N18.prac, subs=['chem'].concat(Object.keys(QZ).filter(k=>S.subjects[k]));
+  const games=pk==='chem'?'<div class="k-games">'+ORDER_SK.map((sk,i)=>{const n=skillStars(sid,sk), lock=i>0&&skillStars(sid,ORDER_SK[i-1])===0&&!S.plans.some(p=>p.sid===sid&&p.kind==='practice'&&taskSkill(p)===sk);
+      return '<div class="k-game '+GAME_TINT[sk]+(lock?' lock':'')+'"><span class="k-gi">'+(lock?'🔒':GAME_ICON[sk])+'</span><b>'+GAMES[sk].name+'</b><small class="k-sub">'+esc(sk)+'</small><span class="k-st">'+'★'.repeat(n)+'<i>'+'★'.repeat(3-n)+'</i></span>'+
+        (lock?'<span class="k-sub">بعد '+esc(GAMES[ORDER_SK[i-1]].name)+'</span>':'<button class="k-play sm" data-act="play" data-skill="'+esc(sk)+'">▶ العبي</button>')+'</div>';}).join('')+'</div>'
+    :(()=>{const n=qStars(sid,pk), last=QLOG.filter(x=>x.sid===sid&&x.subj===pk).slice(-1)[0];
+      return '<div class="k-games"><div class="k-game t2"><span class="k-gi">'+(SUBJ_ICON[pk]||'📘')+'</span><b>'+esc(QZ[pk].t)+'</b><small class="k-sub">٥ أسئلة سريعة</small><span class="k-st">'+'★'.repeat(n)+'<i>'+'★'.repeat(3-n)+'</i></span>'+(last?'<small class="k-sub num">آخر نتيجة '+last.score+'/5</small>':'')+'<button class="k-play sm" data-n18="quiz" data-v="'+pk+'">▶ ابدئي</button></div></div>';})();
+  const pmap='<section class="k-card" id="pmap"><div class="k-h"><h3>🎮 تدريباتي</h3><span class="spacer"></span><span class="k-sub num">⭐ '+stars+'</span></div>'+
+    '<div class="n18-chips">'+subs.map(k=>'<button data-n18="prac" data-v="'+k+'" aria-pressed="'+(k===pk)+'">'+(SUBJ_ICON[k]||'')+' '+esc(sName(k))+'</button>').join('')+'</div>'+games+
+    '<p class="k-note">كل تدريب تخلصينه يعطيج نجوم ⭐ (لين ٣ لكل درس).</p></section>';
+  const chat=(S.chats[sid]||[]);
+  const coach='<section class="k-card" id="coach"><div class="k-h"><h3>✨ بوصلة</h3><span class="spacer"></span><span class="badge ai">'+(S.gemini==='live'?'Gemini':'محاكاة')+'</span></div>'+
+    '<div class="chat" id="chat">'+(chat.length?chat.map(m=>'<div class="msg '+m.w+'">'+esc(m.t)+'</div>').join(''):'<div class="msg bot">هلا '+esc(st.name)+' 👋 '+(st.goal?'هدفج: «'+esc(st.goal)+'» 🎯 ':'')+'شنو تبين نرتب اليوم؟</div>')+'</div>'+
+    '<div class="chips">'+[['⏰','متى أذاكر للاختبار الجاي؟'],['😅','فاتتني مهام أمس'],['🗓️','رتبي لي مذاكرة الأسبوع']].map(q=>'<button class="chip" data-act="coachq" data-q="'+q[1]+'">'+q[0]+' '+q[1]+'</button>').join('')+'</div>'+
+    '<form class="chat-in" data-act="coachf"><input type="text" id="coachIn" placeholder="اكتبي لبوصلة…" aria-label="رسالة لبوصلة"><button class="k-play" aria-label="إرسال">➤</button></form></section>';
+  const prog=subjRows(sid).map(r=>{const L=lvlOf(r.r); return '<span>'+(SUBJ_ICON[r.k]||'')+' '+esc(sName(r.k))+'</span><div class="bar"><i style="width:'+Math.round(r.r*100)+'%"></i></div><span class="pill '+L[0]+'">'+L[1]+'</span>';}).join('');
+  const itCard=st.interests?(()=>{const r=st.interests, top=Object.keys(r).sort((x,y)=>r[y]-r[x]).slice(0,2);
+      return '<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 ميولي</h3><span class="spacer"></span><button class="k-link" data-act="itest" style="border:0">↻ أعيديه</button></div><div class="k-tags">'+top.map(d=>'<span class="pill acc">'+DIM_ICON[d]+' '+DIMS[d]+'</span>').join('')+'</div></section>';})()
+    :'<section class="k-card t3" id="itest"><div class="k-h"><h3>🧭 اكتشفي ميولج</h3></div><p class="small">18 سؤال بالإيموجي، ٣ دقايق 🌟</p><button class="k-play" data-act="itest">▶ ابدئي</button></section>';
+  const side=constellation(sid)+reviewPanel2(sid)+
+    '<section class="k-card" id="kprog"><div class="k-h"><h3>📈 تقدّمي</h3></div>'+(prog?'<div class="prog n18-prog">'+prog+'</div>':'<div class="k-empty">ما في درجات بعد</div>')+'</section>'+itCard;
+  return '<div class="kid">'+hero+'<div class="cols"><div class="c7 kcol">'+plan+calPanel2()+pmap+coach+stuMsg2(sid)+inbox('student',sid)+'</div><div class="c5 kcol">'+side+'</div></div></div>';
+};
+
+/* ---- ولي الأمر: الملخص أول، وبعدين التفاصيل بتبويبات ---- */
+STAFF.teacher.n='معلمة الكيمياء';
+Object.keys(G10).concat(['phys']).forEach(k=>{if(k==='chem'||STAFF['t_'+k]) return; STAFF['t_'+k]={i:SUBJ_ICON[k]||'📘',n:'معلمة '+(TERM[k]||k).replace(/^ال/,'ال'),sub:(G10[k]&&G10[k].t)||'أ. مريم (اسم تجريبي)',days:[0,1,2,3,4].filter((d,i)=>(i+k.length)%2===0||d===2),h:['08:30','09:00','10:30','11:00','12:00']};});
+function staffKeyFor(subj){return subj==='chem'||!subj?'teacher':'t_'+subj;}
+function bookPanel2(){const sid=cSid(), st=cStu(sid), w=BV.who, mine=BK.filter(b=>b.sid===sid), weak=g2Weak(sid)[0];
+  const tk=['teacher'].concat(Object.keys(STAFF).filter(k=>k.startsWith('t_'))), ak=['vice','admin','coun'];
+  const pb=k=>'<button class="bk-p'+(w===k?' on':'')+'" data-cal="bwho" data-v="'+k+'"><span>'+STAFF[k].i+'</span><b>'+STAFF[k].n+'</b><small>'+STAFF[k].sub+'</small></button>';
+  return '<section class="panel" id="book"><div class="panel-h"><h2>🗓️ احجز موعد</h2><span class="spacer"></span><span class="pill none">حضوري أو Meet</span></div>'+
+   (weak&&!mine.length?'<p class="n18-sug">💡 مقترح: موعد مع '+esc(STAFF[staffKeyFor(weak)].n)+'</p>':'')+
+   '<p class="small muted">المعلمات</p><div class="bk-who">'+tk.map(pb).join('')+'</div><p class="small muted">الإدارة</p><div class="bk-who">'+ak.map(pb).join('')+'</div>'+
+   (w?'<p class="small muted">اليوم</p><div class="bk-days">'+bkDays(w).map(iso=>{const free=STAFF[w].h.filter(h=>!bkTaken(w,iso,h)).length; return '<button class="bk-d'+(BV.day===iso?' on':'')+'" data-cal="bday" data-v="'+iso+'"'+(free?'':' disabled')+'><b>'+cFmt(iso)+'</b><small>'+(free?free+' متاح':'ممتلئ')+'</small></button>';}).join('')+'</div>':'')+
+   (w&&BV.day?'<p class="small muted">الوقت</p><div class="bk-slots">'+STAFF[w].h.map(h=>{const t=bkTaken(w,BV.day,h); return '<button class="bk-s'+(BV.slot===h?' on':'')+'" data-cal="bslot" data-v="'+h+'"'+(t?' disabled':'')+'>'+h+'</button>';}).join('')+'</div>':'')+
+   (w&&BV.day&&BV.slot?'<div class="seg" role="group" style="margin:10px 0"><button data-cal="bmode" data-v="f2f" aria-pressed="'+(BV.mode==='f2f')+'">🏫 حضوري</button><button data-cal="bmode" data-v="meet" aria-pressed="'+(BV.mode==='meet')+'">🎥 Meet</button></div><input id="bkWhy" placeholder="السبب (اختياري)"><button class="btn primary" style="margin-top:8px" data-cal="bgo">✓ احجز</button>':'')+
+   (mine.length?'<h3 class="mc-st">مواعيدي</h3>'+mine.map(b=>'<div class="mc-e" style="border-inline-start-color:#2F7D5B"><span class="mc-ei">'+STAFF[b.who].i+'</span><span class="mc-eb"><b>'+STAFF[b.who].n+'</b><small>'+cFmt(b.date)+' · '+b.time+' · '+(b.mode==='meet'?'🎥 Meet':'🏫 حضوري')+'</small></span><span class="pill good">مؤكد</span></div>').join(''):'')+'</section>';}
+function homeAdd(kind){const sid=cSid(), x=$('#hmTxt'), t=x?x.value.trim():'', a=G2.att.home||{}; if(!t&&!a.img&&!a.sec){toast('اكتبوا شي أول');return;}
+  N18.home.push({sid,kind:kind||($('#hmK')||{}).value||'s',text:t,img:a.img,sec:a.sec,at:new Date().toISOString()}); homeSave(); G2.att.home={}; render(); toast('🤍 وصلت للمعلمات وبوصلة');}
+function homeList(sid){return N18.home.filter(h=>h.sid===sid);}
+function parentSumText(sid){const st=stu(sid), rows=subjRows(sid), ex=rows.filter(r=>r.r>=0.9), md=rows.filter(r=>r.r>=0.8&&r.r<0.9), wk=rows.filter(r=>r.r<0.8);
+  return {st,ex,md,wk,line:esc(st.name)+(wk.length?' زينة بأغلب المواد، وتحتاج شوية متابعة بـ'+wk.map(r=>esc(sName(r.k))).join(' و')+'.':' ماشية زين بكل المواد 🌟')};}
+vParent=function(){
+  const sid=V.sid&&S.students.find(s=>s.id===V.sid)?V.sid:S.students[0].id; V.sid=sid;
+  const {st,strong,need}=studentSummary(sid), P=parentSumText(sid), tal=talent(sid), nx=calEvents().filter(calSees).filter(e=>e.date>=cIso(new Date())).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
+  const childPick=S.mode==='live'?'':pickStudent('');
+  const chip=(cls,ic,lbl,arr)=>'<div class="n18-k '+cls+'"><b class="num">'+arr.length+'</b><span>'+ic+' '+lbl+'</span><small>'+(arr.map(r=>SUBJ_ICON[r.k]||'').join(' ')||'—')+'</small></div>';
+  const L=G2.lang;
+  const sumTxt=L==='ar'?P.line:(()=>{const t=st.term||{}, best=Object.keys(t).sort((a,b)=>t[b]-t[a])[0], w=P.wk[0]; return esc(TR[L].f(st,SUBJ_EN[best],w&&SUBJ_EN[w.k]));})();
+  const sum='<section class="panel n18-sum" id="psum"><div class="panel-h"><h2>👨‍👩‍👧 '+esc(st.name)+' هالأسبوع</h2><span class="spacer"></span>'+childPick+'</div>'+
+    '<div class="n18-ks">'+chip('good','🌟','ممتازة',P.ex)+chip('acc','👍','زينة',P.md)+chip('warn','🎯','تحتاج متابعة',P.wk)+'</div>'+
+    '<div class="ai-out" dir="'+(['en','hi','tl'].includes(L)?'ltr':'rtl')+'"><span class="ai-tag">✦ Gemini</span><p>'+sumTxt+'</p></div>'+
+    '<div class="n18-meta">'+(nx?'<span>📅 الجاي: <b>'+esc(nx.title)+'</b> · '+cFmt(nx.date)+'</span>':'')+'<span>🏫 الغياب: <b class="num">'+st.abs+'</b></span>'+(tal.level?'<span>🌟 '+tal.dom.map(d=>TAL[d].n).join(' و')+'</span>':'')+'</div>'+
+    (P.wk.length?'<p class="n18-sug">💡 شلون تساعدونها: '+esc(P.wk[0].k==='chem'?'اسألوها تشرح لكم التوزيع الإلكتروني بكلامها ١٠ دقايق':'اسألوها شنو أصعب شي بـ'+sName(P.wk[0].k)+' هالأسبوع')+'</p>':'')+
+    '<div class="row" style="gap:6px"><span class="small muted">🌐</span><select data-n18="lang" aria-label="اللغة"><option value="ar"'+(L==='ar'?' selected':'')+'>العربية</option>'+Object.keys(TR).map(k=>'<option value="'+k+'"'+(L===k?' selected':'')+'>'+TR[k].n+'</option>').join('')+'</select><span class="small muted">يوصلكم كل خميس على Gmail</span></div></section>';
+  const TABS=[['grades','📊 الدرجات'],['prac','🎮 التدريب'],['tal','🌟 الموهبة'],['sn','💪 القوة والاحتياج'],['cal','📅 المواعيد'],['msg','✉️ الرسائل']];
+  const tb=N18.pt;
+  const tabs='<div class="n18-tabs" role="tablist">'+TABS.map(t=>'<button role="tab" data-n18="pt" data-v="'+t[0]+'" aria-selected="'+(tb===t[0])+'">'+t[1]+'</button>').join('')+'</div>';
+  const grades=()=>{const rows=subjRows(sid), pub=S.assessments.filter(a=>a.status==='published'&&a.grades[sid]);
+    return '<section class="panel" id="pgrades">'+rows.map(r=>{const Lv=lvlOf(r.r), list=pub.filter(a=>a.subj===r.k);
+      return '<details class="n18-g"><summary><span>'+(SUBJ_ICON[r.k]||'')+' '+esc(sName(r.k))+'</span><div class="bar"><i style="width:'+Math.round(r.r*100)+'%"></i></div><span class="pill '+Lv[0]+'">'+Lv[1]+'</span></summary>'+
+        list.map(a=>{const g=a.grades[sid]; return '<div class="row small"><span>'+esc(a.title)+'</span><span class="spacer"></span><b class="num">'+(g.s==='ok'?fmt(g.v)+' / '+a.max:GST[g.s])+'</b></div>';}).join('')+'</details>';}).join('')+'<p class="small muted">اضغطوا المادة تشوفون الاختبارات.</p></section>';};
+  const prac=()=>{const logs=(S.practice||[]).filter(p=>p.sid===sid&&p.game!=='تقييم ذاتي'), mc={}; logs.forEach(p=>(p.mistakes||[]).forEach(m=>mc[m]=(mc[m]||0)+1));
+    const top=Object.keys(mc).sort((a,b)=>mc[b]-mc[a]).slice(0,2);
+    const row=(k,n,last,extra)=>'<div class="n18-pr"><span>'+(SUBJ_ICON[k]||'')+' <b>'+esc(sName(k))+'</b></span><span class="k-st" style="color:#FFD166">'+'★'.repeat(Math.min(n,3))+'<i style="opacity:.25">'+'★'.repeat(Math.max(0,3-Math.min(n,3)))+'</i></span><span class="small muted">'+(last||'ما تدربت بعد')+'</span>'+(extra||'')+'</div>';
+    const cs=ORDER_SK.map(s=>skillStars(sid,s)), cl=logs[logs.length-1];
+    return '<section class="panel" id="preport">'+row('chem',Math.round(cs.reduce((a,b)=>a+b,0)/4),cl?'آخر: '+esc(cl.skill)+' '+cl.score+'/'+cl.total:'',top.length?'<span class="pill warn">'+esc(top[0])+'</span>':'')+
+      Object.keys(QZ).filter(k=>S.subjects[k]).map(k=>{const l=QLOG.filter(x=>x.sid===sid&&x.subj===k).slice(-1)[0]; return row(k,qStars(sid,k),l?'آخر: '+esc(l.topic)+' '+l.score+'/5':'');}).join('')+
+      '<fieldset class="row small" style="border:0;padding:0;margin:8px 0 0"><span class="muted">يوصلني التقرير:</span><label><input type="radio" name="dg" value="daily" data-act="digest" data-sid="'+sid+'"'+(st.digest==='daily'?' checked':'')+'> كل يوم</label><label><input type="radio" name="dg" value="weekly" data-act="digest" data-sid="'+sid+'"'+(st.digest!=='daily'?' checked':'')+'> كل خميس</label></fieldset></section>';};
+  const talP=()=>{const mine=noms(sid).filter(n=>n.role==='parent');
+    return '<section class="panel" id="ptal"><div class="row">'+(tal.level?'<span class="pill '+TLV[tal.level][0]+'">'+(tal.level==='cand'?'مرشّحة لفحص الموهبة':'مؤشرات واعدة')+'</span>'+tal.dom.map(d=>'<span class="pill acc">'+TAL[d].i+' '+TAL[d].n+'</span>').join(''):'<span class="small muted">للحين ما بانت مؤشرات كافية</span>')+'</div>'+
+      '<div style="max-width:380px;margin:8px auto">'+skySVG(tal,true)+'</div>'+(tal.dom.length?'<p class="small">🏠 بالبيت: '+esc(TAL[tal.dom[0]].tips.slice(0,2).join(' · '))+'</p>':'')+
+      '<div class="n18-star"><b>➕ شفتوا فيها موهبة؟</b><select id="pnDom">'+Object.keys(TAL).filter(k=>k!=='acad').map(k=>'<option value="'+k+'">'+TAL[k].i+' '+TAL[k].n+'</option>').join('')+'</select>'+
+      '<textarea id="pnNote" placeholder="مثال: ترسم من صغرها، تصمم، تحل ألغاز…"></textarea>'+attBar('pnom')+'<button class="btn primary" data-n18="pnom" data-v="'+sid+'">أرسلوها لبوصلة</button></div>'+
+      (mine.length?mine.map(n=>'<div class="row small"><span class="pill good">✓</span>'+TAL[n.domain].i+' '+esc(n.note||TAL[n.domain].n)+(n.img?' 📷':'')+(n.sec?' 🎤':'')+'</div>').join(''):'')+'</section>';};
+  const snP=()=>{const hm=homeList(sid);
+    return '<section class="panel" id="psn"><div class="n18-two"><div><b class="small">💪 قوية في</b><div class="k-tags">'+(strong.slice(-5).map(s=>'<span class="pill good">'+esc(s)+'</span>').join('')||'—')+hm.filter(h=>h.kind==='s').map(h=>'<span class="pill good">🏠 '+esc(h.text||'📎')+'</span>').join('')+'</div></div>'+
+      '<div><b class="small">🎯 تحتاج</b><div class="k-tags">'+(need.map(s=>'<span class="pill warn">'+esc(s)+'</span>').join('')||'—')+hm.filter(h=>h.kind==='n').map(h=>'<span class="pill warn">🏠 '+esc(h.text||'📎')+'</span>').join('')+'</div></div></div>'+
+      '<div class="n18-star"><b>➕ أضيفوا من البيت</b><select id="hmK"><option value="s">💪 قوية في…</option><option value="n">🎯 تحتاج مساعدة في…</option></select><textarea id="hmTxt" placeholder="مثال: تقرأ وايد بالإنجليزي، أو تتوتر بالاختبارات"></textarea>'+attBar('home')+'<button class="btn primary" data-n18="home">إضافة</button></div></section>';};
+  const calP=()=>calPanel2()+bookPanel2();
+  const msgP=()=>(inbox('parent',sid)||'<section class="panel"><div class="empty">ما في رسائل جديدة 🤍</div></section>')+violPanel(sid,'🧾 ملاحظات المدرسة');
+  const F={grades,prac,tal:talP,sn:snP,cal:calP,msg:msgP};
+  const body=(typeof T!=='undefined'&&T.on)?['prac','grades','tal'].map(k=>F[k]()).join(''):F[tb]();
+  return sum+tabs+'<div class="n18-body">'+body+'</div>';
+};
+
+/* ---- الأزرار ---- */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18]'); if(!b||b.tagName==='SELECT') return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.n18, v=b.dataset.v;
+  if(a==='help'){N18.ask=null; helpPop();}
+  else if(a==='ask'){if(v==='coach'){closeModal(); const i=$('#coachIn'); if(i){i.value='أحتاج مساعدة '; i.scrollIntoView({block:'center',behavior:'smooth'}); i.focus();} return;} N18.ask=v; helpPop();}
+  else if(a==='asksend'){const t=($('#hpTxt')||{}).value||''; if(!t.trim()){toast('اكتبي رسالتج أول');return;} const sid=cSid();
+    MSGS.push({sid,from:'student',to:['teacher'],subj:v,text:t.trim(),by:stu(sid).name,t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); S.requests.unshift({sid,text:'طلبت مساعدة بـ'+sName(v),t:nowStr()}); closeModal(); SV.subj=v; render(); toast('وصلت لـ '+sTeach(v)+' 🤍');}
+  else if(a==='prac'){N18.prac=v; render();}
+  else if(a==='quiz') qOpen(v);
+  else if(a==='qpick'){QV.pick=+v; const it=QV.items[QV.i]; if(it.ch[QV.pick]===it.a) QV.ok++; else QV.wrong.push(it.q); qDraw();}
+  else if(a==='qnext'){QV.i++; QV.pick=null; qDraw();}
+  else if(a==='qagain') qOpen(QV.k);
+  else if(a==='qclose'){closeModal(); render();}
+  else if(a==='rev'){N18.rev=v; render();}
+  else if(a==='gsub'){window.open(subUrl(),'_blank','noopener'); lsSet('madar.gsub','1'); render(); toast('🔗 وافقي «إضافة التقويم» بجوجل، وبعدها كل شي ينزل تلقائي');}
+  else if(a==='pt'){N18.pt=v; render(); const t=document.querySelector('.n18-tabs'); t&&t.scrollIntoView({block:'start',behavior:'smooth'});}
+  else if(a==='pnom'){const n=($('#pnNote')||{}).value||''; const at=G2.att.pnom||{}; if(!n.trim()&&!at.img&&!at.sec){toast('اكتبوا أو أرفقوا شي');return;}
+    saveNom({id:'n'+Date.now(),sid:v,role:'parent',by:stu(v).parent,domain:$('#pnDom').value,traits:[],note:n.trim(),status:'new',at:new Date().toISOString()}); render(); toast('شكرًا 🤍 وصلت لبوصلة، وانضافت نجمة لكوكبتها');}
+  else if(a==='home') homeAdd();
+},true);
+document.addEventListener('change',e=>{const s=e.target; if(s&&s.dataset&&s.dataset.n18==='lang'){G2.lang=s.value; render();}},true);
+
+/* النص اللي تكتبه البنت أو ولي الأمر ما يضيع لما ترفق صورة أو صوت */
+(function(){const _r=render; render=function(){const keep={}; ['snNote','pnNote','hmTxt','hpTxt'].forEach(i=>{const x=document.getElementById(i); if(x&&x.value) keep[i]=x.value;}); _r(); Object.keys(keep).forEach(i=>{const x=document.getElementById(i); if(x&&!x.value) x.value=keep[i];});};})();
+/* التقويم ما يتكرر: الطالبة وولي الأمر صار عندهم تقويم واحد داخل الصفحة */
+(function(){const _r=render; render=function(){_r(); if(V.role==='student'||V.role==='parent') document.querySelectorAll('#main > .mc-wrap').forEach(x=>x.remove());};})();
+/* جولة الحكام: خطوة العمارة صارت التدريبات */
+try{STEPS.forEach(s=>{if(s.spot==='#tower'){s.spot='#pmap'; s.t='التدريب يجمع نجوم'; s.p='كل لعبة تخلصها قمر تعطيها نجوم، والأسئلة اللي غلطت فيها ترجع لها بعدين. وفيه تدريب لكل المواد، مو بس الكيمياء.';}});}catch(e){}
+/* أول تحميل: نعيد الرسم بعد ما تجهز كل الإضافات، والبوب أب يطلع كل مرة */
+if(GATE.who){render();}
+if(!new URLSearchParams(location.search).has('student')&&$('#modal').hidden) judgePop();
 </script>
 
 </body></html>
