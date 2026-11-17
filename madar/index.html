@@ -1979,7 +1979,7 @@ function teacherSummary(sid){const {st,res,strong,need}=studentSummary(sid); con
   const t=talent(sid); if(t.level==='cand') parts.push('🌟 عندها مؤشرات موهبة تستاهل تنفحص.');
   if(st.interests){const top=Object.keys(st.interests).sort((a,b)=>st.interests[b]-st.interests[a])[0]; parts.push('ميولها الأعلى: '+DIMS[top]+'.');}
   return '<section class="panel" id="tsum"><h2>🧠 ملخص '+esc(fn)+'</h2><p style="line-height:1.9;margin:0">'+(parts.join(' ')||'للحين ما فيه بيانات كافية.')+'</p></section>';}
-function msgPanel(sid){const st=stu(sid), mine=MSGS.filter(m=>m.sid===sid).slice().reverse().slice(0,5);
+function msgPanel(sid){const st=stu(sid), mine=MSGS.filter(m=>m.sid===sid&&m.from!=='student').slice().reverse().slice(0,5);
   const tpl=['مستواها تحسّن هالأسبوع 👏 شكرًا على متابعتكم.','تحتاج تراجع '+(studentSummary(sid).need[0]||'الدرس الأخير')+' قبل الاختبار.','غابت عن الحصة، نتمنى تتابع اللي فاتها.'];
   return '<section class="panel" id="tmsg"><h2>✉️ أرسلي رسالة بخصوص '+esc(st.name)+'</h2>'+
    '<div class="row" style="gap:6px;flex-wrap:wrap">'+Object.keys(MSG_TO).map(k=>'<button class="btn sm'+(MV2.to[k]?' primary':'')+'" data-act="mto" data-v="'+k+'" aria-pressed="'+!!MV2.to[k]+'">'+MSG_TO[k].i+' '+MSG_TO[k].n+'</button>').join('')+'</div>'+
@@ -1988,7 +1988,7 @@ function msgPanel(sid){const st=stu(sid), mine=MSGS.filter(m=>m.sid===sid).slice
    '<div class="row"><button class="btn primary" data-act="msend">إرسال</button><span class="small muted">توصل بنفس اللحظة لكل اللي اخترتيهم</span></div>'+
    (mine.length?'<div style="margin-top:10px">'+mine.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+m.to.map(k=>MSG_TO[k].i).join(' ')+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</div>':'')+
    '<script type="text/plain" data-tpl>'+tpl.map(encodeURIComponent).join('|')+'</scr'+'ipt></section>';}
-function inbox(role,sid){const l=MSGS.filter(m=>m.to.includes(role)&&(!sid||m.sid===sid)).slice().reverse().slice(0,6); if(!l.length) return '';
+function inbox(role,sid){const l=MSGS.filter(m=>m.from!=='student'&&m.to.includes(role)&&(!sid||m.sid===sid)).slice().reverse().slice(0,6); if(!l.length) return '';
   return '<section class="panel"><h2>📨 رسائل من المعلمات</h2>'+l.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+esc(m.by)+'</span>'+(sid?'':'<b>'+esc(stu(m.sid).name)+':</b>')+'<span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</section>';}
 (function(){const _sr=studentReport;
   studentReport=function(sid){const h=_sr(sid); if(V.role!=='teacher') return h;
@@ -2009,6 +2009,35 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act="mto"]
     MSGS.push({sid:V.sid,to,text:txt,by:S.subjects[tSubj()].teacher||'المعلمة',t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); MV2.txt='';
     toast('وصلت الرسالة لـ '+to.map(k=>MSG_TO[k].n).join(' و'));}
   render();},true);
+
+/* ============ رسائل الطالبات للمعلمة ============ */
+if(!MSGS.some(m=>m.from==='student')){MSGS.push({sid:'s1',from:'student',to:['teacher'],subj:'chem',text:'أستاذة ما فهمت ليش 4s تتعبى قبل 3d 😅 ممكن تعيدينها بالحصة؟',by:'قمر',t:'٨:٤٠ ص'},{sid:'s5',from:'student',to:['teacher'],subj:'chem',text:'أستاذة أبي أسئلة زيادة للتدريب على الأعداد الكمية 🙏',by:'هيا',t:'أمس'});}
+const SV={subj:'chem'};
+function stuMsgPanel(sid){const mine=MSGS.filter(m=>m.from==='student'&&m.sid===sid).slice().reverse().slice(0,4);
+  const subs=Object.keys(S.subjects);
+  return '<section class="panel" id="smsg"><h2>✉️ أرسلي لمعلمتج</h2>'+
+   '<select id="smSubj" aria-label="المادة">'+subs.map(k=>'<option value="'+k+'"'+(SV.subj===k?' selected':'')+'>'+(SUBJ_ICON[k]||'')+' '+esc(S.subjects[k].name)+' — '+esc(S.subjects[k].teacher||'')+'</option>').join('')+'</select>'+
+   '<textarea id="smTxt" placeholder="سؤال، طلب شرح، أو أي شي تبين توصلينه لمعلمتج…" style="margin-top:8px">'+esc(SV.txt||'')+'</textarea>'+
+   '<div class="row"><button class="btn primary" data-act="ssend">إرسال</button><span class="small muted">توصل لمعلمة المادة بس</span></div>'+
+   (mine.length?'<div style="margin-top:10px">'+mine.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+(SUBJ_ICON[m.subj]||'')+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span>'+(m.read?'<span class="pill good">✓ انقرت</span>':'')+'</div>').join('')+'</div>':'')+'</section>';}
+function teacherInbox(sid){const subj=tSubj(); const l=MSGS.filter(m=>m.from==='student'&&m.subj===subj&&(!sid||m.sid===sid)).slice().reverse().slice(0,8);
+  const ids=new Set(S.students.map(x=>x.id)); const l2=sid?l:l.filter(m=>ids.has(m.sid));
+  const unread=l2.filter(m=>!m.read).length;
+  return '<section class="panel" id="tinbox"><div class="panel-h"><h2>📥 رسائل الطالبات</h2><span class="spacer"></span>'+(unread?'<span class="pill crit">'+unread+' جديدة</span>':'')+'</div>'+
+   (l2.length?l2.map(m=>'<div class="row small" style="align-items:flex-start;'+(m.read?'opacity:.7':'')+'"><span class="pill '+(m.read?'none':'acc')+'">'+esc(stu(m.sid).name)+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span><button class="btn sm" data-act="treply" data-sid="'+m.sid+'" data-k="'+MSGS.indexOf(m)+'">↩ ردّي</button></div>').join(''):'<div class="empty">ما في رسائل.</div>')+'</section>';}
+(function(){const _sr=studentReport,_s=vStudent,_vt=vTeacher;
+  studentReport=function(sid){const h=_sr(sid); if(V.role!=='teacher') return h; return h+teacherInbox(sid);};
+  vTeacher=function(){const h=_vt(); if(V.view==='one'&&!(typeof T!=='undefined'&&T.on)) return h; return h+teacherInbox(null);};
+  vStudent=function(){return _s()+stuMsgPanel(V.sid);};
+})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act="ssend"],[data-act="treply"]'); if(!b) return; e.preventDefault(); e.stopPropagation();
+  if(b.dataset.act==='ssend'){const ta=$('#smTxt'),sel=$('#smSubj'); SV.subj=sel?sel.value:SV.subj; const txt=(ta?ta.value:'').trim(); if(!txt){toast('اكتبي رسالتج أول');return;}
+    MSGS.push({sid:V.sid,from:'student',to:['teacher'],subj:SV.subj,text:txt,by:stu(V.sid).name,t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); SV.txt='';
+    toast('وصلت رسالتج لـ '+(S.subjects[SV.subj].teacher||'المعلمة')+' 🤍');}
+  else {const m=MSGS[+b.dataset.k]; if(m){m.read=true; msgSave();} V.view='one'; V.sid=b.dataset.sid; MV2.to={student:true}; MV2.txt='';
+    render(); setTimeout(()=>{const x=$('#tmsg'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); const t=$('#msgTxt'); if(t) t.focus();},60); return;}
+  render();},true);
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='smSubj'){SV.subj=e.target.value; const ta=$('#smTxt'); if(ta) SV.txt=ta.value;}},true);
 </script>
 
 </body></html>
