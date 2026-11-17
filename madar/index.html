@@ -1,4 +1,24 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+
+.g2-form{background:var(--sunk);border-radius:12px;padding:10px 12px;margin-top:10px}
+.g2-form h4{margin:0 0 6px;font-family:var(--f-display)} .g2-form td{padding:5px 4px;vertical-align:top;font-size:.88rem} .g2-form td:first-child{color:var(--muted);white-space:nowrap;width:30%}
+.g2-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.g2-kpi div{background:var(--sunk);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column}
+.g2-kpi span{font-size:1.2rem} .g2-kpi b{font-family:var(--f-display);font-size:1.25rem} .g2-kpi small{font-size:.72rem;color:var(--muted)}
+.g2-bar{display:grid;grid-template-columns:90px 1fr 44px;gap:8px;align-items:center;font-size:.85rem;margin:4px 0}
+.g2-bar i{height:10px;background:var(--sunk);border-radius:99px;overflow:hidden} .g2-bar em{display:block;height:100%;background:var(--accent);border-radius:99px}
+.g2-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g2-tools div{background:var(--sunk);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.g2-tools span{font-size:1.3rem} .g2-tools b{font-size:.88rem} .g2-tools small{font-size:.74rem;color:var(--muted);line-height:1.4}
+.g2-two{display:grid;grid-template-columns:1fr 1fr;gap:10px} .g2-two>div{background:var(--sunk);border-radius:12px;padding:10px 12px}
+.g2-att{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.g2-th{position:relative;display:inline-block} .g2-th img{width:46px;height:46px;object-fit:cover;border-radius:8px}
+.g2-th button,.g2-x{position:absolute;top:-6px;inset-inline-end:-6px;background:var(--crit);color:#fff;border:0;border-radius:50%;width:18px;height:18px;font-size:.65rem;cursor:pointer}
+.g2-x{position:static;margin-inline-start:4px}
+.g2-mimg{display:block;max-width:180px;border-radius:10px;margin:0 0 6px}
+.msg audio,.row audio{max-width:220px;height:34px;display:block;margin-top:4px}
+.g2-voice{display:inline-block;background:rgba(127,127,127,.18);border-radius:99px;padding:3px 10px;margin-top:4px;font-size:.85rem}
+@media (max-width:620px){.g2-kpi{grid-template-columns:repeat(2,1fr)}.g2-tools{grid-template-columns:repeat(2,1fr)}.g2-two{grid-template-columns:1fr}}
 /* تقويم مدار + الحجز */
 .mc-wrap{display:flex;flex-direction:column;gap:16px;margin:16px 0}
 .mc-nav{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
@@ -2234,6 +2254,145 @@ document.addEventListener('submit',e=>{if(e.target.dataset.cal!=='addf') return;
   const to=$('#caTo').value.split(':'), ev={id:'x'+Date.now(),t:$('#caT').value,subj:$('#caS').value||null,title:$('#caN').value.trim(),date:$('#caD').value,time:$('#caH').value||'08:00',to:{k:to[0],v:to[1]},note:$('#caX').value.trim()};
   if(!ev.title||!ev.date) return; CALX.push(ev); calSave(); CV.add=false; const d=new Date(ev.date+'T12:00:00'); CV.y=d.getFullYear(); CV.m=d.getMonth(); CV.day=ev.date; render();
   toast('📨 انرسل لـ '+calToLbl(ev)+'، ونزل بتقويمهم مع تذكير');},true);
+
+/* ============ ميزات جوجل الجديدة (17 نوفمبر) ============ */
+const G2={forms:null,cls:false,nom:null,noms:[],lang:'ar',lvl:'school',att:{},rec:null};
+function g2Weak(sid){try{return cWeak(sid);}catch(e){return [];}}
+const LESSON={chem:'التوزيع الإلكتروني',phys:'الحركة في خط مستقيم',math:'المعادلات',bio:'الخلية'};
+
+/* ٧) Google Forms ← إنذار */
+function formsPanel(){const sk='الترتيب الإلكتروني', r=G2.forms;
+  return '<section class="panel" id="gforms"><div class="panel-h"><h2>📝 كويز Google Forms ← مدار</h2><span class="spacer"></span><span class="pill none">بدون إدخال يدوي</span></div>'+
+   '<p class="small muted">سوّي الكويز بـ Google Forms مثل كل مرة. الدرجات تنزل بـ Sheets، ومدار يسحبها ويطلّع الإنذار بروحه.</p>'+
+   (r?'<div class="scroll"><table><thead><tr><th>الطالبة</th><th>الدرجة</th><th>مدار</th></tr></thead><tbody>'+r.map(x=>'<tr><td>'+esc(stu(x.sid).name)+'</td><td class="num">'+x.s+' / 10</td><td>'+(x.s<6?'<span class="pill crit">🔔 إنذار مبكر</span>':x.s<8?'<span class="pill warn">تدريب</span>':'<span class="pill good">أتقنت</span>')+'</td></tr>').join('')+'</tbody></table></div>'+
+     '<p class="small">✅ انسحبت '+r.length+' إجابة · '+r.filter(x=>x.s<6).length+' إنذار انضاف لـ «تحتاج متابعة» ووصل لبوصلة والأهل.</p>'
+    :'<button class="btn primary" data-g2="forms">📥 اسحبي نتائج كويز «'+sk+'»</button>')+'</section>';}
+function g2PullForms(){const sk='الترتيب الإلكتروني', sc={s1:4,s4:5,s2:10,s3:9,s5:7,s6:6,s7:8,s8:7};
+  G2.forms=S.students.map(s=>({sid:s.id,s:sc[s.id]!=null?sc[s.id]:7}));
+  G2.forms.forEach(x=>{const lv=x.s<6?'h':x.s<8?'p':'m'; [5,6].forEach(p=>S.indicators.push({sid:x.sid,subj:'chem',skill:sk,level:x.s<6?lv:(p===5?lv:'m'),week:S.week,period:p,by:'Google Forms'}));});
+  render(); toast('📥 انسحبت النتائج من Google Forms، وطلعت الإنذارات تلقائيًا');}
+
+/* ١٣) Classroom */
+function g2Classroom(){if(G2.cls){toast('Classroom متزامن ✓');return;} G2.cls=true; const c=cStu('s1').cls;
+  [['due','chem','واجب Classroom: ورقة عمل التوزيع الإلكتروني',2],['due','phys','واجب Classroom: مسائل الحركة',4],['due','eng','واجب Classroom: Reading Task',7]].forEach((a,i)=>
+    CALX.push({id:'gc'+i+Date.now(),t:a[0],subj:a[1],title:a[2],date:cIso(cWork(a[3])),time:'23:59',to:{k:'cls',v:c},note:'من Google Classroom · حالة التسليم تنعكس هني'}));
+  calSave(); render(); toast('🏫 نزلت ٣ واجبات من Google Classroom بالتقويم');}
+
+/* ٩) ترشيح الموهبة بـ Gemini */
+const NOMK=[[/رسم|ترسم|تصميم|لوحة|ألوان|فن/,'فنية إبداعية','🎨','ورشة رسم علمي + معرض المدرسة'],[/تجرب|تجارب|تسأل|تحلل|تحليل|سؤال|بحث|منطق/,'علمية بحثية','🔬','برنامج إثرائي علمي + أولمبياد'],[/تقود|قيادة|تنظم|تنظيم|فريق|مبادرة/,'قيادية','🧭','قيادة مشروع بالمدرسة'],[/تكتب|كتابة|شعر|قصة|إلقاء|خطاب/,'لغوية أدبية','✍️','مسابقة الكتابة الإبداعية'],[/برمج|كود|تقنية|تطبيق|حاسوب/,'تقنية','💻','نادي البرمجة + مسابقة التطبيقات'],[/رياضة|حركة|لياقة/,'رياضية','🏅','المنتخب المدرسي']];
+function nomPanel(){const st=S.students, n=G2.nom;
+  return '<section class="panel" id="gnom"><div class="panel-h"><h2>🌟 رشّحي موهبة بجملة</h2><span class="spacer"></span><span class="badge ai">Gemini</span></div>'+
+   '<p class="small muted">اكتبي اللي شفتيه بكلامج العادي، وGemini يعبي نموذج الترشيح لمكتب الموهوبين.</p>'+
+   '<select id="nomS">'+st.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select>'+
+   '<textarea id="nomT" style="margin-top:8px" placeholder="مثلاً: قمر ترسم التجارب بدفترها بشكل مبدع وتشرح فيها الفكرة أحسن من الكتاب">قمر ترسم التجارب بدفترها بشكل مبدع وتشرح فيها الفكرة أحسن من الكتاب</textarea>'+
+   '<button class="btn primary" data-g2="nom">✦ عبّي نموذج الترشيح</button>'+
+   (n?'<div class="g2-form"><h4>📄 نموذج ترشيح موهبة · مكتب الموهوبين</h4><table><tbody>'+
+     '<tr><td>الطالبة</td><td><b>'+esc(stu(n.sid).name)+'</b> · '+esc(clsName(stu(n.sid).cls))+'</td></tr><tr><td>مجال الموهبة</td><td>'+n.ic+' '+n.dom+'</td></tr><tr><td>الدليل</td><td>«'+esc(n.txt)+'»</td></tr><tr><td>دليل إضافي من مدار</td><td>'+esc(n.extra)+'</td></tr><tr><td>الخطوة المقترحة</td><td>'+n.next+'</td></tr><tr><td>المرشِّحة</td><td>'+esc(S.subjects.chem.teacher)+'</td></tr></tbody></table>'+
+     (n.sent?'<span class="pill good">✓ انرسل لمكتب الموهوبين، ووصل للأهل وبوصلة</span>':'<button class="btn primary" data-g2="nomsend">📨 أرسليه لمكتب الموهوبين</button>')+'</div>':'')+'</section>';}
+function g2Nom(){const sid=$('#nomS').value, txt=$('#nomT').value.trim(); if(!txt){toast('اكتبي ملاحظتج أول');return;}
+  const k=NOMK.find(x=>x[0].test(txt))||[null,'عامة (تحتاج فحص)','✨','مقابلة مع المرشدة'], st=stu(sid);
+  const top=st.interests?Object.keys(st.interests).sort((a,b)=>st.interests[b]-st.interests[a])[0]:null;
+  G2.nom={sid,txt,dom:k[1],ic:k[2],next:k[3],extra:top&&typeof DIMS!=='undefined'?'اختبار الميول: أعلى ميل «'+DIMS[top]+'»، وكوكبة الموهبة فيها أكثر من عين.':'ما في اختبار ميول بعد.',sent:false};
+  render(); const f=$('#gnom'); if(f) f.scrollIntoView({block:'nearest',behavior:'smooth'});}
+
+/* ٨) Translate + التقرير */
+const TR={en:{n:'English',f:(st,s,w)=>'Weekly report for '+st.name+': She is doing well in '+(s||'her studies')+'. '+(w?'She needs extra support in '+w+' this week; a short review plan is already in her calendar. ':'')+'A few words of encouragement from home make a big difference.'},
+  ur:{n:'اردو',f:(st,s,w)=>st.name+' کی ہفتہ وار رپورٹ: وہ '+(s||'اپنی پڑھائی')+' میں اچھا کر رہی ہے۔ '+(w?'اس ہفتے اسے '+w+' میں مزید مدد کی ضرورت ہے، اور جائزے کا منصوبہ اس کے کیلنڈر میں موجود ہے۔ ':'')+'گھر سے حوصلہ افزائی بہت فرق ڈالتی ہے۔'},
+  hi:{n:'हिन्दी',f:(st,s,w)=>st.name+' की साप्ताहिक रिपोर्ट: वह '+(s||'पढ़ाई')+' में अच्छा कर रही है। '+(w?'इस हफ़्ते उसे '+w+' में थोड़ी मदद चाहिए, और दोहराने की योजना उसके कैलेंडर में है। ':'')+'घर से थोड़ा प्रोत्साहन बहुत फ़र्क डालता है।'},
+  tl:{n:'Filipino',f:(st,s,w)=>'Lingguhang ulat para kay '+st.name+': Mahusay siya sa '+(s||'pag-aaral')+'. '+(w?'Kailangan niya ng dagdag na tulong sa '+w+' ngayong linggo; may review plan na sa kanyang kalendaryo. ':'')+'Malaking tulong ang suporta mula sa bahay.'}};
+const SUBJ_EN={chem:'Chemistry',phys:'Physics',math:'Math',bio:'Biology',arabic:'Arabic',eng:'English',social:'Social Studies'};
+function langPanel(sid){const st=stu(sid), t=st.term||{}, ks=Object.keys(t), best=ks.sort((a,b)=>t[b]-t[a])[0], weak=g2Weak(sid)[0];
+  const ar='تقرير '+st.name+' الأسبوعي: مستواها زين في '+((S.subjects[best]||{}).name||'دراستها')+'. '+(weak?'هالأسبوع تحتاج دعم بسيط في '+((S.subjects[weak]||{}).name||'')+'، وخطة المراجعة نازلة بتقويمها. ':'')+'كلمة تشجيع منكم تفرق وايد 🤍';
+  const L=G2.lang, txt=L==='ar'?ar:TR[L].f(st,SUBJ_EN[best],weak&&SUBJ_EN[weak]);
+  return '<section class="panel" id="glang"><div class="panel-h"><h2>🌐 التقرير بلغتكم</h2><span class="spacer"></span><span class="badge ai">Gemini + Translate</span></div>'+
+   '<div class="seg" role="group" aria-label="اللغة"><button data-g2="lang" data-v="ar" aria-pressed="'+(L==='ar')+'">العربية</button>'+Object.keys(TR).map(k=>'<button data-g2="lang" data-v="'+k+'" aria-pressed="'+(L===k)+'">'+TR[k].n+'</button>').join('')+'</div>'+
+   '<div class="ai-out" style="margin-top:8px" dir="'+(L==='en'||L==='hi'||L==='tl'?'ltr':'rtl')+'"><p>'+esc(txt)+'</p></div>'+
+   '<p class="small muted">كل خميس يوصل على Gmail بلغة ولي الأمر. أي لغة ثانية: <a href="https://translate.google.com/?sl=ar&tl=en&text='+encodeURIComponent(ar)+'" target="_blank" rel="noopener">Google Translate ↗</a></p></section>';}
+
+/* ١٢) NotebookLM + YouTube */
+const PODCAST=''; // ← حطي هني رابط بودكاست NotebookLM لما يجهز
+function reviewPanel(sid){const w=g2Weak(sid).filter(k=>LESSON[k]); if(!w.length) return '';
+  const k=w[0], ls=LESSON[k], q=s=>'https://www.youtube.com/results?search_query='+encodeURIComponent(s);
+  return '<section class="k-card" id="grev"><div class="k-h"><h3>🎧 مراجعتي الذكية</h3><span class="spacer"></span><span class="k-sub">'+(SUBJ_ICON[k]||'')+' '+esc(ls)+'</span></div>'+
+   '<p class="small">بوصلة شافت إن '+esc(ls)+' يبيله شوية مراجعة، فجهزت لج:</p>'+
+   '<a class="mc-e" style="border-inline-start-color:#3F51B5;text-decoration:none" href="'+(PODCAST||'https://notebooklm.google.com/')+'" target="_blank" rel="noopener"><span class="mc-ei">🎧</span><span class="mc-eb"><b>بودكاست الدرس (NotebookLM)</b><small>'+(PODCAST?'١٠ دقايق، اسمعيه بالسيارة':'نسويه من كتاب الطالب بـ NotebookLM')+'</small></span></a>'+
+   [['شرح '+ls+' كيمياء الصف العاشر','▶️ شرح الدرس من الأساس'],[ls+' حل تمارين','▶️ تمارين محلولة'],[ls+' مراجعة سريعة','▶️ مراجعة ٥ دقايق قبل الاختبار']].map(v=>'<a class="mc-e" style="border-inline-start-color:#FF0000;text-decoration:none" href="'+q(v[0])+'" target="_blank" rel="noopener"><span class="mc-ei">📺</span><span class="mc-eb"><b>'+v[1]+'</b><small>YouTube</small></span></a>').join('')+
+   '<p class="k-note">✨ وتنزل بتقويمج قبل الاختبار بأسبوع، بالتذكير الذكي.</p></section>';}
+
+/* ١٤–١٦) الإدارة: Looker + التكلفة + جاهز لجوجل */
+const LK={school:{n:'مدرستنا',k:[['👧','طالبات العاشر','186'],['🔔','إنذارات مبكرة هالشهر','23'],['✅','تحسنوا بعد الخطة','17'],['🌟','ترشيحات موهبة','9']],b:[['10/4',62],['10/5',71],['10/6',78]]},
+  zone:{n:'المنطقة التعليمية',k:[['🏫','مدارس ثانوية','14'],['👧','طالبات','6,900'],['🔔','إنذارات','812'],['✅','نسبة التحسن','71%']],b:[['مدرسة ١',74],['مدرسة ٢',66],['مدرستنا',78],['مدرسة ٤',59],['مدرسة ٥',70]]},
+  moe:{n:'الوزارة',k:[['🗺️','مناطق تعليمية','6'],['🏫','مدارس ثانوية','~150'],['👧','طالبات وطلاب','~80k'],['🌟','مواهب انكشفت','—']],b:[['العاصمة',72],['حولي',70],['الفروانية',65],['الأحمدي',68],['الجهراء',61],['مبارك الكبير',69]]}};
+function lookerPanel(){const L=LK[G2.lvl];
+  return '<section class="panel" id="glooker"><div class="panel-h"><h2>🗺️ من المدرسة للوزارة</h2><span class="spacer"></span><span class="pill none">Looker Studio · بيانات تجريبية</span></div>'+
+   '<div class="seg" role="group">'+[['school','🏫 المدرسة'],['zone','🗺️ المنطقة'],['moe','🇰🇼 الوزارة']].map(x=>'<button data-g2="lvl" data-v="'+x[0]+'" aria-pressed="'+(G2.lvl===x[0])+'">'+x[1]+'</button>').join('')+'</div>'+
+   '<div class="g2-kpi">'+L.k.map(k=>'<div><span>'+k[0]+'</span><b class="num">'+k[2]+'</b><small>'+k[1]+'</small></div>').join('')+'</div>'+
+   '<p class="small muted" style="margin:8px 0 4px">نسبة الإتقان ('+L.n+')</p>'+L.b.map(b=>'<div class="g2-bar"><span>'+b[0]+'</span><i><em style="width:'+b[1]+'%"></em></i><b class="num">'+b[1]+'%</b></div>').join('')+
+   (G2.lvl!=='school'?'<p class="k-note">🔭 رؤية: نفس البيانات تتجمع بـ Looker Studio من كل مدرسة، بدون أي شغل زيادة.</p>':'')+'</section>';}
+const GT=[['📝','Google Forms','الكويزات ← الإنذار المبكر'],['📊','Google Sheets','قاعدة بيانات مدار'],['📅','Google Calendar','التقويم والتذكير الذكي'],['🎥','Google Meet','اجتماعات أولياء الأمور'],['✦','Gemini','بوصلة، التقارير، ترشيح الموهبة'],['🎧','NotebookLM','بودكاست المراجعة'],['🌐','Google Translate','التقرير بلغة الأهل'],['🏫','Google Classroom','الواجبات بالتقويم'],['📺','YouTube','فيديوهات المراجعة'],['📈','Looker Studio','المدرسة ← الوزارة'],['✉️','Gmail','تقرير الخميس'],['🌍','Google Sites','واجهة مدار']];
+function googleReadyPanel(){return '<section class="panel" id="gready"><div class="panel-h"><h2>🔗 مدار جاهز لبيئة جوجل</h2></div><div class="g2-tools">'+GT.map(t=>'<div><span>'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small></div>').join('')+'</div></section>'+
+  '<section class="panel" id="gcost"><div class="panel-h"><h2>🛡️ صفر تكلفة + الخصوصية</h2></div><div class="g2-two"><div><b>💰 صفر تكلفة إضافية</b><p class="small">يشتغل على حسابات Google Workspace for Education اللي عند الوزارة. ما فيه سيرفرات ولا اشتراكات جديدة.</p></div><div><b>🔒 البيانات داخل الوزارة</b><p class="small">كل البيانات بـ Sheets داخل دومين moe.edu.kw. كل دور يشوف اللي يخصه بس، والقرار دايمًا للإنسان.</p></div></div></section>';}
+
+/* ١٠–١١) صوت + صورة + كتابة */
+function g2Img(cb){const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.onchange=()=>{const f=i.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{const im=new Image(); im.onload=()=>{const c=document.createElement('canvas'), s=Math.min(1,360/Math.max(im.width,im.height)); c.width=im.width*s; c.height=im.height*s; c.getContext('2d').drawImage(im,0,0,c.width,c.height); cb(c.toDataURL('image/jpeg',.7));}; im.src=r.result;}; r.readAsDataURL(f);}; i.click();}
+async function g2Rec(key,cb){if(G2.rec){const r=G2.rec; G2.rec=null; try{r.mr.stop();}catch(e){} return;}
+  try{const s=await navigator.mediaDevices.getUserMedia({audio:true}); const mr=new MediaRecorder(s), ch=[], t0=Date.now(); G2.rec={mr,key};
+    mr.ondataavailable=e=>ch.push(e.data); mr.onstop=()=>{s.getTracks().forEach(t=>t.stop()); const sec=Math.max(1,Math.round((Date.now()-t0)/1000)); cb({aud:URL.createObjectURL(new Blob(ch,{type:mr.mimeType||'audio/webm'})),sec}); render();};
+    mr.start(); render(); toast('🎙️ يسجل… اضغطي مرة ثانية للإيقاف');}
+  catch(e){cb({aud:null,sec:7}); render(); toast('🎙️ (عرض) انضافت رسالة صوتية تجريبية');}}
+function attBar(key){const a=G2.att[key]||{}, rec=G2.rec&&G2.rec.key===key;
+  return '<div class="g2-att"><button type="button" class="btn sm'+(rec?' primary':'')+'" data-g2="rec" data-k="'+key+'">'+(rec?'⏹ وقّفي':'🎤 فويس')+'</button><button type="button" class="btn sm" data-g2="img" data-k="'+key+'">📷 صورة</button>'+
+   (a.img?'<span class="g2-th"><img src="'+a.img+'" alt="صورة مرفقة"><button type="button" data-g2="rm" data-k="'+key+'" data-v="img" aria-label="شيلي">✕</button></span>':'')+
+   (a.sec?'<span class="pill acc">🎤 '+a.sec+' ث <button type="button" class="g2-x" data-g2="rm" data-k="'+key+'" data-v="aud" aria-label="شيلي">✕</button></span>':'')+'</div>';}
+function mediaHtml(m){return (m.img?'<img class="g2-mimg" src="'+m.img+'" alt="صورة">':'')+(m.sec?(m.aud?'<audio controls src="'+m.aud+'"></audio>':'<span class="g2-voice">▶︎ ▂▃▅▂▆▃▂ '+m.sec+' ث</span>'):'');}
+const COACH_IMG='شفت الصورة 📷✨ هذا سؤال توزيع إلكتروني. خلينا نحله خطوة خطوة: ١) أول شي اكتبي العدد الذري. ٢) عبّي حسب أوفباو: 1s ثم 2s ثم 2p… ٣) انتبهي 4s تتعبى قبل 3d. جربي وصوري لي حلج 💪';
+const COACH_AUD='سمعتج 🎧 تقولين إنج متوترة من اختبار الكيمياء. لا تشيلين هم: رتبت لج ٢٠ دقيقة مراجعة اليوم + بودكاست الدرس بكرة. وإذا تبين نسولف أكثر، أنا هني 🤍';
+
+/* الربط */
+(function(){const _t=vTeacher,_p=vParent,_s=vStudent,_a=vAdmin;
+  vTeacher=function(){const h=_t(); if(V.view==='one') return h; return h+'<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+formsPanel()+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+nomPanel()+'</div></div>';};
+  vParent=function(){return _p()+langPanel(V.sid||'s1');};
+  vStudent=function(){const sid=(S.mode==='live'&&S.me.self)||V.sid||'s1'; return _s()+reviewPanel(sid);};
+  vAdmin=function(){return _a()+lookerPanel()+googleReadyPanel();};
+  const _cr=coachAsk;
+  coachAsk=async function(sid,q){const a=G2.att.coach||{}; if(a.img||a.sec){(S.chats[sid]=S.chats[sid]||[]).push({w:'me',t:q||'',img:a.img,aud:a.aud,sec:a.sec}); G2.att.coach={}; render();
+      setTimeout(()=>{S.chats[sid].push({w:'bot',t:a.img?COACH_IMG:COACH_AUD}); render(); const c=$('#chat'); if(c) c.scrollTop=c.scrollHeight;},700); return;}
+    return _cr(sid,q);};
+})();
+(function(){const _r=render; render=function(){_r(); try{
+  const f=document.querySelector('form[data-act="coachf"]'); if(f&&!f.previousElementSibling.classList.contains('g2-att')) f.insertAdjacentHTML('beforebegin',attBar('coach'));
+  const sid=V.sid||'s1'; (S.chats[sid]||[]).forEach((m,i)=>{if(m.img||m.sec){const el=document.querySelectorAll('#chat .msg')[i]; if(el&&!el.dataset.g2){el.dataset.g2=1; el.insertAdjacentHTML('afterbegin',mediaHtml(m));}}});
+  const ta=$('#msgTxt'); if(ta&&!ta.nextElementSibling.classList.contains('g2-att')) ta.insertAdjacentHTML('afterend',attBar('tmsg'));
+  const ts=$('#smTxt'); if(ts&&!ts.nextElementSibling.classList.contains('g2-att')) ts.insertAdjacentHTML('afterend',attBar('smsg'));
+  document.querySelectorAll('[data-msgi]').forEach(x=>{const m=MSGS[+x.dataset.msgi]; if(m&&!x.dataset.g2){x.dataset.g2=1; x.insertAdjacentHTML('beforeend',mediaHtml(m));}});
+}catch(err){console.warn('g2',err);}};})();
+// إرفاق الوسائط مع رسائل المعلمة والطالبة
+(function(){const P=MSGS.push.bind(MSGS); MSGS.push=function(...xs){xs.forEach(m=>{if(!m||m.img||m.sec) return; const k=m.from==='student'?'smsg':'tmsg', a=G2.att[k]; if(a&&(a.img||a.sec)){m.img=a.img; m.sec=a.sec; m.aud=a.aud; G2.att[k]={};}}); return P(...xs);};})();
+(function(){const _i=inbox; inbox=function(role,sid){let h=_i(role,sid); const l=MSGS.filter(m=>m.from!=='student'&&m.to.includes(role)&&(!sid||m.sid===sid)).slice().reverse().slice(0,6); let n=0;
+  return h.replace(/<span style="flex:1">/g,()=>{const m=l[n++]; return '<span style="flex:1" data-msgi="'+MSGS.indexOf(m)+'">';});};
+})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-g2]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.g2, k=b.dataset.k;
+  if(a==='forms') g2PullForms();
+  else if(a==='nom') g2Nom();
+  else if(a==='nomsend'){G2.nom.sent=true; G2.noms.push(G2.nom); render(); toast('📨 وصل الترشيح لمكتب الموهوبين');}
+  else if(a==='lang'){G2.lang=b.dataset.v; render();}
+  else if(a==='lvl'){G2.lvl=b.dataset.v; render();}
+  else if(a==='img') g2Img(d=>{(G2.att[k]=G2.att[k]||{}).img=d; render(); if(k==='coach'){const i=$('#coachIn'); if(i) i.focus();}});
+  else if(a==='rec') g2Rec(k,r=>{const o=(G2.att[k]=G2.att[k]||{}); o.aud=r.aud; o.sec=r.sec;});
+  else if(a==='rm'){const o=G2.att[k]||{}; if(b.dataset.v==='img') delete o.img; else {delete o.aud; delete o.sec;} render();}
+},true);
+// إرسال بوصلة بالصورة أو الفويس بدون نص
+document.addEventListener('submit',e=>{if(e.target.dataset.act!=='coachf') return; const a=G2.att.coach||{}; const i=$('#coachIn'); if((a.img||a.sec)&&i&&!i.value.trim()){e.preventDefault(); e.stopPropagation(); coachAsk(V.sid||'s1','');}},true);
+// gclass الحقيقي بوضع العرض
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act="gclass"]'); if(!b||S.mode==='live') return; e.preventDefault(); e.stopPropagation(); g2Classroom();},true);
+
+/* ١٧) البوب أب: الفيديو أول */
+(function(){const _j=judgePop; judgePop=function(){_j(); const c=document.querySelector('#modal .mcard'); if(!c) return; const kids=[...c.children], vi=kids.findIndex(x=>x.classList.contains('mvid'));
+  if(vi<0) return; const rest=kids.slice(vi+2); rest.forEach(x=>x.style.display='none');
+  const nx=document.createElement('button'); nx.className='btn primary'; nx.style.cssText='width:100%;margin-top:12px'; nx.textContent='✓ شفت الفيديو، كمّلوا ←';
+  nx.onclick=ev=>{ev.preventDefault(); ev.stopPropagation(); rest.forEach(x=>x.style.display=''); nx.remove(); c.scrollTop=0;
+    const ul=c.querySelector('ul'); if(ul&&!ul.dataset.g2){ul.dataset.g2=1; ul.insertAdjacentHTML('beforeend','<li>📅 تقويم ذكي وحجز موعد، و🔗 ١٢ أداة جوجل: Forms، Meet، NotebookLM، Translate، Classroom، Looker…</li>');}};
+  kids[vi+1].after(nx);};})();
 
 </script>
 
