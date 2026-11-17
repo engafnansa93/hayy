@@ -489,6 +489,7 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .n18-click{cursor:pointer;transition:transform .15s}.n18-click:hover{transform:translateY(-2px);outline:1.5px solid var(--accent)}
 .n18-bday{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}.n18-bday>b{display:block;margin-bottom:6px}
 .n18-bk{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed var(--line)}.n18-tm{font-weight:800;color:var(--accent);min-width:52px}
+.n18-name{all:unset;cursor:pointer;font-weight:700;border-bottom:1.5px dashed var(--accent)}.n18-name:hover{color:var(--accent)}
 .n18-all{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:rgba(255,209,102,.1)}
 .n18-sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.n18-sts label{display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px;font-size:.9rem}
 details.n18-new>summary{display:inline-block;cursor:pointer;padding:9px 16px;border-radius:999px;background:var(--accent);color:#1A1433;font-weight:700;margin:6px 0 10px;list-style:none}
@@ -523,7 +524,7 @@ details.n18-new>summary::-webkit-details-marker{display:none}
 .mc-rem label.n18-rec{outline:1.5px solid #FFD166;border-radius:12px}
 .mc-rem label.n18-rec b::after{content:" ✨ مقترح";color:#FFD166;font-size:.75rem;font-weight:600}
 .n18-prog{grid-template-columns:auto 1fr auto!important}
-.n18-sum .n18-ks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.n18-ks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .n18-k{border-radius:14px;padding:10px;text-align:center;border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
 .n18-k b{font-size:1.6rem}.n18-k small{font-size:1rem;letter-spacing:2px}
 .n18-k.good{background:rgba(107,203,156,.12)}.n18-k.acc{background:rgba(127,178,255,.12)}.n18-k.warn{background:rgba(255,209,102,.13)}
@@ -2975,6 +2976,42 @@ document.addEventListener('change',e=>{const s=e.target.closest('[data-n18vs]');
   VF[k]=s.value; if(k==='cls') VF.sid=''; render();},true);
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.n18v==='kpi'){e.target.click();}});
 // tnBox للوكيلة: زر الإضافة يشتغل لأي نوع
+if(GATE.who) render();
+
+/* ================= المشرفة (18 نوفمبر) ================= */
+vMonitor=function(){
+  violSeed(); if(!MON.classes.includes(MV.cls)) MV.cls=MON.classes[0];
+  const list=(S.ALL?S.ALL.students:S.students).filter(s=>s.cls===MV.cls); if(!list.find(s=>s.id===MV.sid)) MV.sid=null;
+  const cv=VIOL.filter(v=>vCls(v.sid)===MV.cls), byT={}; cv.forEach(v=>byT[v.k]=(byT[v.k]||0)+1);
+  const topK=Object.keys(byT).sort((a,b)=>byT[b]-byT[a])[0], abs=list.reduce((n,s)=>n+(s.abs||0),0), many=list.filter(s=>violOf(s.id).length>=3), absent=list.filter(s=>(s.abs||0)>=2);
+  const line=(cv.length?'أكثر شي بالشعبة: '+vtype(topK).i+' '+vtype(topK).n.split(' (')[0]+' ('+byT[topK]+'). ':'ما في مخالفات هالأسبوع 🤍 ')+(many.length?many.map(s=>s.name).join('، ')+' عليها ٣ مخالفات أو أكثر. ':'')+(absent.length?'الغياب: '+absent.map(s=>s.name+' ('+s.abs+')').join('، ')+'.':'');
+  const sel=MV.sid&&anyStu(MV.sid), sl=sel?violOf(sel.id):[];
+  return '<section class="panel"><div class="panel-h"><h2>👋 هلا '+MON.name+'</h2><span class="spacer"></span><div class="seg" role="group" aria-label="الصف">'+MON.classes.map(c=>'<button data-mv="cls" data-v="'+c+'" aria-pressed="'+(c===MV.cls)+'">'+clsName(c)+'</button>').join('')+'</div></div></section>'+
+  '<section class="panel" id="msum"><h2>📋 '+clsName(MV.cls)+' هالأسبوع</h2><div class="n18-ks" style="grid-template-columns:repeat(4,1fr)">'+
+    '<div class="n18-k acc"><b class="num">'+list.length+'</b><span>👥 طالبة</span></div><div class="n18-k warn"><b class="num">'+cv.length+'</b><span>🧾 مخالفات</span></div><div class="n18-k warn"><b class="num">'+abs+'</b><span>🏫 أيام غياب</span></div><div class="n18-k '+(many.length?'warn':'good')+'"><b class="num">'+many.length+'</b><span>⚠️ تحتاج متابعة</span></div></div>'+
+    '<div class="ai-out" style="margin-top:10px"><span class="ai-tag">✦ Gemini</span><p>'+esc(line)+'</p></div></section>'+
+  '<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+
+   '<section class="panel"><h2>👥 طالبات '+clsName(MV.cls)+'</h2><div class="scroll"><table><thead><tr><th>الطالبة</th><th>المخالفات</th><th>الغياب</th><th>آخر وحدة</th></tr></thead><tbody>'+
+    list.map(s=>{const l=violOf(s.id), last=l[l.length-1];
+      return '<tr'+(s.id===MV.sid?' class="sel"':'')+'><td><button class="n18-name" data-mv="sid" data-v="'+s.id+'">'+esc(s.name)+'</button></td><td>'+(l.length?'<span class="pill '+(l.length>=3?'crit':'warn')+'">'+l.length+'</span>':'<span class="muted">—</span>')+'</td><td class="num">'+(s.abs||'—')+'</td>'+
+        '<td class="small">'+(last?vtype(last.k).i:'<span class="muted">—</span>')+'</td></tr>';}).join('')+'</tbody></table></div><p class="small muted" style="margin:6px 0 0">اضغطي اسم الطالبة 👆</p></section>'+
+  '</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+
+   (sel?'<section class="panel" id="mstu"><div class="panel-h"><h2>👧 '+esc(sel.name)+'</h2><span class="spacer"></span><span class="pill '+(sl.length>=3?'crit':sl.length?'warn':'good')+'">🧾 '+sl.length+'</span></div>'+
+     '<p class="small" style="margin:0">🏫 الغياب: <b class="num">'+(sel.abs||0)+'</b>'+(sl.length?' · آخر مخالفة: '+vtype(sl[sl.length-1].k).i+' '+esc(sl[sl.length-1].t):' · ما عليها مخالفات 🤍')+'</p>'+
+     (sl.length?sl.slice(-3).reverse().map(v=>violRow(v)).join(''):'')+
+     '<textarea id="mMsg" placeholder="رسالة قصيرة (اختياري)…" style="margin-top:8px"></textarea>'+
+     '<div class="row2" style="margin-top:8px"><button class="btn" data-n18m="vice" data-v="'+sel.id+'">📨 للوكيلة</button><button class="btn" data-n18m="parent" data-v="'+sel.id+'">📨 لولي الأمر</button></div></section>'+
+     '<section class="panel" id="vform"><h2>✍️ رصد مخالفة</h2><div class="vtypes">'+VTYPES.map(t=>'<button data-mv="type" data-v="'+t.k+'" aria-pressed="'+(MV.type===t.k)+'"><span>'+t.i+'</span>'+t.n.split(' (')[0]+'</button>').join('')+'</div>'+
+     (MV.type==='other'?'<label class="field" style="margin-top:10px">اكتبي المخالفة<input id="vTxt" type="text"></label>':'')+
+     '<input id="vNote" type="text" placeholder="ملاحظة (اختياري)" style="margin-top:10px;width:100%">'+
+     '<button class="btn primary" style="width:100%;margin-top:10px;padding:10px" data-mv="save">رصد وإرسال</button></section>'
+    :'<section class="panel"><div class="empty">اختاري طالبة من الجدول 👈</div></section>')+
+  '</div></div>';};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18m]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const sid=b.dataset.v, to=b.dataset.n18m, st=anyStu(sid)||{name:''}, t=($('#mMsg')||{}).value||'';
+  const l=violOf(sid), txt=t.trim()||('متابعة '+st.name+': عليها '+l.length+' مخالفات'+(l.length?' (آخرها '+vtype(l[l.length-1].k).n.split(' (')[0]+')':'')+' وغياب '+(st.abs||0)+' أيام.');
+  MSGS.push({sid,to:[to],text:txt,by:MON.name+' (المشرفة)',t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); render(); toast('📨 وصلت '+(to==='vice'?'للوكيلة':'لولي أمر '+st.name));},true);
+// المشرفة: التقويم تحت وللعرض بس
+(function(){const _r=render; render=function(){_r(); try{if(V.role!=='monitor') return; const M=$('#main'); const w=M&&M.querySelector(':scope > .mc-wrap'); if(w){M.appendChild(w); w.querySelectorAll('[data-n18k="add"]').forEach(x=>x.remove());}}catch(e){}};})();
 if(GATE.who) render();
 </script>
 
