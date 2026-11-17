@@ -563,7 +563,7 @@ function demoState(){
     ]
   };
   const add=(sid,subj,skill,levels,w0)=>levels.forEach((l,i)=>S.indicators.push({sid,subj,skill,level:l,week:w0+Math.floor(i/2),period:(i%2)?3:1,by:subj==='chem'?'أ. أفنان':'أ. مريم'}));
-  add('s1','chem','الأعداد الكمية',['m','m'],3); add('s1','chem','الترتيب الإلكتروني',['m','p'],5); add('s1','phys','تحويل الوحدات',['m','m','m'],3);
+  add('s1','chem','تطور النماذج الذرية',['h','p','p','m'],1); add('s1','chem','الأعداد الكمية',['m','m'],3); add('s1','chem','الترتيب الإلكتروني',['m','p'],5); add('s1','phys','تحويل الوحدات',['m','m','m'],3);
   add('s2','chem','الأعداد الكمية',['m','m'],3); add('s2','chem','الترتيب الإلكتروني',['m','m'],5); add('s2','chem','مبدأ أوفباو',['m'],6); add('s2','phys','تحويل الوحدات',['m','m'],3);
   add('s3','chem','الأعداد الكمية',['m','m'],3); add('s3','chem','الترتيب الإلكتروني',['m'],5); add('s3','phys','تحويل الوحدات',['m','m'],3);
   add('s4','chem','الأعداد الكمية',['p'],3);
@@ -1940,6 +1940,75 @@ document.addEventListener('click',e=>{
 },true);
 document.addEventListener('change',e=>{const s=e.target.closest('[data-vvs]'); if(!s) return; e.stopPropagation(); VV.cls=s.value; VV.sid=null; render();},true);
 
+
+/* ============ المعلمة: ملخص الطالبة + شارت التحسّن + رسائل ============ */
+const MSG_TO={student:{i:'👧',n:'الطالبة'},parent:{i:'🏠',n:'ولي الأمر'},counselor:{i:'🧭',n:'بوصلة'},vice:{i:'🗂️',n:'الوكيلة'},monitor:{i:'📋',n:'المشرفة'}};
+let MSGS=(()=>{try{return JSON.parse(localStorage.getItem('madar.msgs')||'[]')}catch(e){return []}})();
+function msgSave(){try{localStorage.setItem('madar.msgs',JSON.stringify(MSGS.slice(-80)))}catch(e){}}
+const MV2={to:{parent:true}};
+function tSubj(){return V.subj&&S.subjects[V.subj]?V.subj:'chem';}
+function weekSeries(sid,subj){const W={},LVS={m:100,p:60,h:25};
+  S.indicators.filter(i=>i.sid===sid&&i.subj===subj).forEach(i=>{(W[i.week]=W[i.week]||[]).push(LVS[i.level]||0);});
+  return Object.keys(W).map(Number).sort((a,b)=>a-b).map(w=>({w,v:Math.round(W[w].reduce((a,b)=>a+b,0)/W[w].length)}));}
+function classSeries(subj){const ids=S.students.map(x=>x.id),W={},LVS={m:100,p:60,h:25};
+  S.indicators.filter(i=>i.subj===subj&&ids.includes(i.sid)).forEach(i=>{(W[i.week]=W[i.week]||[]).push(LVS[i.level]||0);});
+  return Object.keys(W).map(Number).sort((a,b)=>a-b).map(w=>({w,v:Math.round(W[w].reduce((a,b)=>a+b,0)/W[w].length)}));}
+function progressChart(sid){const subj=tSubj(), me=weekSeries(sid,subj), cl=classSeries(subj), q=scoredAssess(sid,subj,true);
+  if(me.length<2&&q.length<2) return '<section class="panel" id="tprog"><h2>📈 تحسّنها</h2><div class="empty">البيانات للحين قليلة.</div></section>';
+  const ws=[...new Set([...me.map(x=>x.w),...cl.map(x=>x.w),...q.map(x=>x.week)])].sort((a,b)=>a-b);
+  const W=560,H=210,L=34,R=12,T=14,B=30, x=w=>L+(ws.length<2?0:(ws.indexOf(w)/(ws.length-1))*(W-L-R)), y=v=>T+(1-v/100)*(H-T-B);
+  const line=(a,k)=>a.map((p,i)=>(i?'L':'M')+x(p.w).toFixed(1)+','+y(p[k]).toFixed(1)).join(' ');
+  const grid=[0,25,50,75,100].map(v=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="rgba(255,255,255,.08)"/><text x="'+(L-6)+'" y="'+(y(v)+4)+'" font-size="10" fill="currentColor" opacity=".55" text-anchor="end">'+v+'</text>').join('');
+  const xl=ws.map(w=>'<text x="'+x(w)+'" y="'+(H-10)+'" font-size="10" fill="currentColor" opacity=".55" text-anchor="middle">أ'+w+'</text>').join('');
+  const qq=q.map(z=>({w:z.week,v:Math.round(z.r*100)}));
+  const first=me.length?me[0].v:null,last=me.length?me[me.length-1].v:null,d=first!=null?last-first:0;
+  return '<section class="panel" id="tprog"><div class="panel-h"><h2>📈 تحسّنها بـ'+esc(S.subjects[subj].name)+'</h2><span class="spacer"></span><span class="pill '+(d>5?'good':d<-5?'crit':'none')+'">'+(d>5?'▲ تحسّن '+d+' نقطة':d<-5?'▼ تراجع '+(-d)+' نقطة':'ثابتة')+'</span></div>'+
+   '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;direction:ltr" role="img" aria-label="منحنى تحسّن الطالبة">'+grid+xl+
+   (cl.length>1?'<path d="'+line(cl,'v')+'" fill="none" stroke="#9aa3c7" stroke-width="2" stroke-dasharray="5 5" opacity=".7"/>':'')+
+   (me.length>1?'<path d="'+line(me,'v')+'" fill="none" stroke="#ffd166" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+me.map(p=>'<circle cx="'+x(p.w)+'" cy="'+y(p.v)+'" r="4" fill="#ffd166"><title>أسبوع '+p.w+': '+p.v+'%</title></circle>').join(''):'')+
+   qq.map(p=>'<rect x="'+(x(p.w)-5)+'" y="'+(y(p.v)-5)+'" width="10" height="10" rx="2" fill="#7bdcb5"><title>اختبار قصير أسبوع '+p.w+': '+p.v+'%</title></rect>').join('')+'</svg>'+
+   '<div class="row small muted" style="gap:14px"><span><b style="color:#ffd166">●</b> ملاحظات الإتقان بالحصة</span><span><b style="color:#7bdcb5">■</b> الاختبارات القصيرة</span><span><b style="color:#9aa3c7">- -</b> متوسط الشعبة</span></div></section>';}
+function teacherSummary(sid){const {st,res,strong,need}=studentSummary(sid); const fn=st.name.split(' ')[0], subj=tSubj(), parts=[];
+  const me=weekSeries(sid,subj); if(me.length>=2){const d=me[me.length-1].v-me[0].v; parts.push(d>5?fn+' <b>تتحسّن</b> بـ'+S.subjects[subj].name+' (من '+me[0].v+'% إلى '+me[me.length-1].v+'% بملاحظات الحصة).':d<-5?fn+' <b>تراجعت</b> بـ'+S.subjects[subj].name+' (من '+me[0].v+'% إلى '+me[me.length-1].v+'%)، تحتاج متابعة.':fn+' <b>ثابتة</b> بـ'+S.subjects[subj].name+' (حوالي '+me[me.length-1].v+'%).');}
+  const r=res[subj]; if(r) parts.push('آخر قصير: <b>'+fmt(r.c.v)+' / '+r.c.max+'</b>'+(r.d>0.02?' ▲ أحسن من اللي قبله.':r.d<-0.02?' ▼ أقل من اللي قبله.':'.'));
+  if(strong.length) parts.push('أتقنت: <b>'+esc(strong.slice(0,2).join('، '))+'</b>.');
+  if(need.length) parts.push('أصعب شي عليها: <b>'+esc(need.slice(0,2).join('، '))+'</b>.');
+  const tm=Object.keys(st.term||{}).sort((a,b)=>st.term[b]-st.term[a]); if(tm.length>2) parts.push('أقوى موادها '+TERM[tm[0]]+' ('+st.term[tm[0]]+')، وأضعفها '+TERM[tm[tm.length-1]]+' ('+st.term[tm[tm.length-1]]+').');
+  const pr=(S.practice||[]).filter(p=>p.sid===sid&&p.game!=='تقييم ذاتي'); if(pr.length) parts.push('تدربت '+pr.length+' '+(pr.length<=10?'مرات':'مرة')+' بالألعاب 👍');
+  if(st.abs>=3) parts.push('⚠️ غابت '+st.abs+' أيام.'); if(st.hw>=2) parts.push('⚠️ عليها '+st.hw+' واجبات ناقصة.');
+  const t=talent(sid); if(t.level==='cand') parts.push('🌟 عندها مؤشرات موهبة تستاهل تنفحص.');
+  if(st.interests){const top=Object.keys(st.interests).sort((a,b)=>st.interests[b]-st.interests[a])[0]; parts.push('ميولها الأعلى: '+DIMS[top]+'.');}
+  return '<section class="panel" id="tsum"><h2>🧠 ملخص '+esc(fn)+'</h2><p style="line-height:1.9;margin:0">'+(parts.join(' ')||'للحين ما فيه بيانات كافية.')+'</p></section>';}
+function msgPanel(sid){const st=stu(sid), mine=MSGS.filter(m=>m.sid===sid).slice().reverse().slice(0,5);
+  const tpl=['مستواها تحسّن هالأسبوع 👏 شكرًا على متابعتكم.','تحتاج تراجع '+(studentSummary(sid).need[0]||'الدرس الأخير')+' قبل الاختبار.','غابت عن الحصة، نتمنى تتابع اللي فاتها.'];
+  return '<section class="panel" id="tmsg"><h2>✉️ أرسلي رسالة بخصوص '+esc(st.name)+'</h2>'+
+   '<div class="row" style="gap:6px;flex-wrap:wrap">'+Object.keys(MSG_TO).map(k=>'<button class="btn sm'+(MV2.to[k]?' primary':'')+'" data-act="mto" data-v="'+k+'" aria-pressed="'+!!MV2.to[k]+'">'+MSG_TO[k].i+' '+MSG_TO[k].n+'</button>').join('')+'</div>'+
+   '<div class="row small" style="gap:6px;flex-wrap:wrap;margin-top:8px">'+tpl.map((t,i)=>'<button class="btn sm" data-act="mtpl" data-i="'+i+'">'+esc(t.slice(0,22))+'…</button>').join('')+'</div>'+
+   '<textarea id="msgTxt" placeholder="اكتبي رسالتج…" style="margin-top:8px">'+esc(MV2.txt||'')+'</textarea>'+
+   '<div class="row"><button class="btn primary" data-act="msend">إرسال</button><span class="small muted">توصل بنفس اللحظة لكل اللي اخترتيهم</span></div>'+
+   (mine.length?'<div style="margin-top:10px">'+mine.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+m.to.map(k=>MSG_TO[k].i).join(' ')+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</div>':'')+
+   '<script type="text/plain" data-tpl>'+tpl.map(encodeURIComponent).join('|')+'</scr'+'ipt></section>';}
+function inbox(role,sid){const l=MSGS.filter(m=>m.to.includes(role)&&(!sid||m.sid===sid)).slice().reverse().slice(0,6); if(!l.length) return '';
+  return '<section class="panel"><h2>📨 رسائل من المعلمات</h2>'+l.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+esc(m.by)+'</span>'+(sid?'':'<b>'+esc(stu(m.sid).name)+':</b>')+'<span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</section>';}
+(function(){const _sr=studentReport;
+  studentReport=function(sid){const h=_sr(sid); if(V.role!=='teacher') return h;
+    const i=h.indexOf('</section>')+10; return h.slice(0,i)+teacherSummary(sid)+'<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+progressChart(sid)+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+msgPanel(sid)+'</div></div>'+h.slice(i);};
+  const _p=vParent,_s=vStudent,_c=vCounselor,_v=vVice,_m=vMonitor;
+  vParent=function(){return _p()+inbox('parent',V.sid);};
+  vStudent=function(){return _s()+inbox('student',V.sid);};
+  vCounselor=function(){return _c()+inbox('counselor',V.view==='one'?V.sid:null);};
+  vVice=function(){return _v()+inbox('vice');};
+  vMonitor=function(){return _m()+inbox('monitor');};
+})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act="mto"],[data-act="mtpl"],[data-act="msend"]'); if(!b) return; e.preventDefault(); e.stopPropagation();
+  const ta=$('#msgTxt'); if(ta) MV2.txt=ta.value; const a=b.dataset.act;
+  if(a==='mto'){MV2.to[b.dataset.v]=!MV2.to[b.dataset.v];}
+  else if(a==='mtpl'){const raw=document.querySelector('[data-tpl]'); const t=raw?raw.textContent.split('|').map(decodeURIComponent):[]; MV2.txt=t[+b.dataset.i]||'';}
+  else if(a==='msend'){const to=Object.keys(MV2.to).filter(k=>MV2.to[k]); const txt=(MV2.txt||'').trim();
+    if(!to.length){toast('اختاري منو توصله الرسالة');return;} if(!txt){toast('اكتبي الرسالة أول');return;}
+    MSGS.push({sid:V.sid,to,text:txt,by:S.subjects[tSubj()].teacher||'المعلمة',t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); MV2.txt='';
+    toast('وصلت الرسالة لـ '+to.map(k=>MSG_TO[k].n).join(' و'));}
+  render();},true);
 </script>
 
 </body></html>
