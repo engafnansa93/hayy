@@ -486,6 +486,9 @@ tr.sel td{background:rgba(242,178,68,.08)}
 .n18-tone-s{display:flex;flex-direction:column;gap:12px}
 .mc-add input[type=checkbox]{width:auto}.mc-add .row label{display:inline-flex;gap:6px;align-items:center}
 .n18-cal .mc-c{min-height:46px}.n18-addf{background:transparent;padding:0}
+.n18-click{cursor:pointer;transition:transform .15s}.n18-click:hover{transform:translateY(-2px);outline:1.5px solid var(--accent)}
+.n18-bday{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}.n18-bday>b{display:block;margin-bottom:6px}
+.n18-bk{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed var(--line)}.n18-tm{font-weight:800;color:var(--accent);min-width:52px}
 .n18-all{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:rgba(255,209,102,.1)}
 .n18-sts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.n18-sts label{display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:10px;font-size:.9rem}
 details.n18-new>summary{display:inline-block;cursor:pointer;padding:9px 16px;border-radius:999px;background:var(--accent);color:#1A1433;font-weight:700;margin:6px 0 10px;list-style:none}
@@ -2921,6 +2924,57 @@ document.addEventListener('submit',e=>{const f=e.target; if(f.dataset.cal!=='add
 // الطالبة: الموعد الشخصي ما يطلع للأهل؛ ولي الأمر: موعده يطلع له بس
 (function(){const _s=calSees; calSees=function(e){if(e.mine==='student') return V.role==='student'&&e.to.v===cStu(cSid()).id; if(e.mine==='parent') return V.role!=='student'&&(V.role!=='parent'||e.to.v===cStu(cSid()).id); return _s(e);};})();
 
+if(GATE.who) render();
+
+/* ================= الوكيلة (18 نوفمبر) ================= */
+const VF={cls:'',k:'',sid:''};
+function vCls(sid){return (anyStu(sid)||{}).cls||'';}
+function viceKpiPop(kind){violSeed(); const m=$('#modal'); m.hidden=false; const all=(S.ALL?S.ALL.students:S.students);
+  let l=kind==='today'?VIOL.filter(v=>v.fresh||v.d===0):VIOL.slice(), body='';
+  if(kind==='many'||kind==='top'){const st=kind==='many'?all.filter(s=>violOf(s.id).length>=3):all.filter(s=>avgTerm(s)>=90&&!violOf(s.id).length);
+    body=st.length?st.map(s=>'<button class="mc-e" data-n18v="open" data-v="'+s.id+'"><span class="mc-ei">'+(kind==='many'?'⚠️':'🌟')+'</span><span class="mc-eb"><b>'+esc(s.name)+'</b><small>'+esc(clsName(s.cls))+(kind==='many'?' · '+violOf(s.id).length+' مخالفات':'')+'</small></span></button>').join(''):'<div class="empty">ما في 🤍</div>';}
+  else{const byT={}, byC={}; l.forEach(v=>{byT[v.k]=(byT[v.k]||0)+1; const c=vCls(v.sid); byC[c]=(byC[c]||0)+1;});
+    body=(l.length?'<div class="n18-ks" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">'+Object.keys(byT).sort((a,b)=>byT[b]-byT[a]).map(k=>'<div class="n18-k warn"><b class="num">'+byT[k]+'</b><span>'+vtype(k).i+' '+esc(vtype(k).n.split(' (')[0])+'</span></div>').join('')+'</div>'+
+      '<p class="small muted" style="margin:10px 0 4px">حسب الشعبة</p><div class="row">'+Object.keys(byC).map(c=>'<span class="pill acc">'+esc(c?clsName(c):'—')+' · '+byC[c]+'</span>').join('')+'</div>'+
+      '<p class="small muted" style="margin:10px 0 4px">التفاصيل</p>'+l.slice().reverse().map(v=>violRow(v,true)).join(''):'<div class="empty">ما في مخالفات '+(kind==='today'?'اليوم':'هالأسبوع')+' 🤍</div>');}
+  m.innerHTML='<div class="mcard wide" role="dialog"><h3>'+({today:'🧾 مخالفات اليوم',week:'📋 مخالفات الأسبوع',many:'⚠️ عليها 3 أو أكثر',top:'🌟 فائقات بدون مخالفات'})[kind]+'</h3>'+body+'<button class="btn" style="width:100%;margin-top:10px" data-gate="close">إغلاق</button></div>';}
+function viceInbox(){violSeed(); const all=(S.ALL?S.ALL.students:S.students), cls=[...new Set(all.map(s=>s.cls))];
+  let l=VIOL.slice().reverse(); if(VF.cls) l=l.filter(v=>vCls(v.sid)===VF.cls); if(VF.k) l=l.filter(v=>v.k===VF.k); if(VF.sid) l=l.filter(v=>v.sid===VF.sid);
+  const st=VF.cls?all.filter(s=>s.cls===VF.cls):[];
+  return '<section class="panel" id="vinbox"><div class="panel-h"><h2>📥 وصل من المشرفات</h2><span class="spacer"></span><span class="pill none">'+l.length+'</span></div>'+
+   '<div class="mc-row"><select data-n18vs="cls" aria-label="الشعبة"><option value="">كل الشعب</option>'+cls.map(c=>'<option value="'+c+'"'+(VF.cls===c?' selected':'')+'>'+esc(clsName(c))+'</option>').join('')+'</select>'+
+   '<select data-n18vs="k" aria-label="نوع المخالفة"><option value="">كل المخالفات</option>'+VTYPES.map(t=>'<option value="'+t.k+'"'+(VF.k===t.k?' selected':'')+'>'+t.i+' '+esc(t.n.split(' (')[0])+'</option>').join('')+'</select></div>'+
+   (st.length?'<div class="n18-chips" style="margin-top:8px"><button data-n18v="fsid" data-v="" aria-pressed="'+(!VF.sid)+'">الكل</button>'+st.map(s=>'<button data-n18v="fsid" data-v="'+s.id+'" aria-pressed="'+(VF.sid===s.id)+'">'+esc(s.name)+(violOf(s.id).length?' · '+violOf(s.id).length:'')+'</button>').join('')+'</div>':'')+
+   '<div style="margin-top:8px">'+(l.length?l.slice(0,8).map(v=>violRow(v,true)).join(''):'<div class="empty">ما في شي بهالفلتر 🤍</div>')+'</div></section>';}
+// مواعيد أولياء الأمور: مرتبة حسب اليوم
+staffBookings=function(){const k=V.role==='teacher'?'teacher':V.role==='vice'?'vice':V.role==='admin'?'admin':null; if(!k) return '';
+  let l=BK.filter(b=>b.who===k); const demo=!l.length;
+  if(demo){const all=(S.ALL?S.ALL.students:S.students), ds=bkDays(k); l=[{who:k,date:ds[0],time:STAFF[k].h[0],mode:'f2f',why:'متابعة الدرجات',sid:all[0].id},{who:k,date:ds[0],time:STAFF[k].h[2]||STAFF[k].h[1],mode:'meet',why:'',sid:(all[3]||all[0]).id},{who:k,date:ds[1],time:STAFF[k].h[1],mode:'f2f',why:'سلوك',sid:(all[2]||all[0]).id}];}
+  const by={}; l.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).forEach(b=>(by[b.date]=by[b.date]||[]).push(b));
+  const H=STAFF[k].h, rng=H[0]+' – '+H[H.length-1];
+  return '<section class="panel" id="sbook"><div class="panel-h"><h2>📥 مواعيد أولياء الأمور</h2><span class="spacer"></span><span class="pill none">'+l.length+'</span></div>'+
+   '<p class="small muted" style="margin:0 0 8px">⏰ أستقبل: '+STAFF[k].days.map(d=>DAYS[d].replace('ال','')).join('، ')+' · '+rng+'</p>'+
+   Object.keys(by).map(d=>'<div class="n18-bday"><b>'+cFmt(d)+'</b>'+by[d].map(b=>{const st=anyStu(b.sid)||cStu(b.sid);
+     return '<div class="n18-bk"><span class="n18-tm num">'+b.time+'</span><span style="flex:1"><b>ولي أمر '+esc(st.name)+'</b>'+(b.why?'<small class="muted"> · '+esc(b.why)+'</small>':'')+'</span><span class="pill '+(b.mode==='meet'?'acc':'none')+'">'+(b.mode==='meet'?'🎥 Meet':'🏫 حضوري')+'</span></div>';}).join('')+'</div>').join('')+
+   (demo?'<p class="small muted" style="margin:6px 0 0">(أمثلة للعرض)</p>':'')+'</section>';};
+(function(){const _r=render; render=function(){const keep={}; ['tn_vi'].forEach(i=>{const x=document.getElementById(i); if(x&&x.value) keep[i]=x.value;}); _r(); try{
+  if(V.role!=='vice') return; const M=$('#main'); if(!M) return;
+  M.querySelectorAll('.kpis .kpi').forEach((k,i)=>{k.dataset.n18v='kpi'; k.dataset.v=['today','week','many','top'][i]; k.classList.add('n18-click'); k.setAttribute('role','button'); k.title='اضغطي للتفاصيل';});
+  const ib=[...M.querySelectorAll('section')].find(s=>/وصل من المشرفات/.test((s.querySelector('h2')||{}).textContent||'')); if(ib) ib.outerHTML=viceInbox();
+  const vf=M.querySelector('.vfilter'); if(vf&&!vf.querySelector('[data-n18vs="sid"]')){const list=[...M.querySelectorAll('.vgrid [data-vv="sid"]')].map(b=>[b.dataset.v,b.querySelector('b').textContent]);
+    vf.insertAdjacentHTML('beforeend','<label class="field">الطالبة<select data-n18vs="sid"><option value="">اختاري…</option>'+list.map(x=>'<option value="'+x[0]+'"'+(VV.sid===x[0]?' selected':'')+'>'+esc(x[1])+'</option>').join('')+'</select></label>');}
+  if(VV.sid){const c7=M.querySelector('.cols .c7'); if(c7&&!M.querySelector('#vinotes')) c7.insertAdjacentHTML('afterbegin','<section class="panel" id="vinotes"><h2>📝 ملاحظاتي على '+esc((anyStu(VV.sid)||{}).name||'')+'</h2>'+tnBox(VV.sid,'vi','اكتبي ملاحظتج أو سجلي فويس: مثلاً تواصلت مع ولي الأمر واتفقنا…')+'</section>');}
+  const w=M.querySelector(':scope > .mc-wrap'); if(w) M.appendChild(w);
+ }catch(err){console.warn('v18',err);} Object.keys(keep).forEach(i=>{const x=document.getElementById(i); if(x&&!x.value) x.value=keep[i];});};})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-n18v]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.n18v, v=b.dataset.v;
+  if(a==='kpi') viceKpiPop(v);
+  else if(a==='fsid'){VF.sid=v; render();}
+  else if(a==='open'){closeModal(); VV.sid=v; const st=anyStu(v); if(st&&st.cls){VV.cls=st.cls;} render(); const x=document.querySelector('.aiv'); x&&x.scrollIntoView({behavior:'smooth',block:'start'});}},true);
+document.addEventListener('change',e=>{const s=e.target.closest('[data-n18vs]'); if(!s) return; e.stopPropagation(); const k=s.dataset.n18vs;
+  if(k==='sid'){VV.sid=s.value||null; if(VV.sid&&!String(VV.sid).startsWith('u_')) V.sid=VV.sid; render(); const x=document.querySelector('.aiv'); x&&x.scrollIntoView({behavior:'smooth',block:'start'}); return;}
+  VF[k]=s.value; if(k==='cls') VF.sid=''; render();},true);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.n18v==='kpi'){e.target.click();}});
+// tnBox للوكيلة: زر الإضافة يشتغل لأي نوع
 if(GATE.who) render();
 </script>
 
