@@ -1,4 +1,50 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* تقويم مدار + الحجز */
+.mc-wrap{display:flex;flex-direction:column;gap:16px;margin:16px 0}
+.mc-nav{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
+.mc-nav b{font-family:var(--f-display)}
+.mc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mc-h{text-align:center;font-size:.72rem;color:var(--muted);padding:2px 0}
+.mc-c{min-height:58px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font:inherit}
+.mc-c.off{border:0;background:transparent;cursor:default}
+.mc-c.wkend{opacity:.55}
+.mc-c.has{border-color:var(--accent-mid)}
+.mc-c.today{outline:2px solid var(--accent);outline-offset:-2px}
+.mc-c.sel{background:var(--accent-soft)}
+.mc-n{font-size:.8rem;font-weight:600}
+.mc-i{display:flex;flex-wrap:wrap;justify-content:center;gap:1px}
+.mc-i i{font-style:normal;font-size:.8rem;line-height:1;padding:2px;border:1px solid;border-radius:6px}
+.mc-i b{font-size:.65rem;color:var(--muted)}
+.mc-leg{display:flex;flex-wrap:wrap;gap:6px 12px;margin:10px 0 4px;font-size:.75rem;color:var(--muted)}
+.mc-leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:4px}
+.mc-st{font-family:var(--f-display);font-size:1rem;margin:14px 0 8px}
+.mc-e{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:var(--sunk);border:0;border-inline-start:4px solid;border-radius:10px;padding:9px 10px;margin:0 0 6px;color:var(--ink);font:inherit;cursor:pointer}
+.mc-ei{font-size:1.35rem}
+.mc-eb{flex:1;display:flex;flex-direction:column;line-height:1.4}
+.mc-eb small{color:var(--muted);font-size:.78rem}
+.mc-add{background:var(--sunk);border-radius:12px;padding:12px;margin:8px 0;display:flex;flex-direction:column;gap:8px}
+.mc-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc-add .field,.mc-add input,.mc-add select{width:100%}
+.mc-smart{border-radius:12px;padding:10px 12px;margin:10px 0}
+.mc-smart.warn{background:var(--warn-soft)} .mc-smart.good{background:var(--good-soft)}
+.mc-smart p{margin:4px 0;color:inherit} .mc-smart ul{margin:4px 0;padding-inline-start:18px;color:inherit}
+.mc-bub{display:flex;gap:8px;align-items:flex-start;background:rgba(127,127,127,.12);border-radius:14px;padding:9px 11px;margin:8px 0}
+.mc-bub span{font-size:1.3rem} .mc-bub p{margin:0;color:inherit;font-size:.9rem}
+.mc-rem{display:flex;flex-direction:column;gap:6px}
+.mc-rem label{display:flex;gap:10px;align-items:center;background:rgba(127,127,127,.1);border-radius:10px;padding:8px 10px;cursor:pointer}
+.mc-rem small{display:block;opacity:.75;font-size:.78rem}
+.bk-who{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.bk-p{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 4px;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+.bk-p span{font-size:1.5rem} .bk-p b{font-size:.82rem} .bk-p small{font-size:.68rem;color:var(--muted)}
+.bk-p.on,.bk-d.on,.bk-s.on{border-color:var(--accent);background:var(--accent-soft)}
+.bk-days{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.bk-d{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--ink);font:inherit;cursor:pointer}
+.bk-d small{font-size:.7rem;color:var(--good)} .bk-d:disabled{opacity:.4}
+.bk-slots{display:flex;flex-wrap:wrap;gap:6px}
+.bk-s{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink);font:inherit;cursor:pointer}
+.bk-s:disabled{opacity:.35;text-decoration:line-through}
+@media (max-width:620px){.mc-c{min-height:48px}.bk-who{grid-template-columns:repeat(2,1fr)}.mc-i i{font-size:.7rem}}
+</style></head><body>
 <title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1184,9 +1230,7 @@ function vParent(){
    '<section class="panel"><h2>💪 القوة والاحتياج</h2><div class="small"><b>قوية في:</b> '+(strong.map(s=>'<span class="pill good">'+esc(s)+'</span>').join(' ')||'<span class="muted">—</span>')+'</div><div class="small"><b>تحتاج دعمًا في:</b> '+(need.map(s=>'<span class="pill warn">'+esc(s)+'</span>').join(' ')||'<span class="muted">لا شيء حاليًا</span>')+'</div>'+
    '</section>'+
    '<section class="panel"><h2>📅 الحضور والقادم</h2><div class="small">الغياب المسجّل رسميًا: <b class="num">'+st.abs+'</b> '+(st.abs===1?'يوم':'أيام')+'</div>'+S.upcoming.map(u=>'<div class="row small"><span class="pill acc">'+TERM[u.subj]+'</span>'+esc(u.title)+'<span class="spacer"></span><span class="muted">'+u.when+'</span></div>').join('')+'</section>'+
-   '<section class="panel"><h2>🗓️ موعد مع المدرسة</h2>'+
-   (CONFIG.links.booking?'<a class="btn" href="'+esc(CONFIG.links.booking)+'" target="_blank" rel="noopener">احجز موعد</a>':'<button class="btn" disabled>احجز موعد</button>')+
-   '<div class="row small"><label><input type="checkbox" checked id="nf2"> تنبيه «تحتاج متابعة»</label></div></section>'+
+
   '</div></div>';
 }
 
@@ -2038,6 +2082,159 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act="ssend
     render(); setTimeout(()=>{const x=$('#tmsg'); if(x) x.scrollIntoView({behavior:'smooth',block:'center'}); const t=$('#msgTxt'); if(t) t.focus();},60); return;}
   render();},true);
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='smSubj'){SV.subj=e.target.value; const ta=$('#smTxt'); if(ta) SV.txt=ta.value;}},true);
+/* ============ 📅 تقويم مَدار + 🗓️ حجز موعد (17 نوفمبر) ============ */
+const CAL_T={exam:{i:'🧪',n:'اختبار',c:'#D50000'},meet:{i:'👨‍👩‍👧',n:'اجتماع',c:'#8E24AA'},act:{i:'🎉',n:'فعالية',c:'#F4511E'},due:{i:'📝',n:'تسليم',c:'#F6BF26'},trip:{i:'🚌',n:'رحلة',c:'#039BE5'},talent:{i:'🌟',n:'موهبة',c:'#E2A400'},work:{i:'💻',n:'ورشة',c:'#3F51B5'},appt:{i:'🗓️',n:'موعد',c:'#2F7D5B'}};
+const CAL_TO={all:'كل الصفوف',cls:'شعبة',sid:'طالبة وحدة',staff:'المعلمات والإدارة'};
+function cD(off){const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()+off); return d;}
+function cWork(off){let d=cD(off); while(d.getDay()===5||d.getDay()===6) d.setDate(d.getDate()+1); return d;}
+function cIso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function calSeed(){const c=cStu('s1').cls||'10-6'; const W=o=>cIso(cWork(o));
+  return [
+  {id:'e1',t:'work',title:'ورشة شهادات Gemini للمعلمات',date:W(1),time:'10:00',to:{k:'staff'},note:'بمختبر الحاسوب. نطلع منها كلنا بشهادة Gemini من جوجل 🎓'},
+  {id:'e2',t:'exam',subj:'chem',title:'اختبار قصير: التوزيع الإلكتروني',date:W(3),time:'08:00',to:{k:'cls',v:c},note:'من درس ٣ إلى درس ٥. ٢٠ دقيقة.'},
+  {id:'e3',t:'act',title:'يوم الكيمياء المفتوح: تجارب ملونة',date:W(6),time:'09:30',to:{k:'all'},note:'بساحة المدرسة. كل شعبة تقدّم تجربة 🧪✨'},
+  {id:'e4',t:'meet',title:'اجتماع أولياء الأمور',date:W(8),time:'12:30',to:{k:'all'},note:'حضوري بالمسرح أو عن طريق Google Meet.'},
+  {id:'e5',t:'exam',subj:'phys',title:'اختبار فيزياء: الحركة',date:W(9),time:'08:45',to:{k:'cls',v:c},note:''},
+  {id:'e6',t:'talent',title:'مسابقة الرسم العلمي (مكتب الموهوبين)',date:W(10),time:'11:00',to:{k:'sid',v:'s1'},note:'ترشيح من معلمة الفنون بعد ملاحظتها لرسومات قمر 🎨'},
+  {id:'e7',t:'due',subj:'bio',title:'تسليم مشروع الخلية',date:W(12),time:'12:00',to:{k:'cls',v:c},note:''},
+  {id:'e8',t:'trip',title:'رحلة علمية: المركز العلمي',date:W(15),time:'08:00',to:{k:'all'},note:'تحتاج موافقة ولي الأمر.'},
+  {id:'e9',t:'exam',subj:'chem',title:'اختبار نهاية الفترة: كيمياء',date:W(17),time:'08:00',to:{k:'all'},note:'لكل شعب العاشر.'},
+  {id:'e10',t:'due',subj:'math',title:'واجب الرياضيات: المعادلات',date:W(-2),time:'12:00',to:{k:'cls',v:c},note:''},
+  {id:'e11',t:'exam',subj:'chem',title:'كويز Google Forms: الأعداد الكمية',date:W(-6),time:'08:00',to:{k:'cls',v:c},note:'درجاته نزلت بمدار تلقائيًا ← إنذار مبكر.'}];}
+let CALX=(()=>{try{return JSON.parse(localStorage.getItem('madar.calx')||'[]')}catch(e){return []}})();
+function calSave(){try{localStorage.setItem('madar.calx',JSON.stringify(CALX.slice(-60)))}catch(e){}}
+let CALR=(()=>{try{return JSON.parse(localStorage.getItem('madar.calr')||'{}')}catch(e){return {}}})();
+const CV={y:null,m:null,day:null,add:false};
+function calEvents(){return calSeed().concat(CALX);}
+function cSid(){return (S.mode==='live'&&V.role==='student'&&S.me&&S.me.self)||V.sid||'s1';}
+function cStu(sid){return (S.students||[]).find(s=>s.id===sid)||{name:'قمر',cls:'10-6'};}
+function calSees(e){const r=V.role, k=e.to.k;
+  if(r==='student'||r==='parent'){const st=cStu(cSid());
+    if(k==='staff') return false; if(k==='parent') return r==='parent'&&(!e.to.v||e.to.v===st.id);
+    return k==='all'||(k==='cls'&&e.to.v===st.cls)||(k==='sid'&&e.to.v===st.id);}
+  return true;}
+function calToLbl(e){const k=e.to.k; if(k==='cls') return 'الشعبة '+(clsName?clsName(e.to.v):e.to.v); if(k==='sid') return cStu(e.to.v).name+' فقط'; if(k==='parent') return 'ولي الأمر'; return CAL_TO[k]||'';}
+function cIcon(e){return (e.t==='exam'&&e.subj&&SUBJ_ICON[e.subj])||CAL_T[e.t].i;}
+function cWeak(sid){const t=cStu(sid).term||{}; return Object.keys(t).filter(k=>t[k]<80).sort((a,b)=>t[a]-t[b]);}
+function cNeed(sid,e){let al=false; try{al=alerts().some(a=>a.sid===sid&&(!e.subj||a.subj===e.subj));}catch(_){} return al||(!!e.subj&&cWeak(sid).includes(e.subj));}
+function gcalUrl(e){const d=e.date.replace(/-/g,''), tm=(e.time||'08:00').replace(':','')+'00';
+  const [h,mi]=(e.time||'08:00').split(':').map(Number); const end=String(h+(mi+30>=60?1:0)).padStart(2,'0')+String((mi+30)%60).padStart(2,'0')+'00';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(cIcon(e)+' '+e.title)+'&dates='+d+'T'+tm+'/'+d+'T'+end+'&ctz=Asia/Kuwait&details='+encodeURIComponent((e.note||'')+'\n— من مَدار')+(e.meet?'&location='+encodeURIComponent('Google Meet'):'');}
+function cFmt(iso){const d=new Date(iso+'T12:00:00'); return DAYS[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1);}
+
+function calPanel(){
+  const now=new Date(); if(CV.y==null){CV.y=now.getFullYear(); CV.m=now.getMonth();}
+  const first=new Date(CV.y,CV.m,1,12), days=new Date(CV.y,CV.m+1,0).getDate(), lead=first.getDay(), todayIso=cIso(now);
+  const evs=calEvents().filter(calSees), by={}; evs.forEach(e=>{(by[e.date]=by[e.date]||[]).push(e);});
+  const MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  let cells=''; for(let i=0;i<lead;i++) cells+='<div class="mc-c off"></div>';
+  for(let d=1;d<=days;d++){const iso=CV.y+'-'+String(CV.m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'), l=by[iso]||[], wd=(lead+d-1)%7;
+    cells+='<button class="mc-c'+(iso===todayIso?' today':'')+(iso===CV.day?' sel':'')+(wd>=5?' wkend':'')+(l.length?' has':'')+'" data-cal="day" data-v="'+iso+'"><span class="mc-n num">'+d+'</span><span class="mc-i">'+l.slice(0,3).map(e=>'<i style="background:'+CAL_T[e.t].c+'22;border-color:'+CAL_T[e.t].c+'">'+cIcon(e)+'</i>').join('')+(l.length>3?'<b>+'+(l.length-3)+'</b>':'')+'</span></button>';}
+  const sel=CV.day||todayIso, upc=evs.filter(e=>e.date>=sel).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,CV.day?20:5), dayL=CV.day?evs.filter(e=>e.date===CV.day):null;
+  const list=(dayL||upc), staffR=['teacher','admin','vice','counselor','monitor'].includes(V.role);
+  const who=V.role==='student'?'تقويمي':V.role==='parent'?'تقويم '+esc(cStu(cSid()).name):'تقويم المدرسة';
+  return '<section class="panel mc" id="mcal"><div class="panel-h"><h2>📅 '+who+'</h2><span class="spacer"></span>'+
+    (staffR?'<button class="btn sm primary" data-cal="add">＋ موعد جديد</button>':'')+
+    '<a class="btn sm" href="https://calendar.google.com/calendar/r/month" target="_blank" rel="noopener">Google Calendar ↗</a></div>'+
+    (CV.add&&staffR?calAddForm():'')+
+    '<div class="mc-nav"><button class="btn sm" data-cal="prev" aria-label="الشهر السابق">›</button><b>'+MN[CV.m]+' '+CV.y+'</b><button class="btn sm" data-cal="next" aria-label="الشهر الجاي">‹</button></div>'+
+    '<div class="mc-g">'+['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'].map(x=>'<div class="mc-h">'+x+'</div>').join('')+cells+'</div>'+
+    '<div class="mc-leg">'+Object.keys(CAL_T).map(k=>'<span><i style="background:'+CAL_T[k].c+'"></i>'+CAL_T[k].i+' '+CAL_T[k].n+'</span>').join('')+'</div>'+
+    '<h3 class="mc-st">'+(dayL?'🗓️ '+cFmt(CV.day):'⏳ الجاي')+'</h3>'+
+    (list.length?list.map(e=>{const need=(V.role==='student'||V.role==='parent')&&cNeed(cSid(),e), rem=CALR[e.id+'|'+cSid()];
+      return '<button class="mc-e" data-cal="ev" data-v="'+e.id+'" style="border-inline-start-color:'+CAL_T[e.t].c+'"><span class="mc-ei">'+cIcon(e)+'</span><span class="mc-eb"><b>'+esc(e.title)+'</b><small>'+cFmt(e.date)+' · '+esc(e.time||'')+' · '+esc(calToLbl(e))+'</small></span>'+
+        (need?'<span class="pill warn">تذكير ذكي</span>':'')+(rem?'<span class="pill good">🔔</span>':'')+'</button>';}).join(''):'<div class="empty">ما في مواعيد بهاليوم 🌿</div>')+
+    '<p class="k-note">✨ اضغطي أي موعد: أضيفيه لتقويم جوجل، واختاري متى أذكّرج. والتذكير يتغيّر حسب حالة كل بنت.</p></section>';
+}
+function calAddForm(){const st=S.students||[];
+  return '<form class="mc-add" data-cal="addf"><div class="mc-row"><label class="field">النوع<select id="caT">'+Object.keys(CAL_T).filter(k=>k!=='appt').map(k=>'<option value="'+k+'">'+CAL_T[k].i+' '+CAL_T[k].n+'</option>').join('')+'</select></label>'+
+   '<label class="field">المادة<select id="caS"><option value="">—</option>'+Object.keys(SUBJ_ICON).map(k=>'<option value="'+k+'"'+(k==='chem'?' selected':'')+'>'+SUBJ_ICON[k]+' '+((S.subjects&&S.subjects[k]&&S.subjects[k].name)||TERM&&TERM[k]||k)+'</option>').join('')+'</select></label></div>'+
+   '<label class="field">العنوان<input id="caN" required placeholder="مثلاً: اختبار قصير على الروابط"></label>'+
+   '<div class="mc-row"><label class="field">اليوم<input type="date" id="caD" required value="'+cIso(cWork(2))+'"></label><label class="field">الوقت<input type="time" id="caH" value="08:00"></label></div>'+
+   '<label class="field">يوصل لـ<select id="caTo"><option value="all">🌍 كل الصفوف</option>'+(S.classes||[]).map(c=>'<option value="cls:'+c.id+'">👥 الشعبة '+esc(c.name)+'</option>').join('')+st.map(s=>'<option value="sid:'+s.id+'">👧 '+esc(s.name)+' فقط</option>').join('')+'<option value="staff">🏫 المعلمات والإدارة</option></select></label>'+
+   '<label class="field">ملاحظة<input id="caX" placeholder="اختياري"></label>'+
+   '<div class="row"><button class="btn primary">إرسال وإضافة للتقويم</button><button class="btn" type="button" data-cal="add">إلغاء</button></div></form>';}
+
+function calOpen(id){const e=calEvents().find(x=>x.id===id); if(!e) return; const sid=cSid(), st=cStu(sid), r=V.role, need=cNeed(sid,e), key=id+'|'+sid, cur=CALR[key]||{};
+  const isS=r==='student', isP=r==='parent';
+  const opts=[['w','📚 قبلها بأسبوع','وقت تبدين مذاكرة'],['d','🔁 قبلها بيوم','مراجعة سريعة'],['m','☀️ الصبح نفس اليوم','رسالة بالتوفيق']];
+  const def=need?{w:1,d:1,m:1}:{d:1,m:1}; const on=k=>cur.set?!!cur[k]:!!def[k];
+  let smart='';
+  if((isS||isP)&&(e.t==='exam'||e.t==='due')){
+    smart=need
+     ?'<div class="mc-smart warn"><b>🧠 تذكير ذكي لـ '+esc(st.name)+'</b><p>مدار شاف إن '+esc(st.name)+' تحتاج دعم بهالمادة، فالتذكير يبدأ <b>قبل بأسبوع</b>:</p><ul><li>📅 خطة مراجعة يوم بيوم من بوصلة (Gemini)</li><li>🎧 بودكاست الدرس من NotebookLM (تسمعه بالسيارة)</li><li>▶️ فيديوهات شرح مختارة من YouTube</li></ul></div>'
+     :'<div class="mc-smart good"><b>🧠 تذكير ذكي</b><p>'+esc(st.name)+' مستواها ممتاز بهالمادة، فيكفي تذكير قبل بيوم ورسالة الصبح 💪</p></div>';
+    smart+='<div class="mc-bub"><span>🧭</span><p>'+(isP?'<b>رسالة الصبح لولي الأمر:</b> اليوم '+esc(st.name)+' عندها '+esc(e.title)+'. كلمة تشجيع منكم الصبح تفرق وايد 🤍'+(need?' وأمس راجعت معاها الأسئلة اللي تحتاجها.':''):'<b>رسالة بوصلة الصبح:</b> صباح الخير يا '+esc(st.name)+' 🌙 اليوم '+esc(e.title)+'. ذاكرتي زين، واتذكري: خذي نفس عميق قبل السؤال الأول. بالتوفيق! ⭐')+'</p></div>';
+    if(isP&&need) smart+='<div class="mc-bub"><span>💡</span><p><b>شلون تساعدونها:</b> اسألوها توصف لكم التوزيع الإلكتروني بكلامها ١٠ دقايق بالليل. إذا شرحته، فهمته.</p></div>';
+  }
+  const m=$('#modal'); m.hidden=false;
+  m.innerHTML='<div class="mcard wide" role="dialog" aria-label="'+esc(e.title)+'"><h3>'+cIcon(e)+' '+esc(e.title)+'</h3>'+
+   '<p>📆 '+cFmt(e.date)+' · ⏰ '+esc(e.time||'')+'<br>👥 '+esc(calToLbl(e))+(e.note?'<br>📝 '+esc(e.note):'')+(e.meet?'<br>🎥 <a href="https://meet.google.com/new" target="_blank" rel="noopener">رابط Google Meet</a>':'')+'</p>'+
+   smart+
+   '<h4 class="mc-st">🔔 متى أذكّرج؟</h4><div class="mc-rem">'+opts.map(o=>'<label><input type="checkbox" data-crem="'+o[0]+'"'+(on(o[0])?' checked':'')+'><span><b>'+o[1]+'</b><small>'+o[2]+'</small></span></label>').join('')+'</div>'+
+   '<div class="row2" style="margin-top:12px"><button class="btn primary" data-cal="rsave" data-v="'+id+'">حفظ التذكير</button><a class="btn" href="'+gcalUrl(e)+'" target="_blank" rel="noopener">＋ أضيفيه لتقويم جوجل</a></div>'+
+   '<button class="btn" style="width:100%;margin-top:8px" data-gate="close">إغلاق</button></div>';
+}
+
+/* ---- حجز موعد ---- */
+const STAFF={teacher:{i:'👩‍🏫',n:'معلمة الكيمياء',sub:'أ. أفنان سامي',days:[0,2,3],h:['09:00','09:30','10:00','12:00','12:30']},
+  vice:{i:'🗂️',n:'الوكيلة',sub:'شؤون الطالبات',days:[0,1,2,3,4],h:['08:00','08:30','09:00','10:30','11:00','11:30']},
+  admin:{i:'🏫',n:'المديرة',sub:'إدارة المدرسة',days:[1,3],h:['10:00','10:30','11:00']},
+  coun:{i:'🧑‍🏫',n:'المرشدة الأكاديمية',sub:'المسارات والتخصصات',days:[0,1,2,3,4],h:['08:30','09:00','09:30','11:00','11:30','12:00']}};
+let BK=(()=>{try{return JSON.parse(localStorage.getItem('madar.bk')||'[]')}catch(e){return []}})();
+function bkSave(){try{localStorage.setItem('madar.bk',JSON.stringify(BK.slice(-40)))}catch(e){}}
+const BV={who:null,day:null,slot:null,mode:'f2f'};
+function bkTaken(who,iso,h){if(BK.some(b=>b.who===who&&b.date===iso&&b.time===h)) return true; let x=0; const s=who+iso+h; for(let i=0;i<s.length;i++) x=(x*31+s.charCodeAt(i))%997; return x%3===0;}
+function bkDays(who){const out=[]; let o=1; while(out.length<8&&o<30){const d=cD(o); if(STAFF[who].days.includes(d.getDay())) out.push(cIso(d)); o++;} return out;}
+function bookPanel(){const sid=cSid(), st=cStu(sid), need=(()=>{let l=[]; try{l=alerts().filter(a=>a.sid===sid);}catch(e){} return l.length?l:cWeak(sid).map(k=>({subj:k}));})();
+  let sug='';
+  if(need.length&&!BK.some(b=>b.sid===sid)){const w='teacher', d=bkDays(w).find(iso=>STAFF[w].h.some(h=>!bkTaken(w,iso,h))), h=d&&STAFF[w].h.find(h=>!bkTaken(w,d,h));
+    if(d) sug='<div class="mc-smart warn"><b>💬 اقتراح من مدار</b><p>'+esc(st.name)+' عندها تنبيه '+(need[0].subj&&S.subjects[need[0].subj]?'بـ'+esc(S.subjects[need[0].subj].name):'')+'. تبين تحجزين مع المعلمة؟ أقرب موعد فاضي: <b>'+cFmt(d)+' · '+h+'</b></p><button class="btn sm primary" data-cal="bquick" data-d="'+d+'" data-h="'+h+'">احجزي هالموعد</button></div>';}
+  const w=BV.who, mine=BK.filter(b=>b.sid===sid);
+  return '<section class="panel" id="book"><div class="panel-h"><h2>🗓️ احجز موعد مع المدرسة</h2><span class="spacer"></span><span class="pill none">Google Calendar · Meet</span></div>'+sug+
+   '<p class="small muted">١) مع منو؟</p><div class="bk-who">'+Object.keys(STAFF).map(k=>'<button class="bk-p'+(w===k?' on':'')+'" data-cal="bwho" data-v="'+k+'"><span>'+STAFF[k].i+'</span><b>'+STAFF[k].n+'</b><small>'+STAFF[k].sub+'</small></button>').join('')+'</div>'+
+   (w?'<p class="small muted">٢) اختاري اليوم</p><div class="bk-days">'+bkDays(w).map(iso=>{const free=STAFF[w].h.filter(h=>!bkTaken(w,iso,h)).length; return '<button class="bk-d'+(BV.day===iso?' on':'')+'" data-cal="bday" data-v="'+iso+'"'+(free?'':' disabled')+'><b>'+cFmt(iso)+'</b><small>'+(free?free+' متاح':'ممتلئ')+'</small></button>';}).join('')+'</div>':'')+
+   (w&&BV.day?'<p class="small muted">٣) الوقت (نص ساعة)</p><div class="bk-slots">'+STAFF[w].h.map(h=>{const t=bkTaken(w,BV.day,h); return '<button class="bk-s'+(BV.slot===h?' on':'')+'" data-cal="bslot" data-v="'+h+'"'+(t?' disabled':'')+'>'+h+(t?' ✕':'')+'</button>';}).join('')+'</div>':'')+
+   (w&&BV.day&&BV.slot?'<div class="seg" role="group" style="margin:10px 0"><button data-cal="bmode" data-v="f2f" aria-pressed="'+(BV.mode==='f2f')+'">🏫 حضوري</button><button data-cal="bmode" data-v="meet" aria-pressed="'+(BV.mode==='meet')+'">🎥 Google Meet</button></div>'+
+     '<label class="field">السبب (اختياري)<input id="bkWhy" placeholder="مثلاً: أبي أفهم شلون أساعدها بالكيمياء"></label><button class="btn primary" style="margin-top:8px" data-cal="bgo">✓ تأكيد الحجز</button>':'')+
+   (mine.length?'<h3 class="mc-st">مواعيدي</h3>'+mine.map(b=>'<div class="mc-e" style="border-inline-start-color:#2F7D5B"><span class="mc-ei">'+STAFF[b.who].i+'</span><span class="mc-eb"><b>'+STAFF[b.who].n+'</b><small>'+cFmt(b.date)+' · '+b.time+' · '+(b.mode==='meet'?'🎥 Meet':'🏫 حضوري')+'</small></span><span class="pill good">مؤكد</span></div>').join(''):'')+
+   '</section>';}
+function bkConfirm(who,date,time,mode,why){const sid=cSid(), st=cStu(sid);
+  BK.push({who,date,time,mode,why,sid}); bkSave();
+  CALX.push({id:'b'+Date.now(),t:'appt',title:'موعد مع '+STAFF[who].n+' ('+st.name+')',date,time,to:{k:'parent',v:sid},note:(why||'')+(mode==='meet'?' · عن طريق Google Meet':' · حضوري بالمدرسة'),meet:mode==='meet'}); calSave();
+  BV.who=null;BV.day=null;BV.slot=null; render(); toast('✅ انحجز الموعد ونزل بتقويمج وتقويم '+STAFF[who].n+'، ومعاه تذكير قبل بيوم');}
+function staffBookings(){const mine=BK.slice().reverse(); const k=V.role==='teacher'?'teacher':V.role==='vice'?'vice':V.role==='admin'?'admin':null; if(!k) return '';
+  const l=mine.filter(b=>b.who===k);
+  return '<section class="panel" id="sbook"><div class="panel-h"><h2>📥 مواعيد أولياء الأمور معاي</h2><span class="spacer"></span><span class="pill none">'+STAFF[k].days.map(d=>DAYS[d].replace('ال','')).join('، ')+'</span></div>'+
+   '<p class="small muted">أوقاتي المتاحة: '+STAFF[k].h.join(' · ')+'. ولي الأمر يختار منها ويوصلني الموعد بتقويم جوجل.</p>'+
+   (l.length?l.map(b=>'<div class="row small"><span class="pill acc">'+esc(cStu(b.sid).name)+'</span>'+cFmt(b.date)+' · '+b.time+' · '+(b.mode==='meet'?'🎥 Meet':'🏫 حضوري')+(b.why?' — '+esc(b.why):'')+'</div>').join(''):'<div class="empty">ما في حجوزات للحين. جربي من شاشة ولي الأمر 😉</div>')+'</section>';}
+
+/* ---- الربط بالواجهة ---- */
+(function(){const _r=render; render=function(){_r(); try{
+  const m=$('#main'); if(!m||!m.firstElementChild) return;
+  const wrap=document.createElement('div'); wrap.className='mc-wrap';
+  wrap.innerHTML=calPanel()+(V.role==='parent'?bookPanel():'')+(['teacher','vice','admin'].includes(V.role)?staffBookings():'');
+  m.firstElementChild.after(wrap);
+}catch(err){console.warn('cal',err);}};})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-cal]'); if(!b||b.tagName==='FORM') return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.cal, v=b.dataset.v;
+  if(a==='prev'||a==='next'){CV.m+=a==='next'?1:-1; if(CV.m>11){CV.m=0;CV.y++;} if(CV.m<0){CV.m=11;CV.y--;} CV.day=null; render(); return;}
+  if(a==='day'){CV.day=CV.day===v?null:v; render(); const s=$('#mcal .mc-st'); if(s) s.scrollIntoView({block:'nearest',behavior:'smooth'}); return;}
+  if(a==='add'){CV.add=!CV.add; render(); return;}
+  if(a==='ev'){calOpen(v); return;}
+  if(a==='rsave'){const k=v+'|'+cSid(), o={set:1}; document.querySelectorAll('[data-crem]').forEach(c=>{if(c.checked) o[c.dataset.crem]=1;}); CALR[k]=o; try{localStorage.setItem('madar.calr',JSON.stringify(CALR))}catch(_){}
+    const n=['w','d','m'].filter(x=>o[x]).map(x=>({w:'قبل بأسبوع',d:'قبل بيوم',m:'الصبح'}[x])); closeModal(); render(); toast(n.length?'🔔 بذكّرج: '+n.join('، '):'انلغى التذكير'); return;}
+  if(a==='bwho'){BV.who=v;BV.day=null;BV.slot=null; render(); return;}
+  if(a==='bday'){BV.day=v;BV.slot=null; render(); return;}
+  if(a==='bslot'){BV.slot=v; render(); return;}
+  if(a==='bmode'){BV.mode=v; const y=$('#bkWhy'); const t=y?y.value:''; render(); const y2=$('#bkWhy'); if(y2) y2.value=t; return;}
+  if(a==='bgo'){const y=$('#bkWhy'); bkConfirm(BV.who,BV.day,BV.slot,BV.mode,y?y.value.trim():''); return;}
+  if(a==='bquick'){bkConfirm('teacher',b.dataset.d,b.dataset.h,'f2f','متابعة التنبيه'); return;}
+},true);
+document.addEventListener('submit',e=>{if(e.target.dataset.cal!=='addf') return; e.preventDefault(); e.stopPropagation();
+  const to=$('#caTo').value.split(':'), ev={id:'x'+Date.now(),t:$('#caT').value,subj:$('#caS').value||null,title:$('#caN').value.trim(),date:$('#caD').value,time:$('#caH').value||'08:00',to:{k:to[0],v:to[1]},note:$('#caX').value.trim()};
+  if(!ev.title||!ev.date) return; CALX.push(ev); calSave(); CV.add=false; const d=new Date(ev.date+'T12:00:00'); CV.y=d.getFullYear(); CV.m=d.getMonth(); CV.day=ev.date; render();
+  toast('📨 انرسل لـ '+calToLbl(ev)+'، ونزل بتقويمهم مع تذكير');},true);
+
 </script>
 
 </body></html>
