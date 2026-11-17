@@ -1261,7 +1261,7 @@ function vStudent(){
     '<button class="k-chk" data-act="task" data-id="'+t.id+'" aria-label="'+(t.status==='done'?'رجّعيها':'أنجزتها')+'">'+(t.status==='done'?'✓':'')+'</button></div>';};
   const plan='<section class="k-card" id="plan"><div class="k-h"><h3>✅ خطتي اليوم</h3><span class="spacer"></span><span class="k-sub">'+DAYS[today]+'</span></div>'+
     (todayT.length?todayT.map(task).join(''):'<div class="k-empty">🌿 ما عندج مهام اليوم</div>')+
-    '<div class="k-btns"><button class="k-soft" data-act="help">🙋‍♀️ أحتاج مساعدة</button><button class="k-soft" data-act="coachq" data-q="عدّل خطتي، اليوم عندي ضغط" onclick="N18.st='coach'">🔄 خففي خطتي</button></div></section>';
+    '<div class="k-btns"><button class="k-soft" data-act="help">🙋‍♀️ أحتاج مساعدة</button><button class="k-soft" data-act="coachq" data-q="عدّل خطتي، اليوم عندي ضغط">🔄 خففي خطتي</button></div></section>';
   const pmap='<section class="k-card" id="pmap"><div class="k-h"><h3>🎮 تدريباتي</h3></div><div class="k-games">'+ORDER_SK.map((sk,i)=>{const n=skillStars(sid,sk), lock=i>0&&skillStars(sid,ORDER_SK[i-1])===0&&!S.plans.some(p=>p.sid===sid&&p.kind==='practice'&&taskSkill(p)===sk);
     return '<div class="k-game '+GAME_TINT[sk]+(lock?' lock':'')+'"><span class="k-gi">'+(lock?'🔒':GAME_ICON[sk])+'</span><b>'+GAMES[sk].name+'</b><span class="k-st" aria-label="'+n+' نجوم">'+'★'.repeat(n)+'<i>'+'★'.repeat(3-n)+'</i></span><span class="k-pg">📖 '+esc((CONFIG.pages[sk]||'').split(' · ').pop())+((CONFIG.links.audio||{})[sk]?' · <a href="'+esc(CONFIG.links.audio[sk])+'" target="_blank" rel="noopener" title="ملخص صوتي">🎧</a>':'')+'</span>'+
       (lock?'<span class="k-sub">بعد '+esc(GAMES[ORDER_SK[i-1]].name)+'</span>':'<button class="k-play sm" data-act="play" data-skill="'+esc(sk)+'">▶ العبي</button>')+'</div>';}).join('')+'</div></section>';
@@ -2625,7 +2625,7 @@ vStudent=function(){
     '<button class="k-chk" data-act="task" data-id="'+t.id+'" aria-label="'+(t.status==='done'?'رجّعيها':'أنجزتها')+'">'+(t.status==='done'?'✓':'')+'</button></div>';};
   const plan='<section class="k-card" id="plan"><div class="k-h"><h3>✅ خطتي اليوم</h3><span class="spacer"></span><span class="k-sub">'+DAYS[today]+'</span></div>'+
     (todayT.length?todayT.map(task).join(''):'<div class="k-empty">🌿 ما عندج مهام اليوم</div>')+
-    '<div class="k-btns"><button class="k-soft" data-n18="help">🙋‍♀️ أحتاج مساعدة</button><button class="k-soft" data-act="coachq" data-q="عدّل خطتي، اليوم عندي ضغط" onclick="N18.st='coach'">🔄 خففي خطتي</button></div></section>';
+    '<div class="k-btns"><button class="k-soft" data-n18="help">🙋‍♀️ أحتاج مساعدة</button><button class="k-soft" data-act="coachq" data-q="عدّل خطتي، اليوم عندي ضغط">🔄 خففي خطتي</button></div></section>';
   const pk=N18.prac, subs=['chem'].concat(Object.keys(QZ).filter(k=>S.subjects[k]));
   const games=pk==='chem'?'<div class="k-games">'+ORDER_SK.map((sk,i)=>{const n=skillStars(sid,sk), lock=i>0&&skillStars(sid,ORDER_SK[i-1])===0&&!S.plans.some(p=>p.sid===sid&&p.kind==='practice'&&taskSkill(p)===sk);
       return '<div class="k-game '+GAME_TINT[sk]+(lock?' lock':'')+'"><span class="k-gi">'+(lock?'🔒':GAME_ICON[sk])+'</span><b>'+GAMES[sk].name+'</b><small class="k-sub">'+esc(sk)+'</small><span class="k-st">'+'★'.repeat(n)+'<i>'+'★'.repeat(3-n)+'</i></span>'+
@@ -3058,6 +3058,8 @@ function teacherTidy(){const M=$('#main'); if(!M||V.role!=='teacher'||(typeof T!
 // ٧) «غيّري الشخصية» دايم فوق
 (function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&!GATE.judge&&!el.querySelector('[data-gate="switch"]')) el.insertAdjacentHTML('afterbegin','<button class="btn primary" data-gate="switch">🔄 غيّري الشخصية</button>');};})();
 if(GATE.who) render();
+
+document.addEventListener('click',e=>{if(e.target.closest('[data-act="coachq"]')) N18.st='coach';},true);
 </script>
 
 </body></html>
