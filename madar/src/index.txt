@@ -2468,7 +2468,7 @@ function lvlOf(r){return r>=0.9?['good','ممتازة 🌟']:r>=0.8?['acc','زي
 function subjRows(sid){const {res}=studentSummary(sid), t=(stu(sid)||{}).term||{}; return Object.keys(res).map(k=>({k,r:t[k]!=null?t[k]/100:res[k].c.r,v:res[k].c.v,max:res[k].c.max,d:res[k].d}));}
 
 /* ---- ١) المجلة (العرض التقديمي) ---- */
-const DECK_N=26, ABASE=/github\.io$|localhost/.test(location.hostname)?'':'https://engafnansa93.github.io/hayy/madar/';
+const DECK_N=27, ABASE=/github\.io$|localhost/.test(location.hostname)?'':'https://engafnansa93.github.io/hayy/madar/';
 function loadFlip(cb){if(window.St) return cb(); const s=document.createElement('script'); s.src=ABASE+'pageflip.js?v=1'; s.onload=cb; s.onerror=()=>toast('ما قدرت أحمّل المجلة'); document.head.appendChild(s);}
 function openMag(){
   let o=$('#magx'); if(!o){o=document.createElement('div'); o.id='magx'; document.body.appendChild(o);}
@@ -2481,7 +2481,7 @@ function openMag(){
     const h=document.createElement('div'); h.className='mx-book'; h.dir='ltr'; stage.appendChild(h);
     const back=document.createElement('div'); back.className='page mx-back'; back.dataset.density='hard'; back.innerHTML='<div>مَدار<br><small>لكل بنت مدارها 🤍</small></div>'; h.appendChild(back);
     const PAD=DECK_N%2===0?1:0; if(PAD){const p=document.createElement('div'); p.className='page mx-back'; p.innerHTML='<div><small>By Afnan</small></div>'; h.appendChild(p);}
-    for(let i=DECK_N;i>=1;i--){const p=document.createElement('div'); p.className='page'; if(i===1) p.dataset.density='hard'; p.innerHTML='<img src="'+ABASE+'deck/s-'+String(i).padStart(2,'0')+'.jpg?v=1" alt="سلايد '+i+'" decoding="async">'; h.appendChild(p);}
+    for(let i=DECK_N;i>=1;i--){const p=document.createElement('div'); p.className='page'; if(i===1) p.dataset.density='hard'; p.innerHTML='<img src="'+ABASE+'deck/s-'+String(i).padStart(2,'0')+'.jpg?v=2" alt="سلايد '+i+'" decoding="async">'; h.appendChild(p);}
     const book=new St.PageFlip(h,{width:pw,height:ph,size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:false,flippingTime:900});
     book.loadFromHTML(h.querySelectorAll('.page')); book.turnToPage(DECK_N+PAD);
     const slideOf=k=>k<=PAD?0:DECK_N+1+PAD-k;
