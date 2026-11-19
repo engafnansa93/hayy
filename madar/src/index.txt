@@ -64,7 +64,7 @@
 .bk-s{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink);font:inherit;cursor:pointer}
 .bk-s:disabled{opacity:.35;text-decoration:line-through}
 @media (max-width:620px){.mc-c{min-height:48px}.bk-who{grid-template-columns:repeat(2,1fr)}.mc-i i{font-size:.7rem}}
-</style></head><body>
+.mx-voice{position:absolute;z-index:5;width:3.6%;aspect-ratio:1;padding:0;transform:translate(-50%,-50%);display:grid;place-items:center;border:1.5px solid #ffd36e;background:#1b2160;color:#ffd36e;border-radius:50%;font-size:calc(var(--pw,700px)*.017);line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);animation:mxv 2.4s ease-in-out infinite}.mx-voice.on{background:#ffd36e;color:#141846;animation:none}.mx-voice:hover{filter:brightness(1.15)}@keyframes mxv{0%,100%{box-shadow:0 0 0 0 rgba(255,211,110,.45)}50%{box-shadow:0 0 0 6px rgba(255,211,110,0)}}</style></head><body>
 <title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2478,18 +2478,26 @@ function openMag(){
   loadFlip(()=>{
     const stage=$('#mxStage'), W=stage.clientWidth, H=stage.clientHeight, single=W<760;
     let pw=single?Math.min(W-8,980):Math.floor(Math.min(W-16,1400)/2); let ph=Math.round(pw*9/16); if(ph>H-10){ph=H-10; pw=Math.round(ph*16/9);}
-    const h=document.createElement('div'); h.className='mx-book'; h.dir='ltr'; stage.appendChild(h);
+    stage.style.setProperty('--pw',pw+'px'); const h=document.createElement('div'); h.className='mx-book'; h.dir='ltr'; stage.appendChild(h);
     const back=document.createElement('div'); back.className='page mx-back'; back.dataset.density='hard'; back.innerHTML='<div>مَدار<br><small>لكل بنت مدارها 🤍</small></div>'; h.appendChild(back);
     const PAD=DECK_N%2===0?1:0; if(PAD){const p=document.createElement('div'); p.className='page mx-back'; p.innerHTML='<div><small>By Afnan</small></div>'; h.appendChild(p);}
-    for(let i=DECK_N;i>=1;i--){const p=document.createElement('div'); p.className='page'; if(i===1) p.dataset.density='hard'; p.innerHTML='<img src="'+ABASE+'deck/s-'+String(i).padStart(2,'0')+'.jpg?v=4" alt="سلايد '+i+'" decoding="async">'+(i===23?'<video src="'+ABASE+'deck/v23.mp4?v=2" poster="'+ABASE+'deck/v23.jpg?v=2" muted autoplay loop playsinline preload="auto" style="position:absolute;left:52.18%;top:27.14%;width:20.09%;height:62.04%;border-radius:6.8% / 3.9%;object-fit:cover;pointer-events:none"></video>':''); h.appendChild(p);}
+    for(let i=DECK_N;i>=1;i--){const p=document.createElement('div'); p.className='page'; if(i===1) p.dataset.density='hard'; p.innerHTML='<img src="'+ABASE+'deck/s-'+String(i).padStart(2,'0')+'.jpg?v=4" alt="سلايد '+i+'" decoding="async">'+(i===23?'<video src="'+ABASE+'deck/v23.mp4?v=2" poster="'+ABASE+'deck/v23.jpg?v=2" muted autoplay loop playsinline preload="auto" style="position:absolute;left:52.18%;top:27.14%;width:20.09%;height:62.04%;border-radius:6.8% / 3.9%;object-fit:cover;pointer-events:none"></video>':'')+(i===24?V24.map((v,k)=>'<button type="button" class="mx-voice" data-v24="'+k+'" style="left:'+v[1]+'%;top:'+v[2]+'%" aria-label="اسمعوا '+v[3]+'">🔊</button>').join(''):''); h.appendChild(p);}
     const book=new St.PageFlip(h,{width:pw,height:ph,size:'fixed',showCover:true,usePortrait:single,maxShadowOpacity:.5,mobileScrollSupport:false,flippingTime:900});
     book.loadFromHTML(h.querySelectorAll('.page')); book.turnToPage(DECK_N+PAD);
     const slideOf=k=>k<=PAD?0:DECK_N+1+PAD-k;
     const lab=k=>{const port=book.getOrientation&&book.getOrientation()==='portrait'; const a=[slideOf(k),port?0:slideOf(k+1)].filter(x=>x>0&&x<=DECK_N).sort((x,y)=>x-y); const n=$('#mxNum'); if(n) n.textContent=a.length?a.join('–')+' / '+DECK_N:'النهاية 🤍';};
-    lab(book.getCurrentPageIndex()); book.on('flip',e=>lab(e.data)); o._book=book;
+    lab(book.getCurrentPageIndex()); book.on('flip',e=>{lab(e.data); v24Stop();}); o._book=book;
   });
 }
-function closeMag(){const o=$('#magx'); if(!o) return; try{o._book&&o._book.destroy();}catch(e){} o.hidden=true; o.innerHTML=''; document.body.style.overflow='';}
+/* صفحة ٢٤ «أصوات من الميدان»: زر صوت على كل كرت */
+const V24=[['v24-zainab.mp3',87.45,35.6,'أ. زينب الكايد'],['v24-wahaj.mp3',57.2,35.6,'أ. وهج الماجدي'],['v24-salih.mp3',26.75,35.6,'أ. صالح العجيل'],['v24-munira.mp3',87.65,71.1,'أ. منيرة العدواني'],['v24-filkawi.mp3',42.2,71.1,'د. عبدالله الفيلكاوي']];
+const V24A=[];
+function v24Stop(){V24A.forEach((a,k)=>{if(a&&!a.paused){a.pause();a.currentTime=0;} document.querySelectorAll('[data-v24="'+k+'"]').forEach(b=>{b.classList.remove('on');b.textContent='🔊';});});}
+['pointerdown','mousedown','touchstart'].forEach(t=>document.addEventListener(t,e=>{if(e.target.closest('.mx-voice')) e.stopPropagation();},{capture:true,passive:true}));
+document.addEventListener('click',e=>{const b=e.target.closest('.mx-voice'); if(!b) return; e.preventDefault(); e.stopPropagation(); const k=+b.dataset.v24;
+  const a=V24A[k]||(V24A[k]=new Audio(ABASE+'deck/'+V24[k][0]+'?v=1')); const was=!a.paused; v24Stop(); if(was) return;
+  a.onended=()=>v24Stop(); a.play().catch(()=>toast('ما قدرت أشغّل الصوت')); document.querySelectorAll('[data-v24="'+k+'"]').forEach(x=>{x.classList.add('on');x.textContent='⏸';});},true);
+function closeMag(){const o=$('#magx'); if(!o) return; v24Stop(); try{o._book&&o._book.destroy();}catch(e){} o.hidden=true; o.innerHTML=''; document.body.style.overflow='';}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-mx]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const o=$('#magx'), bk=o&&o._book, a=b.dataset.mx;
   if(a==='open'){closeModal(); openMag();} else if(a==='close') closeMag(); else if(a==='next'&&bk) bk.flipPrev('top'); else if(a==='prev'&&bk) bk.flipNext('top');},true);
 document.addEventListener('keydown',e=>{const o=$('#magx'); if(!o||o.hidden||!o._book) return; if(e.key==='Escape') closeMag(); if(e.key==='ArrowLeft') o._book.flipPrev('top'); if(e.key==='ArrowRight') o._book.flipNext('top');});
