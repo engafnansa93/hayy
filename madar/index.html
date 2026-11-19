@@ -2414,8 +2414,8 @@ function lookerPanel(){const L=LK[G2.lvl];
    '<div class="g2-kpi">'+L.k.map(k=>'<div><span>'+k[0]+'</span><b class="num">'+k[2]+'</b><small>'+k[1]+'</small></div>').join('')+'</div>'+
    '<p class="small muted" style="margin:8px 0 4px">نسبة الإتقان ('+L.n+')</p>'+L.b.map(b=>'<div class="g2-bar"><span>'+b[0]+'</span><i><em style="width:'+b[1]+'%"></em></i><b class="num">'+b[1]+'%</b></div>').join('')+
    (G2.lvl!=='school'?'<p class="k-note">🔭 رؤية: نفس البيانات تتجمع بـ Looker Studio من كل مدرسة، بدون أي شغل زيادة.</p>':'')+'</section>';}
-const GT=[['📝','Google Forms','الكويزات ← الإنذار المبكر'],['📊','Google Sheets','قاعدة بيانات مدار'],['📅','Google Calendar','التقويم والتذكير الذكي'],['🎥','Google Meet','اجتماعات أولياء الأمور'],['✦','Gemini','بوصلة، التقارير، ترشيح الموهبة'],['🎧','NotebookLM','بودكاست المراجعة'],['🌐','Google Translate','التقرير بلغة الأهل'],['🏫','Google Classroom','الواجبات بالتقويم'],['📺','YouTube','فيديوهات المراجعة'],['📈','Looker Studio','المدرسة ← الوزارة'],['✉️','Gmail','تقرير الخميس'],['🌍','Google Sites','واجهة مدار']];
-function googleReadyPanel(){return '<section class="panel" id="gready"><div class="panel-h"><h2>🔗 مدار جاهز لبيئة جوجل</h2></div><div class="g2-tools">'+GT.map(t=>'<div><span>'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small></div>').join('')+'</div></section>'+
+const GT=[['📝','Google Forms','الكويزات ← الإنذار المبكر'],['📊','Google Sheets','قاعدة بيانات مدار'],['📅','Google Calendar','التقويم والتذكير الذكي'],['🎥','Google Meet','اجتماعات أولياء الأمور'],['✦','Gemini','بوصلة، التقارير، ترشيح الموهبة'],['🎧','NotebookLM','بودكاست المراجعة'],['🌐','Google Translate','التقرير بلغة الأهل'],['🏫','Google Classroom','الواجبات بالتقويم'],['⚙️','Apps Script','المنصة نفسها'],['📈','Looker Studio','المدرسة ← الوزارة'],['✉️','Gmail','تقرير الخميس'],['🌍','Google Sites','واجهة مدار'],['🎬','Google Vids','فيديو المشروع']];
+function googleReadyPanel(){return '<section class="panel" id="gready"><div class="panel-h"><h2>🔗 مدار جاهز لبيئة قوقل · ١٣ أداة</h2></div><div class="g2-tools">'+GT.map(t=>'<div><span>'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small></div>').join('')+'</div></section>'+
   '<section class="panel" id="gcost"><div class="panel-h"><h2>🛡️ صفر تكلفة + الخصوصية</h2></div><div class="g2-two"><div><b>💰 صفر تكلفة إضافية</b><p class="small">يشتغل على حسابات Google Workspace for Education اللي عند الوزارة. ما فيه سيرفرات ولا اشتراكات جديدة.</p></div><div><b>🔒 البيانات داخل الوزارة</b><p class="small">كل البيانات بـ Sheets داخل دومين moe.edu.kw. كل دور يشوف اللي يخصه بس، والقرار دايمًا للطالبة وأهلها، مو للذكاء الاصطناعي.</p></div></div></section>';}
 
 /* ١٠–١١) صوت + صورة + كتابة */
@@ -3126,7 +3126,7 @@ function progPanel(sid){const rows=subjRows(sid).sort((a,b)=>a.r-b.r), st=stu(si
   return '<section class="k-card" id="kprog"><div class="k-h"><h3>📈 تقدّمي</h3><span class="spacer"></span><span class="k-sub">اضغطي على أي مادة تعرفين ليش</span></div>'+
    (rows.length?rows.map((r,ri)=>{const L=lvlOf(r.r), why=progWhy(sid,r.k);
     return '<details class="pg-r"'+(ri===0?' open':'')+'><summary><span class="pg-n">'+(SUBJ_ICON[r.k]||'')+' '+esc(sName(r.k))+'</span><div class="bar"><i style="width:'+Math.round(r.r*100)+'%"></i></div><span class="pill '+L[0]+'">'+L[1]+'</span></summary>'+
-     '<div class="pg-why"><b>ليش '+esc(L[1].replace(/ .*/,''))+'؟</b><ul>'+why.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+     '<div class="pg-why"><b>ليش '+esc(L[1].replace(/ .*/,''))+'؟</b> <small class="muted">📊 من درجاتج وملاحظات معلماتج</small><ul>'+why.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
      '<div class="pg-next">✨ '+nxt(L,r.k)+'</div><div class="row" style="gap:8px;margin-top:8px"><button class="k-soft" data-hub="go" data-k="prac">🎮 تدرّبي</button><button class="k-soft" data-hub="go" data-k="rev" data-rev="'+r.k+'">🎧 راجعي</button></div></div></details>';}).join('')
     :'<div class="k-empty">ما في درجات بعد</div>')+'</section>';}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-hub="go"][data-rev]'); if(b) N18.rev=b.dataset.rev;},true);
@@ -3151,7 +3151,7 @@ function pGradesPanel(sid){const st=stu(sid), rows=subjRows(sid).sort((a,b)=>a.r
   return '<section class="panel" id="pgrades"><div class="panel-h"><h2>📊 درجات '+esc(st.name)+'</h2><span class="spacer"></span><span class="small muted">اضغطوا على المادة تعرفون ليش</span></div>'+
    rows.map((r,i)=>{const L=lvlOf(r.r), why=progWhy(sid,r.k).map(P), list=pub.filter(a=>a.subj===r.k);
     return '<details class="pg-r"'+(i===0?' open':'')+'><summary><span class="pg-n">'+(SUBJ_ICON[r.k]||'')+' '+esc(sName(r.k))+'</span><div class="bar"><i style="width:'+Math.round(r.r*100)+'%"></i></div><span class="pill '+L[0]+'">'+L[1]+'</span></summary>'+
-     '<div class="pg-why"><b>ليش '+esc(L[1].replace(/ .*/,''))+'؟</b><ul>'+why.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+     '<div class="pg-why"><b>ليش '+esc(L[1].replace(/ .*/,''))+'؟</b> <small class="muted">📊 من درجاتها وملاحظات معلماتها</small><ul>'+why.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
      (list.length?'<div class="pg-tests">'+list.map(a=>{const g=a.grades[sid]; return '<div class="row small"><span>📝 '+esc(a.title)+'</span><span class="spacer"></span><b class="num">'+(g.s==='ok'?fmt(g.v)+' / '+a.max:GST[g.s])+'</b></div>';}).join('')+'</div>':'')+
      '<div class="pg-next">💡 شلون تساعدونها: '+esc(tip(L,r.k))+'</div></div></details>';}).join('')+'</section>';}
 function pMsgPanel(sid){const st=stu(sid), PM=N18.pm||(N18.pm={to:'teacher:chem',txt:''});
@@ -3174,6 +3174,23 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-pm]'); if(
   MSGS.push({sid,from:'parent',to:[r],subj:k||null,text:txt,toN,by:'ولي أمر '+stu(sid).name,t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); PM.txt=''; render(); toast('📨 وصلت لـ'+toN);},true);
 document.addEventListener('input',e=>{if(e.target.id==='pmTxt') (N18.pm=N18.pm||{}).txt=e.target.value; if(e.target.id==='pmTo') (N18.pm=N18.pm||{}).to=e.target.value;});
 document.addEventListener('change',e=>{if(e.target.id==='pmTo') (N18.pm=N18.pm||{}).to=e.target.value;});
+
+/* ================= رسائل أولياء الأمور عند المعلمة (20 نوفمبر) ================= */
+(function(){try{if(!MSGS.some(m=>m.from==='parent')){MSGS.push({sid:'s1',from:'parent',to:['teacher'],subj:'chem',text:'أستاذة، قمر تقول التوزيع الإلكتروني صعب عليها. شلون نساعدها بالبيت؟',toN:'أ. أفنان سامي',by:'ولي أمر قمر',t:'أمس ٨:٢٠ م'},{sid:'s4',from:'parent',to:['teacher'],subj:'chem',text:'ريم غابت يوم الثلاثاء، ممكن ترسلين لها ملخص الدرس؟',toN:'أ. أفنان سامي',by:'ولي أمر ريم',t:'اليوم ٧:١٥ ص'},{sid:'s6',from:'parent',to:['teacher'],subj:'chem',text:'لطيفة تسأل عن موعد الاختبار القصير الجاي، وشنو الدروس اللي يشملها؟',toN:'أ. أفنان سامي',by:'ولي أمر لطيفة',t:'اليوم ٩:٠٢ ص'}); msgSave();}}catch(e){}})();
+function tParentPanel(){const k=mySubj(), l=MSGS.filter(m=>m.from==='parent'&&m.to.includes('teacher')&&(m.subj||'chem')===k).slice().reverse(), R=N18.trp;
+  if(!l.length) return '<section class="panel" id="tpar"><h2>👨‍👩‍👧 رسائل أولياء الأمور</h2><div class="empty">ما في رسائل جديدة 🤍</div></section>';
+  const topic=l.filter(m=>/التوزيع|الدرس|ملخص/.test(m.text)).length, when=l.filter(m=>/موعد|اختبار/.test(m.text)).length;
+  const sum='وصلج <b class="num">'+l.length+'</b> رسائل من أولياء الأمور'+(topic?': <b class="num">'+topic+'</b> عن الدروس وشرحها':'')+(when?'، و<b class="num">'+when+'</b> عن مواعيد الاختبارات':'')+'. 💡 تقدرين تردين على الكل برسالة وحدة للشعبة بدال ما تردين وحدة وحدة.';
+  return '<section class="panel" id="tpar"><div class="panel-h"><h2>👨‍👩‍👧 رسائل أولياء الأمور</h2><span class="spacer"></span><span class="pill none">لمعلمة المادة بس</span></div>'+
+   '<div class="ai-out"><span class="ai-tag">✦ ملخص Gemini'+(S.gemini==='live'?'':' · محاكاة')+'</span><p>'+sum+'</p></div>'+
+   l.map(m=>{const i=MSGS.indexOf(m), rep=MSGS.filter(x=>x.re===i); return '<div class="pm-m"><div class="row small"><span class="pill acc">'+esc(m.by)+'</span><span class="muted num">'+esc(m.t||'')+'</span><span class="spacer"></span>'+(rep.length?'<span class="pill good">✓ رديتي</span>':'')+'</div><p>'+esc(m.text)+'</p>'+
+     rep.map(x=>'<p class="small" style="opacity:.8">↩️ ردج: '+esc(x.text)+'</p>').join('')+
+     (R===i?'<textarea id="trpTxt" placeholder="اكتبي ردج لولي الأمر…"></textarea><div class="row" style="gap:8px;margin-top:6px"><button class="btn primary" data-trp="send" data-i="'+i+'">إرسال</button><button class="btn" data-trp="cancel">إلغاء</button></div>':'<button class="k-soft" data-trp="open" data-i="'+i+'">↩️ ردّي</button>')+'</div>';}).join('')+'</section>';}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-trp]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); const a=b.dataset.trp;
+  if(a==='open'){N18.trp=+b.dataset.i; render(); setTimeout(()=>{const t=$('#trpTxt'); if(t) t.focus();},50);}
+  else if(a==='cancel'){N18.trp=null; render();}
+  else {const i=+b.dataset.i, m=MSGS[i], t=(($('#trpTxt')||{}).value||'').trim(); if(!t){toast('اكتبي ردج أول');return;}
+    MSGS.push({sid:m.sid,to:['parent'],text:t,re:i,by:(S.subjects[m.subj||'chem']||{}).teacher||'المعلمة',t:new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'})}); msgSave(); N18.trp=null; render(); toast('📨 وصل ردج لـ'+m.by);}},true);
 
 /* ================= 🪐 الصفحة الرئيسية لكل شخصية (19 نوفمبر): كل ميزة بمكان واحد بس ================= */
 const HUB={role:null,page:'home'};
@@ -3211,7 +3228,7 @@ const TL={
   {k:'gr',i:'📊',n:'الدرجات',d:'أضيفي درجات أو اسحبيها من Google Forms',c:'#7cc8ff',pre:()=>{TV.tab='gr';},keep:tabBody},
   {k:'obs',i:'📝',n:'رصد الحصة',d:'ملاحظة بضغطة لكل طالبة',c:'#5fe0a8',pre:()=>{TV.tab='obs';},keep:tabBody},
   calBook,
-  {k:'msg',i:'💬',n:'رسائل الطالبات',d:'أسئلتهن عن الدرس',c:'#9aa8ff',keep:M=>[id(M,'tinbox')]}]},
+  {k:'msg',i:'💬',n:'الرسائل',d:'من الطالبات وأولياء الأمور… مع ملخص',c:'#9aa8ff',stat:()=>safe(()=>{const n=MSGS.filter(m=>m.from==='parent'&&m.to.includes('teacher')&&(m.subj||'chem')===mySubj()&&!MSGS.some(x=>x.re===MSGS.indexOf(m))).length; return n?n+' رسائل أهل تنتظر رد':'';}),keep:M=>{const d=document.createElement('div'); d.innerHTML=tParentPanel(); return [d.firstElementChild,id(M,'tinbox')];}}]},
  counselor:{top:M=>[M.querySelector('section.scope')],home:M=>[M.querySelector(':scope > .kpis')], tiles:[
   {k:'path',i:'🎯',n:'المسارات',d:'ميول ومسار كل طالبة… واضغطي «عرض» للتفاصيل',c:'#ffd36e',big:1,keep:M=>[sec(M,/المسارات المتوقعة/),id(M,'overview')]},
   {k:'radar',i:'🌟',n:'رادار الموهبة',d:'منو تستاهل تنفحص… ومع الدليل',c:'#c49bff',big:1,keep:M=>[id(M,'radar')]},
