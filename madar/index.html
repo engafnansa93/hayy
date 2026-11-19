@@ -86,7 +86,7 @@
 .hub-back{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:1px solid #FFD166;background:rgba(255,209,102,.12);color:#FFD166;cursor:pointer}
 .hub-body{display:flex;flex-direction:column;gap:16px}
 .hub-body > *{margin:0!important}
-</style></head><body>
+.pg-tools{margin:4px 0 12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,209,102,.35);background:rgba(255,209,102,.07)}.pg-tools b{display:block;color:#FFD166;margin-bottom:8px}.pg-chips{display:flex;flex-wrap:wrap;gap:6px;direction:ltr;justify-content:flex-end}.pg-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);font-size:.8rem;font-weight:600}.pg-chip i{font-style:normal}</style></head><body>
 <title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2475,7 +2475,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act="gclas
   if(vi<0) return; const rest=kids.slice(vi+2); rest.forEach(x=>x.style.display='none');
   const nx=document.createElement('button'); nx.className='btn primary'; nx.style.cssText='width:100%;margin-top:12px'; nx.textContent='✓ شفت الفيديو، كمّلوا ←';
   nx.onclick=ev=>{ev.preventDefault(); ev.stopPropagation(); rest.forEach(x=>x.style.display=''); nx.remove(); c.scrollTop=0;
-    const ul=c.querySelector('ul'); if(ul&&!ul.dataset.g2){ul.dataset.g2=1; ul.insertAdjacentHTML('beforeend','<li>📅 تقويم ذكي وحجز موعد، و🔗 ١٢ أداة جوجل: Forms، Meet، NotebookLM، Translate، Classroom، Looker…</li>');}};
+    const ul=c.querySelector('ul'); if(ul&&!ul.dataset.g2){ul.dataset.g2=1; ul.insertAdjacentHTML('beforeend','<li>📅 تقويم ذكي يعرف كل طالبة، وحجز موعد بضغطة.</li>'); ul.insertAdjacentHTML('afterend','<div class="pg-tools"><b>🔗 مبني على ١٣ أداة قوقل</b><div class="pg-chips"><span class="pg-chip"><i>📝</i>Forms</span><span class="pg-chip"><i>📊</i>Sheets</span><span class="pg-chip"><i>⚙️</i>Apps Script</span><span class="pg-chip"><i>✦</i>Gemini</span><span class="pg-chip"><i>🎧</i>NotebookLM</span><span class="pg-chip"><i>✉️</i>Gmail</span><span class="pg-chip"><i>📅</i>Calendar</span><span class="pg-chip"><i>🎥</i>Meet</span><span class="pg-chip"><i>🌐</i>Translate</span><span class="pg-chip"><i>🏫</i>Classroom</span><span class="pg-chip"><i>📈</i>Looker Studio</span><span class="pg-chip"><i>🌍</i>Sites</span><span class="pg-chip"><i>🎬</i>Vids</span></div></div>');}};
   kids[vi+1].after(nx);};})();
 
 
@@ -3195,6 +3195,8 @@ function hubPlanLite(M){const pl=M.querySelector('#plan'); if(!pl) return; const
 (function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&!el.querySelector('[data-hub="pop"]')) el.insertAdjacentHTML('afterbegin','<button class="btn" data-hub="pop" title="دليل الحكام">⚖️ للحكام</button>');};})();
 document.addEventListener('click',e=>{const b=e.target.closest('[data-hub="pop"]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); judgePop();},true);
 
+/* البوب أب أول ما ينفتح الموقع = نفس النسخة الكاملة (فيها التقويم وأدوات قوقل) */
+(function(){const m=$('#modal'); if(m&&!m.hidden&&/أهلًا بالحكام/.test(m.textContent)) judgePop();})();
 if(GATE.who) render();
 </script>
 
