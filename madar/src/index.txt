@@ -64,7 +64,29 @@
 .bk-s{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink);font:inherit;cursor:pointer}
 .bk-s:disabled{opacity:.35;text-decoration:line-through}
 @media (max-width:620px){.mc-c{min-height:48px}.bk-who{grid-template-columns:repeat(2,1fr)}.mc-i i{font-size:.7rem}}
-.mx-voice{position:absolute;z-index:5;width:3.6%;aspect-ratio:1;padding:0;transform:translate(-50%,-50%);display:grid;place-items:center;border:1.5px solid #ffd36e;background:#1b2160;color:#ffd36e;border-radius:50%;font-size:calc(var(--pw,700px)*.017);line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);animation:mxv 2.4s ease-in-out infinite}.mx-voice.on{background:#ffd36e;color:#141846;animation:none}.mx-voice:hover{filter:brightness(1.15)}@keyframes mxv{0%,100%{box-shadow:0 0 0 0 rgba(255,211,110,.45)}50%{box-shadow:0 0 0 6px rgba(255,211,110,0)}}</style></head><body>
+.mx-voice{position:absolute;z-index:5;width:3.6%;aspect-ratio:1;padding:0;transform:translate(-50%,-50%);display:grid;place-items:center;border:1.5px solid #ffd36e;background:#1b2160;color:#ffd36e;border-radius:50%;font-size:calc(var(--pw,700px)*.017);line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);animation:mxv 2.4s ease-in-out infinite}.mx-voice.on{background:#ffd36e;color:#141846;animation:none}.mx-voice:hover{filter:brightness(1.15)}@keyframes mxv{0%,100%{box-shadow:0 0 0 0 rgba(255,211,110,.45)}50%{box-shadow:0 0 0 6px rgba(255,211,110,0)}}.hub{display:flex;flex-direction:column;gap:16px}
+.hub-grid{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:16px}.hub-grid.sm .hub-t{flex-direction:column;align-items:flex-start;min-height:150px}
+@media (max-width:900px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.hub-grid{grid-template-columns:1fr}.hub-t.big{grid-column:auto}}
+.hub-t{position:relative;display:flex;align-items:center;gap:16px;text-align:right;padding:20px 20px;border-radius:22px;border:1px solid rgba(170,180,255,.22);background:linear-gradient(160deg,rgba(46,54,150,.55),rgba(22,26,84,.6));color:inherit;font:inherit;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;min-height:118px;overflow:hidden}
+.hub-t:hover,.hub-t:focus-visible{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 70%,transparent);box-shadow:0 14px 40px rgba(0,0,0,.35),0 0 30px color-mix(in srgb,var(--c) 25%,transparent)}
+.hub-t.big{grid-column:span 1;min-height:190px;flex-direction:column;align-items:flex-start;justify-content:space-between;background:radial-gradient(120% 90% at 100% 0,color-mix(in srgb,var(--c) 28%,transparent),transparent 60%),linear-gradient(160deg,rgba(52,60,165,.7),rgba(22,26,84,.7));border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.hub-orb{position:relative;flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 38%,color-mix(in srgb,var(--c) 55%,#141846) 100%);box-shadow:0 0 22px color-mix(in srgb,var(--c) 55%,transparent)}
+.hub-orb i{font-style:normal;font-size:26px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.hub-orb::after{content:"";position:absolute;left:-12px;right:-12px;top:50%;height:16px;margin-top:-8px;border-radius:50%;border:2px solid color-mix(in srgb,var(--c) 60%,transparent);transform:rotate(-16deg);border-top-color:transparent}
+.hub-t.big .hub-orb{width:78px;height:78px}.hub-t.big .hub-orb i{font-size:36px}
+.hub-tx{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.hub-tx b{font-size:1.12rem;color:#fff}.hub-t.big .hub-tx b{font-size:1.45rem}
+.hub-tx small{font-size:.86rem;opacity:.78;line-height:1.45}
+.hub-tx em{font-style:normal;align-self:flex-start;margin-top:4px;padding:3px 12px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c);font-weight:700;font-size:.85rem}
+.hub-go{position:absolute;left:16px;bottom:14px;opacity:.45;font-size:1.1rem}
+.hub-bar{display:flex;align-items:center;gap:14px}
+.hub-bar h2{margin:0;font-size:1.35rem;display:flex;align-items:center;gap:10px}
+.hub-bar h2 span{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 40%,color-mix(in srgb,var(--c) 55%,#141846) 100%);font-size:20px}
+.hub-back{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:1px solid #FFD166;background:rgba(255,209,102,.12);color:#FFD166;cursor:pointer}
+.hub-body{display:flex;flex-direction:column;gap:16px}
+.hub-body > *{margin:0!important}
+</style></head><body>
 <title>مَدار</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3070,9 +3092,106 @@ function teacherTidy(){const M=$('#main'); if(!M||V.role!=='teacher'||(typeof T!
 
 // ٧) «غيّري الشخصية» دايم فوق
 (function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&!GATE.judge&&!el.querySelector('[data-gate="switch"]')) el.insertAdjacentHTML('afterbegin','<button class="btn primary" data-gate="switch">🔄 غيّري الشخصية</button>');};})();
-if(GATE.who) render();
-
 document.addEventListener('click',e=>{if(e.target.closest('[data-act="coachq"]')) N18.st='coach';},true);
+
+/* ================= 🪐 الصفحة الرئيسية لكل شخصية (19 نوفمبر): كل ميزة بمكان واحد بس ================= */
+const HUB={role:null,page:'home'};
+(function(){
+const sec=(M,re)=>[...M.querySelectorAll('section,details')].find(s=>{const h=s.querySelector('h2,h3,summary'); return h&&re.test(h.textContent);});
+const id=(M,x)=>M.querySelector('#'+x);
+const SHARED='.n18-tabs,.n18-thead,.kpis,#mcal,#sbook,#tinbox,#book,#smsg,.mc-wrap';
+const tabBody=M=>{const b=M.querySelector('.n18-body'); if(!b) return []; return [...b.children].filter(c=>!c.matches(SHARED)&&!/رسائل|ملاحظات المدرسة/.test(((c.querySelector('h2,h3')||{}).textContent)||''));};
+const calTile={k:'cal',i:'📅',n:'التقويم',d:'الاختبارات والمواعيد',c:'#7cc8ff',keep:M=>[id(M,'mcal')]};
+const calBook={k:'cal',i:'📅',n:'التقويم والمواعيد',d:'التقويم + مواعيد أولياء الأمور',c:'#7cc8ff',keep:M=>[id(M,'mcal'),id(M,'sbook')]};
+const safe=f=>{try{return f();}catch(e){return '';}};
+const TL={
+ student:{home:M=>[M.querySelector('.k-hero')], tiles:[
+  {k:'plan',i:'✅',n:'خطتي اليوم',d:'مهامي مرتبة حسب أولويتي',c:'#ffd36e',big:1,stat:()=>safe(()=>{const sid=cSid(),d=new Date().getDay(),t=S.plans.filter(p=>p.sid===sid&&p.day===d); return t.filter(x=>x.status==='done').length+' / '+t.length+' اليوم';}),keep:M=>[id(M,'plan')]},
+  {k:'coach',i:'✨',n:'بوصلة',d:'رفيقتي الذكية: أكلمها بصوتي أو أصوّر لها',c:'#5fe0a8',big:1,pre:()=>{N18.st='coach';},keep:M=>[id(M,'coach')]},
+  {k:'sky',i:'🌌',n:'كوكبتي وتدريباتي',d:'ألعب وأجمع نجوم… وأشوف موهبتي',c:'#c49bff',big:1,stat:()=>safe(()=>'⭐ '+allStars(cSid())+' نجمة'),pre:[()=>{N18.st='sky';},()=>{N18.st='prac';}],keep:M=>[id(M,'ktal'),id(M,'pmap')]},
+  {k:'rev',i:'🎧',n:'مراجعتي',d:'فيديو وبودكاست للدرس اللي أحتاجه',c:'#ff8fbf',pre:()=>{N18.st='rev';},keep:M=>[id(M,'grev')]},
+  {k:'prog',i:'📈',n:'تقدّمي',d:'وين وصلت بكل مادة',c:'#7cc8ff',pre:()=>{N18.st='prog';},keep:M=>[id(M,'kprog')]},
+  {k:'it',i:'🧭',n:'ميولي',d:'اختبار ميول بالإيموجي',c:'#ffb84d',pre:()=>{N18.st='it';},keep:M=>[id(M,'itest')]},
+  calTile,
+  {k:'msg',i:'💬',n:'معلماتي',d:'أرسل لمعلمتي وأشوف ردودها',c:'#9aa8ff',keep:M=>[id(M,'smsg'),sec(M,/رسائل من المعلمات/)]}]},
+ parent:{home:M=>[id(M,'psum')], tiles:[
+  {k:'book',i:'🗓️',n:'احجز موعد',d:'مع أي معلمة: حضوري أو Google Meet',c:'#ffd36e',big:1,keep:M=>[id(M,'book')]},
+  {k:'tal',i:'🌟',n:'الموهبة',d:'شنو تشوفه المدرسة… وأضيفوا اللي تشوفونه بالبيت',c:'#c49bff',big:1,pre:()=>{N18.pt='tal';},keep:tabBody},
+  {k:'grades',i:'📊',n:'الدرجات',d:'كل المواد بالتفصيل',c:'#7cc8ff',pre:()=>{N18.pt='grades';},keep:tabBody},
+  {k:'prac',i:'🎮',n:'التدريب',d:'شنو تدربت عليه ابنتكم',c:'#5fe0a8',pre:()=>{N18.pt='prac';},keep:tabBody},
+  {k:'sn',i:'💪',n:'القوة والاحتياج',d:'وين تبدع… ووين تحتاج دعم',c:'#ff8fbf',pre:()=>{N18.pt='sn';},keep:tabBody},
+  calTile,
+  {k:'msg',i:'💬',n:'الرسائل والملاحظات',d:'من المعلمات والمدرسة',c:'#9aa8ff',keep:M=>[sec(M,/رسائل/),sec(M,/ملاحظات المدرسة/)]}]},
+ teacher:{top:M=>[M.querySelector('section.scope')],home:M=>[M.querySelector('.n18-thead'),M.querySelector('.kpis')], tiles:[
+  {k:'al',i:'🔔',n:'تحتاج متابعة',d:'تنبيه نفس اليوم + خطة علاجية من Gemini',c:'#ff7a8a',big:1,stat:()=>safe(()=>alerts().length+' طالبات'),pre:()=>{TV.tab='al';},keep:tabBody},
+  {k:'st',i:'👥',n:'طالباتي',d:'صورة الشعبة… واضغطي على أي طالبة',c:'#ffd36e',big:1,pre:()=>{TV.tab='st';},keep:M=>tabBody(M).filter(x=>!x.matches('.kpis'))},
+  {k:'tal',i:'🌟',n:'الموهبة',d:'رادار الموهبة + ترشيح بجملة',c:'#c49bff',big:1,pre:()=>{TV.tab='tal';},keep:tabBody},
+  {k:'gr',i:'📊',n:'الدرجات',d:'أضيفي درجات أو اسحبيها من Google Forms',c:'#7cc8ff',pre:()=>{TV.tab='gr';},keep:tabBody},
+  {k:'obs',i:'📝',n:'رصد الحصة',d:'ملاحظة بضغطة لكل طالبة',c:'#5fe0a8',pre:()=>{TV.tab='obs';},keep:tabBody},
+  calBook,
+  {k:'msg',i:'💬',n:'رسائل الطالبات',d:'أسئلتهن عن الدرس',c:'#9aa8ff',keep:M=>[id(M,'tinbox')]}]},
+ counselor:{top:M=>[M.querySelector('section.scope')],home:M=>[M.querySelector(':scope > .kpis')], tiles:[
+  {k:'path',i:'🎯',n:'المسارات',d:'ميول ومسار كل طالبة… واضغطي «عرض» للتفاصيل',c:'#ffd36e',big:1,keep:M=>[sec(M,/المسارات المتوقعة/),id(M,'overview')]},
+  {k:'radar',i:'🌟',n:'رادار الموهبة',d:'مين تستاهل تنفحص… ومع الدليل',c:'#c49bff',big:1,keep:M=>[id(M,'radar')]},
+  {k:'al',i:'🔔',n:'تحتاج متابعة',d:'اللي تحتاج جلسة',c:'#ff7a8a',keep:M=>[sec(M,/تحتاج متابعة/)]},
+  {k:'mon',i:'🧾',n:'ملاحظات المشرفة',d:'سلوك الشعبة',c:'#ff8fbf',keep:M=>[sec(M,/ملاحظات المشرفة/)]},
+  calTile]},
+ vice:{home:M=>[M.querySelector(':scope > .kpis')], tiles:[
+  {k:'in',i:'📥',n:'وصل من المشرفات',d:'كل ملاحظة توصل بنفس اللحظة',c:'#ff8fbf',big:1,keep:M=>[id(M,'vinbox')]},
+  {k:'file',i:'🔎',n:'ملف أي طالبة',d:'تقرير Gemini + السلوك + الدرجات',c:'#ffd36e',big:1,keep:M=>{const s=sec(M,/جيبي ملف/); if(!s) return []; const out=[s]; let n=s.nextElementSibling; while(n&&!n.matches('.mc-wrap')){out.push(n); n=n.nextElementSibling;} return out;}},
+  calBook]},
+ monitor:{home:M=>[sec(M,/هلا أ\./),id(M,'msum')], tiles:[
+  {k:'rasd',i:'📋',n:'ارصدي ملاحظة',d:'اختاري الطالبة… والملاحظة توصل للوكيلة وولي الأمر بنفس اللحظة',c:'#ff8fbf',big:1,keep:M=>[...M.querySelectorAll('.cols .c7 > section, .cols .c5 > section')]},
+  calTile]},
+ admin:{top:M=>[M.querySelector('section.scope')],home:M=>[M.querySelector('#kpis')], tiles:[
+  {k:'ask',i:'✦',n:'اسألي البيانات',d:'سؤال بالعربي… وGemini يجاوب من بيانات المدرسة',c:'#5fe0a8',big:1,keep:M=>[id(M,'askai')]},
+  {k:'grow',i:'🔭',n:'مدار يكبر',d:'المدرسة ← المنطقة ← الوزارة · Looker Studio',c:'#7cc8ff',big:1,keep:M=>{const g=id(M,'gmore'); if(g) g.open=true; return [g];}},
+  {k:'perf',i:'🧪',n:'أداء المدرسة',d:'حسب المهارة · كيمياء ↔ فيزياء',c:'#ffd36e',keep:M=>[sec(M,/الأداء حسب المهارة/),sec(M,/كيمياء ↔ فيزياء/)]},
+  {k:'sup',i:'🤝',n:'الدعم والحالات',d:'خطط الدعم والحالات المفتوحة',c:'#ff8fbf',keep:M=>[id(M,'supports'),sec(M,/الحالات المفتوحة/)]},
+  {k:'tal',i:'🌟',n:'مؤشرات الموهبة',d:'على مستوى المدرسة',c:'#c49bff',keep:M=>[sec(M,/مؤشرات الموهبة/)]},
+  calBook]}
+};
+function tileHTML(t){const st=t.stat?t.stat():'';
+  return '<button type="button" class="hub-t'+(t.big?' big':'')+'" data-hub="go" data-k="'+t.k+'" style="--c:'+t.c+'"><span class="hub-orb"><i>'+t.i+'</i></span><span class="hub-tx"><b>'+t.n+'</b><small>'+t.d+'</small>'+(st?'<em class="num">'+st+'</em>':'')+'</span><span class="hub-go">←</span></button>';}
+const _r=render;
+render=function(){
+  const r=V.role, C=TL[r];
+  if(!C||!GATE.who||(typeof T!=='undefined'&&T.on)||((r==='teacher'||r==='counselor')&&V.view==='one')){_r(); return;}
+  if(HUB.role!==r){HUB.role=r; HUB.page='home';}
+  const t=HUB.page==='home'?null:C.tiles.find(x=>x.k===HUB.page);
+  if(!t){HUB.page='home';}
+  const pres=t&&t.pre?[].concat(t.pre):[null]; let picked=[], top=[];
+  pres.forEach((p,i)=>{if(p) p(); _r(); const M=$('#main'); if(!M) return;
+    if(i===0&&C.top) top=C.top(M).filter(Boolean);
+    if(t) picked=picked.concat((t.keep(M)||[]).filter(Boolean)); else picked=(C.home(M)||[]).filter(Boolean);});
+  const M=$('#main'); if(!M) return;
+  const wrap=document.createElement('div'); wrap.className='hub';
+  top.forEach(n=>wrap.appendChild(n));
+  if(t){
+    const bar=document.createElement('div'); bar.className='hub-bar'; bar.innerHTML='<button type="button" class="hub-back" data-hub="home">→ الرئيسية</button><h2><span style="--c:'+t.c+'">'+t.i+'</span> '+t.n+'</h2>'; wrap.appendChild(bar);
+    const body=document.createElement('div'); body.className='hub-body'; picked.forEach(n=>body.appendChild(n)); wrap.appendChild(body);
+    if(!picked.length) body.innerHTML='<div class="empty">ما في شي هني الحين</div>';
+  } else {
+    picked.forEach(n=>wrap.appendChild(n));
+    let bg=C.tiles.filter(x=>x.big), sm=C.tiles.filter(x=>!x.big); if(sm.length===1){bg=bg.concat(sm); sm=[];} [[bg,'big'],[sm,'sm']].forEach(([l,c])=>{if(!l.length) return; const g=document.createElement('div'); g.className='hub-grid '+c; g.style.setProperty('--n',Math.min(l.length,c==='big'?3:5)); g.innerHTML=l.map(tileHTML).join(''); wrap.appendChild(g);});
+  }
+  M.innerHTML=''; M.appendChild(wrap);
+  if(r==='student') hubPlanLite(M);
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-hub]'); if(!b) return; const a=b.dataset.hub;
+  if(a==='go'||a==='home'){e.preventDefault(); e.stopImmediatePropagation(); HUB.page=a==='go'?b.dataset.k:'home'; render(); scrollTo({top:0,behavior:'smooth'});}
+  else if(a==='unlite'){e.preventDefault(); e.stopImmediatePropagation(); const L=N18.lite; if(L){L.forEach(x=>{const p=S.plans.find(q=>q.id===x.id); if(p){p.day=x.day; p.why=x.why;}}); N18.lite=null;} render(); toast('↩️ رجعت خطتج الأصلية');}
+},true);
+/* «خففي خطتي» ← يحفظ الخطة قبل، وبعدها يطلع «رجّعي خطتي الأصلية» */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act="coachq"]'); if(!b||!/عدّل خطتي/.test(b.dataset.q||'')) return;
+  const sid=cSid(), d=new Date().getDay(); if(!N18.lite) N18.lite=S.plans.filter(p=>p.sid===sid&&p.day===d&&p.status!=='done').map(p=>({id:p.id,day:p.day,why:p.why}));
+  setTimeout(()=>{N18.st='prac';},0);},true);
+function hubPlanLite(M){const pl=M.querySelector('#plan'); if(!pl) return; const b=pl.querySelector('[data-act="coachq"][data-q^="عدّل خطتي"]'); if(!b) return;
+  if(N18.lite){const n=document.createElement('button'); n.className='k-soft'; n.dataset.hub='unlite'; n.textContent='↩️ رجّعي خطتي الأصلية'; b.replaceWith(n);
+    pl.insertAdjacentHTML('beforeend','<p class="k-note">✨ بوصلة خففت خطتج: خلّت أهم مهمة اليوم، والباقي انتقل لبكرة.</p>');}}
+})();
+
+if(GATE.who) render();
 </script>
 
 </body></html>
