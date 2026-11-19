@@ -52,7 +52,7 @@ html,body{height:100%;background:#070822;overflow:hidden;color:var(--txt);font-f
 .hd .tag{display:inline-block;margin-bottom:10px;font-size:18px;color:var(--mut);letter-spacing:.5px}
 .src{position:absolute;bottom:38px;right:92px;left:92px;font-size:15px;color:#8f96c9;text-align:right}
 /* cards */
-.card{background:linear-gradient(160deg,rgba(46,54,150,.62),rgba(22,26,84,.66));border:1px solid var(--line);border-radius:26px;box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.card{background:linear-gradient(160deg,rgba(46,54,150,.62),rgba(22,26,84,.66));border:1px solid var(--line);border-radius:26px;box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06)}
 .ct{font-family:Kufi,Rx;font-weight:700;color:var(--gold);font-size:30px;line-height:1.3}
 .cb{color:var(--txt);font-size:22px;line-height:1.6}
 .cm{color:var(--mut);font-size:18px;line-height:1.5}
@@ -272,16 +272,16 @@ body:hover #ui,#ui.show{opacity:1}
 #s23 .side .ct{font-size:25px}
 #s23 .side .cm{font-size:18px;color:var(--txt)}
 /* s24 voices */
-.vg{position:absolute;right:92px;left:92px;top:240px;display:grid;grid-template-columns:repeat(6,1fr);gap:26px}
-.vg .card{grid-column:span 2;padding:26px 28px 26px;display:flex;flex-direction:column;gap:16px;position:relative;min-height:290px}
+.vg{position:absolute;right:92px;left:92px;top:232px;display:grid;grid-template-columns:repeat(6,1fr);gap:22px 24px}
+.vg .card{grid-column:span 2;padding:20px 24px;display:flex;flex-direction:column;gap:12px;position:relative;height:300px}
 .vg .card:nth-child(4){grid-column:2/span 2}
 .vg .top{display:flex;align-items:center;gap:18px}
-.vg .av{position:relative;width:92px;height:92px;flex:none}
+.vg .av{position:relative;width:78px;height:78px;flex:none}
 .vg .av img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center;border:3px solid var(--gold);transform:scale(1)}
 .vg .av::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,211,110,.35);animation:spin 14s linear infinite;border-style:dashed}
-.vg .ct{font-size:25px}
+.vg .ct{font-size:23px}
 .vg .cm{font-size:16px}
-.vg .q{font-size:21px;line-height:1.6;color:#fff}
+.vg .q{font-size:19.5px;line-height:1.55;color:#fff}
 .vg .play{margin-top:auto;align-self:flex-start;display:flex;align-items:center;gap:10px;font:600 18px Rx;color:#141846;background:var(--gold);border:0;border-radius:999px;padding:9px 18px 9px 14px;cursor:pointer;box-shadow:0 8px 22px rgba(255,190,80,.35)}
 .vg .play .eq{display:flex;gap:3px;align-items:flex-end;height:18px}
 .vg .play .eq i{width:3px;height:6px;background:#141846;border-radius:2px}
@@ -606,11 +606,11 @@ body:hover #ui,#ui.show{opacity:1}
 <section class="slide" id="s24">
   <div class="hd"><span class="tag a">قالوا عن مَدار</span><h1 class="a" style="--d:.1">أصوات <em>من الميدان</em></h1><p class="a" style="--d:.25">اضغطوا ▶ واسمعوهم بصوتهم</p></div>
   <div class="vg">
-    <div class="card a zoom" style="--d:.35" data-au="../deck/v24-zainab.mp3"><div class="top"><div class="av float"><img src="a/f-zainab.jpg" alt=""></div><div><div class="ct">أ. زينب الكايد</div><div class="cm">وكيلة مدرسة أم حبيب بنت العاص القرشية</div></div></div><div class="q">«بالعكس وايد حلو… متابعة ولي أمر وحتى حقنا سهل.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
-    <div class="card a zoom" style="--d:.45" data-au="../deck/v24-wahaj.mp3"><div class="top"><div class="av float" style="animation-delay:-1.5s"><img src="a/f-wahaj.jpg" alt=""></div><div><div class="ct">أ. وهج الماجدي</div><div class="cm">معلمة فيزياء</div></div></div><div class="q">«نفس المسألة… ممكن طالبتين أو ثلاث عندهم مشكلة فيها، بس مشكلتهم مختلفة عن بعض.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
-    <div class="card a zoom" style="--d:.55" data-au="../deck/v24-salih.mp3"><div class="top"><div class="av float" style="animation-delay:-3s"><img src="a/f-salih.jpg" alt=""></div><div><div class="ct">أ. صالح العجيل</div><div class="cm">جائزة خليفة التربوية</div></div></div><div class="q">«فيه طالب موهوب في الحفظ، موهوب في مهارة معينة… المهم نعرف نقاط قوته.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
-    <div class="card a zoom" style="--d:.65" data-au="../deck/v24-munira.mp3"><div class="top"><div class="av float" style="animation-delay:-4.5s"><img src="a/f-munira.jpg" alt=""></div><div><div class="ct">أ. منيرة العدواني</div><div class="cm">مديرة ثانوية جمانة بنت أبي طالب (مسارات)</div></div></div><div class="q">«أنا مع البرامج اللي تسهّل علينا عملية الاختيار… والحكم الصحيح.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
-    <div class="card a zoom" style="--d:.75" data-au="../deck/v24-filkawi.mp3"><div class="top"><div class="av float" style="animation-delay:-2s"><img src="a/f-filkawi.jpg" alt=""></div><div><div class="ct">د. عبدالله الفيلكاوي</div><div class="cm">قائم بأعمال رئيس قسم تكنولوجيا التعليم · كلية التربية – جامعة الكويت</div></div></div><div class="q">«خطة علاجية لكل طالب حسب احتياجه وتفضيلاته.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
+    <div class="card a zoom" style="--d:.35" data-au="../deck/v24b-zainab.mp3"><div class="top"><div class="av float"><img src="a/f-zainab.jpg" alt=""></div><div><div class="ct">أ. زينب الكايد</div><div class="cm">وكيلة مدرسة أم حبيب بنت العاص القرشية</div></div></div><div class="q">«مشكلتنا بولي الأمر اللي… ما نقول مو مهتم، يعني ما توصل له الصورة.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.45" data-au="../deck/v24b-wahaj.mp3"><div class="top"><div class="av float" style="animation-delay:-1.5s"><img src="a/f-wahaj.jpg" alt=""></div><div><div class="ct">أ. وهج الماجدي</div><div class="cm">معلمة فيزياء</div></div></div><div class="q">«واحد مشكلته يطلّع المعطيات والمجهول… وواحد ما يعرف أي قانون يستخدم… وثالث ما يعرف يعوّض بالآلة الحاسبة.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.55" data-au="../deck/v24b-salih.mp3"><div class="top"><div class="av float" style="animation-delay:-3s"><img src="a/f-salih.jpg" alt=""></div><div><div class="ct">أ. صالح العجيل</div><div class="cm">جائزة خليفة التربوية</div></div></div><div class="q">«مهم لكل معلم يكون عنده بيانات… بناءً على هالبيانات يقدر يقيس، يقدر يميّز، يقدر يصنع أثر.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
+    <div class="card a zoom" style="--d:.65" data-au="../deck/v24b-munira.mp3"><div class="top"><div class="av float" style="animation-delay:-4.5s"><img src="a/f-munira.jpg" alt=""></div><div><div class="ct">أ. منيرة العدواني</div><div class="cm">مديرة ثانوية جمانة بنت أبي طالب (مسارات)</div></div></div><div class="q">«إذا توفّر هالبرنامج اللي يعطيني فيدباك… نقدر مع ولي الأمر والمرشد الأكاديمي نوصل إن الطالب اختار صح.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.75" data-au="../deck/v24b-filkawi.mp3"><div class="top"><div class="av float" style="animation-delay:-2s"><img src="a/f-filkawi.jpg" alt=""></div><div><div class="ct">د. عبدالله الفيلكاوي</div><div class="cm">قائم بأعمال رئيس قسم تكنولوجيا التعليم · كلية التربية – جامعة الكويت</div></div></div><div class="q">«هالمهارات نقدر نكسبها لطلبتنا، ونقدر نغيّر قناعاتهم السلبية… من خلال التجربة.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
   </div>
 </section>
 
@@ -700,8 +700,10 @@ function count(el){const n=+el.dataset.n, s=el.dataset.s||'', fm=el.dataset.fmt,
   (function f(t){const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3), v=Math.round(n*e); el.textContent=(fm?v.toLocaleString('en-US'):v)+s; if(k<1) requestAnimationFrame(f);})(t0);}
 /* audio (slide 24) */
 let au=null,auCard=null;
-function stopAu(){if(au){au.pause(); au=null;} if(auCard){auCard.classList.remove('on'); const pt=auCard.querySelector('.pt'); pt.textContent=pt.dataset.t;} auCard=null;}
-$$('[data-au]').forEach(c=>{const pt=c.querySelector('.pt'); pt.dataset.t=pt.textContent; c.querySelector('.play').addEventListener('click',e=>{e.stopPropagation(); const was=auCard===c; stopAu(); if(was) return; au=new Audio(c.dataset.au); au.play().catch(()=>{}); au.onended=stopAu; auCard=c; c.classList.add('on'); pt.textContent='⏸ إيقاف';});});
+function stopAu(){if(au){au.pause(); try{au.currentTime=0;}catch(_){} au=null;} if(auCard){auCard.classList.remove('on'); const pt=auCard.querySelector('.pt'); pt.textContent=pt.dataset.t;} auCard=null;}
+const AU=new Map();
+function auOf(c){let a=AU.get(c); if(!a){a=new Audio(); a.preload='auto'; a.src=c.dataset.au; a.load(); AU.set(c,a);} return a;}
+$$('[data-au]').forEach(c=>{const pt=c.querySelector('.pt'); pt.dataset.t=pt.textContent; c.querySelector('.play').addEventListener('click',e=>{e.stopPropagation(); const was=auCard===c; stopAu(); if(was) return; const a=auOf(c); try{a.currentTime=0;}catch(_){} au=a; a.onended=stopAu; auCard=c; c.classList.add('on'); pt.textContent='⏸ إيقاف'; a.play().catch(()=>{stopAu();});});});
 /* navigation */
 let cur=-1;
 function go(i,dir){i=Math.max(0,Math.min(N-1,i)); if(i===cur) return; const prev=slides[cur];
@@ -710,6 +712,7 @@ function go(i,dir){i=Math.max(0,Math.min(N-1,i)); if(i===cur) return; const prev
   void s.offsetWidth; s.classList.add('on');
   s.querySelectorAll('[data-n]').forEach(el=>{el.textContent=(el.dataset.fmt?'0':'0')+(el.dataset.s||''); setTimeout(()=>count(el),900);});
   s.querySelectorAll('video').forEach(v=>{try{v.currentTime=0; v.play().catch(()=>{});}catch(e){}});
+  s.querySelectorAll('[data-au]').forEach(auOf); if(slides[i+1]) slides[i+1].querySelectorAll('[data-au]').forEach(auOf);
   $('#cnt').textContent=(i+1)+' / '+N; $('#prog').style.width=((i+1)/N*100)+'%'; parT=-i*.6;
   try{history.replaceState(null,'','#'+(i+1));}catch(e){}
 }
