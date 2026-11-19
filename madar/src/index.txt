@@ -3191,6 +3191,10 @@ function hubPlanLite(M){const pl=M.querySelector('#plan'); if(!pl) return; const
     pl.insertAdjacentHTML('beforeend','<p class="k-note">✨ بوصلة خففت خطتج: خلّت أهم مهمة اليوم، والباقي انتقل لبكرة.</p>');}}
 })();
 
+/* زر دايم فوق يرجّع البوب أب */
+(function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&!el.querySelector('[data-hub="pop"]')) el.insertAdjacentHTML('afterbegin','<button class="btn" data-hub="pop" title="دليل الحكام">⚖️ للحكام</button>');};})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-hub="pop"]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); judgePop();},true);
+
 if(GATE.who) render();
 </script>
 
