@@ -1632,7 +1632,7 @@ const PL={
   counselor:{c:'p-co',i:'🧭',n:'بوصلة',d:'الإرشاد: المسارات ورادار الموهبة'},
   teacher:{c:'p-te',i:'👩‍🏫',n:'المعلمة',d:'التنبيه المبكر والخطط'},
   admin:{c:'p-ad',i:'🏫',n:'الإدارة',d:'صورة المدرسة كاملة'},
-  vice:{c:'p-vi',i:'🗂️',n:'الوكيلة',d:'شؤون الطالبات وملف كل بنت'},
+  vice:{c:'p-vi',i:'🗂️',n:'الوكيلة',d:'شؤون الطالبات وملف كل طالبة'},
   monitor:{c:'p-mo',i:'📋',n:'المشرفة',d:'رصد المخالفات بالفصول'}
 };
 const GATE={judge:false,who:null};
@@ -1702,13 +1702,13 @@ function mediaHTML(){
   const v=MEDIA.youtube?'<iframe src="https://www.youtube-nocookie.com/embed/'+MEDIA.youtube+'?rel=0" title="فيديو مَدار" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
     :'<div class="soon"><b>🎬</b>فيديو مَدار<br>يوصل قريبًا</div>';
   const l=(u,t)=>u?'<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>':'<span>'+t+'</span>';
-  return '<div class="mvid">'+v+'</div><div class="mlinks">'+l(MEDIA.deck,'📊 العرض التقديمي')+l(MEDIA.file,'📁 ملف المشروع')+'</div>';
+  return '<div class="mvid">'+v+'</div><div class="mlinks"><button type="button" class="mx-open" data-mx="open">🎬 العرض التقديمي</button>'+l(MEDIA.file,'📁 ملف المشروع')+'</div>';
 }
 function judgePop(){
   const m=$('#modal'); m.hidden=false;
   m.innerHTML='<div class="mcard wide" role="dialog" aria-label="أهلًا بالحكام"><h3>⚖️ أهلًا بالحكام 🤍</h3><p style="margin:-4px 0 10px;font-size:.88rem">مَدار — فكرة وتصميم أ. أفنان سامي</p>'+mediaHTML()+
-    '<p><b>مَدار بجملة:</b> مكان واحد يجمع البنت وأهلها ومعلماتها والوكيلة والمشرفة وبوصلة، عشان محد يشوف جزء بس.</p>'+
-    '<ul><li>👩‍🏫 البنت تغلط اليوم… والمعلمة يوصلها تنبيه اليوم، مو بعد الاختبار.</li><li>🏠 الأهل يوصلهم كل خميس تقرير قصير: وين وصلت بنتهم وشنو تحتاج.</li><li>🌌 الموهبة تنرصد من أكثر من عين، والمسار ينقترح بالعاشر… والقرار دايمًا للإنسان.</li></ul>'+
+    '<p><b>مَدار بجملة:</b> مكان واحد يجمع الطالبة وأهلها ومعلماتها والوكيلة والمشرفة وبوصلة، عشان محد يشوف جزء بس.</p>'+
+    '<ul><li>👩‍🏫 الطالبة تغلط اليوم… والمعلمة يوصلها تنبيه اليوم، مو بعد الاختبار.</li><li>🏠 الأهل يوصلهم كل خميس تقرير قصير: وين وصلت ابنتهم وشنو تحتاج.</li><li>🌌 الموهبة تنرصد من أكثر من عين، مو عين وحدة.</li><li>🧭 <b>بوصلة مرشد أكاديمي ذكي:</b> تقترح المسار والتخصص الجامعي بناءً على درجات الطالبة ورغباتها… <b>والقرار دايمًا للطالبة وأهلها، مو للذكاء الاصطناعي.</b></li></ul>'+
     '<p class="small" style="opacity:.8">شوفوا الفيديو أول، بعدين <b>🧭 خذوني بجولة</b> (3 دقايق بقصة قمر) أو اختاروا أي كوكب. بأي وقت: <b>🔄 غيّر الشخصية</b> من فوق. بيانات تجريبية (شعبة 10/6).</p>'+
     '<div class="row2"><button class="btn primary" data-gate="judge-on">ابدأوا</button><button class="btn" data-gate="judge-tour">🧭 خذوني بجولة</button></div>'+
     '<div style="margin-top:10px;text-align:center"><button class="gate-adm" data-gate="judge-no">أنا مو حكم</button></div></div>';
@@ -2393,7 +2393,7 @@ function lookerPanel(){const L=LK[G2.lvl];
    (G2.lvl!=='school'?'<p class="k-note">🔭 رؤية: نفس البيانات تتجمع بـ Looker Studio من كل مدرسة، بدون أي شغل زيادة.</p>':'')+'</section>';}
 const GT=[['📝','Google Forms','الكويزات ← الإنذار المبكر'],['📊','Google Sheets','قاعدة بيانات مدار'],['📅','Google Calendar','التقويم والتذكير الذكي'],['🎥','Google Meet','اجتماعات أولياء الأمور'],['✦','Gemini','بوصلة، التقارير، ترشيح الموهبة'],['🎧','NotebookLM','بودكاست المراجعة'],['🌐','Google Translate','التقرير بلغة الأهل'],['🏫','Google Classroom','الواجبات بالتقويم'],['📺','YouTube','فيديوهات المراجعة'],['📈','Looker Studio','المدرسة ← الوزارة'],['✉️','Gmail','تقرير الخميس'],['🌍','Google Sites','واجهة مدار']];
 function googleReadyPanel(){return '<section class="panel" id="gready"><div class="panel-h"><h2>🔗 مدار جاهز لبيئة جوجل</h2></div><div class="g2-tools">'+GT.map(t=>'<div><span>'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small></div>').join('')+'</div></section>'+
-  '<section class="panel" id="gcost"><div class="panel-h"><h2>🛡️ صفر تكلفة + الخصوصية</h2></div><div class="g2-two"><div><b>💰 صفر تكلفة إضافية</b><p class="small">يشتغل على حسابات Google Workspace for Education اللي عند الوزارة. ما فيه سيرفرات ولا اشتراكات جديدة.</p></div><div><b>🔒 البيانات داخل الوزارة</b><p class="small">كل البيانات بـ Sheets داخل دومين moe.edu.kw. كل دور يشوف اللي يخصه بس، والقرار دايمًا للإنسان.</p></div></div></section>';}
+  '<section class="panel" id="gcost"><div class="panel-h"><h2>🛡️ صفر تكلفة + الخصوصية</h2></div><div class="g2-two"><div><b>💰 صفر تكلفة إضافية</b><p class="small">يشتغل على حسابات Google Workspace for Education اللي عند الوزارة. ما فيه سيرفرات ولا اشتراكات جديدة.</p></div><div><b>🔒 البيانات داخل الوزارة</b><p class="small">كل البيانات بـ Sheets داخل دومين moe.edu.kw. كل دور يشوف اللي يخصه بس، والقرار دايمًا للطالبة وأهلها، مو للذكاء الاصطناعي.</p></div></div></section>';}
 
 /* ١٠–١١) صوت + صورة + كتابة */
 function g2Img(cb){const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.onchange=()=>{const f=i.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{const im=new Image(); im.onload=()=>{const c=document.createElement('canvas'), s=Math.min(1,360/Math.max(im.width,im.height)); c.width=im.width*s; c.height=im.height*s; c.getContext('2d').drawImage(im,0,0,c.width,c.height); cb(c.toDataURL('image/jpeg',.7));}; im.src=r.result;}; r.readAsDataURL(f);}; i.click();}
@@ -2500,11 +2500,16 @@ document.addEventListener('click',e=>{const b=e.target.closest('.mx-voice'); if(
 function closeMag(){const o=$('#magx'); if(!o) return; v24Stop(); try{o._book&&o._book.destroy();}catch(e){} o.hidden=true; o.innerHTML=''; document.body.style.overflow='';}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-mx]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const o=$('#magx'), bk=o&&o._book, a=b.dataset.mx;
   if(a==='open'){closeModal(); openMag();} else if(a==='close') closeMag(); else if(a==='next'&&bk) bk.flipPrev('top'); else if(a==='prev'&&bk) bk.flipNext('top');},true);
+/* العرض الحي (20 نوفمبر): شاشة كاملة بدل المجلة */
+openMag=function(){let o=document.getElementById('showx'); if(!o){o=document.createElement('div'); o.id='showx'; o.style.cssText='position:fixed;inset:0;z-index:9999;background:#070822'; document.body.appendChild(o);}
+  o.innerHTML='<iframe src="'+ABASE+'show/?v=1" title="عرض مَدار" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;display:block"></iframe>'; o.hidden=false; document.body.style.overflow='hidden';};
+function closeShow(){const o=document.getElementById('showx'); if(!o) return; o.hidden=true; o.innerHTML=''; document.body.style.overflow='';}
+addEventListener('message',e=>{if(e.data==='madar-show-close') closeShow();});
 document.addEventListener('keydown',e=>{const o=$('#magx'); if(!o||o.hidden||!o._book) return; if(e.key==='Escape') closeMag(); if(e.key==='ArrowLeft') o._book.flipPrev('top'); if(e.key==='ArrowRight') o._book.flipNext('top');});
 mediaHTML=function(){
   const v=MEDIA.youtube?'<iframe src="https://www.youtube-nocookie.com/embed/'+MEDIA.youtube+'?rel=0" title="فيديو مَدار" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>':'<div class="soon"><b>🎬</b>فيديو مَدار<br>يوصل قريبًا</div>';
-  return '<div class="mvid">'+v+'</div><div class="mlinks"><button type="button" class="mx-open" data-mx="open">📖 العرض التقديمي (مجلة)</button>'+(MEDIA.file?'<a href="'+MEDIA.file+'" target="_blank" rel="noopener">📁 ملف المشروع</a>':'')+'</div>';};
-(function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&GATE.judge&&!el.querySelector('[data-mx]')) el.insertAdjacentHTML('beforeend','<button class="btn" data-mx="open">📖 العرض</button>');};})();
+  return '<div class="mvid">'+v+'</div><div class="mlinks"><button type="button" class="mx-open" data-mx="open">🎬 العرض التقديمي</button>'+(MEDIA.file?'<a href="'+MEDIA.file+'" target="_blank" rel="noopener">📁 ملف المشروع</a>':'')+'</div>';};
+(function(){const _h=hbar; hbar=function(){_h(); const el=$('#hbar'); if(el&&GATE.judge&&!el.querySelector('[data-mx]')) el.insertAdjacentHTML('beforeend','<button class="btn" data-mx="open">🎬 العرض</button>');};})();
 
 /* ---- ٢) البوب أب يطلع كل مرة ---- */
 document.addEventListener('click',e=>{const b=e.target.closest('[data-gate="judge-on"],[data-gate="judge-no"]'); if(!b||!GATE.who) return; e.preventDefault(); e.stopImmediatePropagation(); setJudge(b.dataset.gate==='judge-on'); closeModal(); render();},true);
@@ -2766,9 +2771,9 @@ calAddForm=function(){const cls=(S.classes||[]).map(c=>c.id), c=TV.cal.cls||S.cl
    '<label class="field">العنوان<input id="caN" required placeholder="مثلاً: اختبار قصير على الروابط"></label></div>'+
    '<div class="mc-row"><label class="field">اليوم<input type="date" id="caD" required value="'+cIso(cWork(2))+'"></label><label class="field">الوقت<input type="time" id="caH" value="08:00"></label><label class="field">الحصة<select id="caP"><option value="">—</option>'+['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة'].map(x=>'<option>الحصة '+x+'</option>').join('')+'</select></label></div>'+
    '<p class="small muted" style="margin:4px 0">١) الشعبة</p><div class="n18-chips">'+(S.classes||[]).map(x=>'<button type="button" data-n18t="ccls" data-v="'+x.id+'" aria-pressed="'+(x.id===c)+'">👥 '+esc(x.name)+'</button>').join('')+'</div>'+
-   '<p class="small muted" style="margin:8px 0 4px">٢) البنات</p><label class="n18-all"><input type="checkbox" data-n18t="call"'+(all?' checked':'')+'> <b>كل البنات ('+st.length+')</b></label>'+
+   '<p class="small muted" style="margin:8px 0 4px">٢) الطالبات</p><label class="n18-all"><input type="checkbox" data-n18t="call"'+(all?' checked':'')+'> <b>كل الطالبات ('+st.length+')</b></label>'+
    '<div class="n18-sts">'+st.map(s=>'<label><input type="checkbox" data-n18t="cst" data-v="'+s.id+'"'+(pk[s.id]!==false?' checked':'')+'> '+esc(s.name)+'</label>').join('')+'</div>'+
-   '<p class="small muted" style="margin:8px 0 4px">٣) يوصل لـ</p><div class="row"><label><input type="checkbox" id="caToS" checked> 👧 البنات</label><label><input type="checkbox" id="caToP" checked> 👨‍👩‍👧 أولياء أمورهم</label>'+(isT?'':'<label><input type="checkbox" id="caToF"> 🏫 المعلمات والإدارة</label>')+'</div>'+
+   '<p class="small muted" style="margin:8px 0 4px">٣) يوصل لـ</p><div class="row"><label><input type="checkbox" id="caToS" checked> 👧 الطالبات</label><label><input type="checkbox" id="caToP" checked> 👨‍👩‍👧 أولياء أمورهم</label>'+(isT?'':'<label><input type="checkbox" id="caToF"> 🏫 المعلمات والإدارة</label>')+'</div>'+
    '<label class="field">ملاحظة<input id="caX" placeholder="اختياري"></label>'+
    '<div class="row"><button class="btn primary">إرسال وإضافة للتقويم</button><button class="btn" type="button" data-cal="add">إلغاء</button></div></form>';};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-n18t="ccls"]'); if(!b) return; e.preventDefault(); TV.cal.cls=b.dataset.v; TV.cal.pick={}; render();},true);
@@ -2779,7 +2784,7 @@ document.addEventListener('change',e=>{const t=e.target; if(!t.dataset) return; 
 document.addEventListener('submit',e=>{if(e.target.dataset.cal!=='addf2'||V.role==='student'||V.role==='parent') return; e.preventDefault(); e.stopPropagation();
   const c=TV.cal.cls||S.cls||(S.classes||[])[0].id, st=allStu().filter(s=>s.cls===c), pk=TV.cal.pick||{}, ids=st.filter(s=>pk[s.id]!==false).map(s=>s.id);
   const toS=$('#caToS').checked, toP=$('#caToP').checked, toF=$('#caToF')&&$('#caToF').checked;
-  if(!ids.length&&!toF){toast('اختاري بنت وحدة على الأقل');return;} if(!toS&&!toP&&!toF){toast('اختاري يوصل لمنو');return;}
+  if(!ids.length&&!toF){toast('اختاري طالبة وحدة على الأقل');return;} if(!toS&&!toP&&!toF){toast('اختاري يوصل لمنو');return;}
   const to=toF&&!toS&&!toP?{k:'staff'}:ids.length===st.length?{k:'cls',v:c}:ids.length===1?{k:'sid',v:ids[0]}:{k:'list',v:ids};
   const ev={id:'x'+Date.now(),t:$('#caT').value,subj:V.role==='teacher'?mySubj():null,title:$('#caN').value.trim(),date:$('#caD').value,time:$('#caH').value||'08:00',period:$('#caP').value||'',to,note:$('#caX').value.trim(),ns:!toS,np:!toP};
   if(!ev.title||!ev.date) return; CALX.push(ev); calSave(); CV.add=false; TV.cal.pick={}; CV.day=ev.date; const d=new Date(ev.date+'T12:00:00'); CV.y=d.getFullYear(); CV.m=d.getMonth(); render();

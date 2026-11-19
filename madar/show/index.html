@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>مَدار — العرض</title>
+<style>
+@font-face{font-family:Kufi;src:url(f/reem-kufi-arabic-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Kufi;src:url(f/reem-kufi-arabic-600-normal.woff2) format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:Rx;src:url(f/readex-pro-latin-400-normal.woff2) format('woff2');font-weight:400;unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:Rx;src:url(f/readex-pro-latin-500-normal.woff2) format('woff2');font-weight:500;unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:Rx;src:url(f/readex-pro-latin-600-normal.woff2) format('woff2');font-weight:600;unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:Rx;src:url(f/readex-pro-latin-700-normal.woff2) format('woff2');font-weight:700;unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:Rx;src:url(f/readex-pro-arabic-400-normal.woff2) format('woff2');font-weight:400;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Rx;src:url(f/readex-pro-arabic-500-normal.woff2) format('woff2');font-weight:500;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Rx;src:url(f/readex-pro-arabic-600-normal.woff2) format('woff2');font-weight:600;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Rx;src:url(f/readex-pro-arabic-700-normal.woff2) format('woff2');font-weight:700;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+:root{--gold:#ffd36e;--gold2:#ffb84d;--ink:#0b0d2e;--txt:#eef0ff;--mut:#b9bfe8;--line:rgba(170,180,255,.22);--coral:#ff7a8a;--mint:#5fe0a8;--sky:#7cc8ff;--lav:#c49bff;--pink:#ff8fbf}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#070822;overflow:hidden;color:var(--txt);font-family:Rx,"Segoe UI",Tahoma,sans-serif}
+#sky{position:fixed;inset:0;width:100%;height:100%;display:block}
+.neb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.38;pointer-events:none;mix-blend-mode:screen}
+.neb.n1{width:52vw;height:52vw;background:radial-gradient(circle,#3b2fa8 0,transparent 70%);top:-18vw;right:-12vw;animation:drift1 38s ease-in-out infinite alternate}
+.neb.n2{width:46vw;height:46vw;background:radial-gradient(circle,#173f9e 0,transparent 70%);bottom:-20vw;left:-10vw;animation:drift2 44s ease-in-out infinite alternate}
+.neb.n3{width:30vw;height:30vw;background:radial-gradient(circle,#7a2f8f 0,transparent 70%);top:40%;left:35%;opacity:.18;animation:drift1 52s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(-8vw,6vw) scale(1.15)}}
+@keyframes drift2{to{transform:translate(9vw,-5vw) scale(1.1)}}
+#wrap{position:fixed;inset:0;display:grid;place-items:center}
+#stage{position:relative;width:1600px;height:900px;transform-origin:center center;flex:none}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transform:translateX(-70px) scale(.985);filter:blur(6px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1),filter .8s ease,visibility 0s .9s}
+.slide.on{opacity:1;visibility:visible;transform:none;filter:none;transition:opacity .9s ease .12s,transform 1s cubic-bezier(.2,.7,.2,1) .12s,filter .9s ease .12s,visibility 0s}
+.slide.back{transform:translateX(70px) scale(.985)}
+/* animation primitives */
+.a{opacity:0}
+.slide.on .a{animation:up .85s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0) * 1s + .35s)}
+.slide.on .a.zoom{animation-name:zoomin}
+.slide.on .a.fade{animation-name:fadein}
+.slide.on .a.left{animation-name:fromleft}
+.slide.on .a.right{animation-name:fromright}
+@keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes zoomin{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fromleft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes fromright{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+.float{animation:bob 6s ease-in-out infinite}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+/* header */
+.hd{position:absolute;top:66px;right:92px;left:92px;text-align:right}
+.hd h1{font-family:Kufi,Rx;font-weight:700;font-size:68px;line-height:1.15;color:#fff;letter-spacing:0;text-shadow:0 4px 30px rgba(120,110,255,.35)}
+.hd h1 em{font-style:normal;color:var(--gold)}
+.hd p{margin-top:12px;font-size:27px;color:var(--gold);font-weight:500}
+.hd .tag{display:inline-block;margin-bottom:10px;font-size:18px;color:var(--mut);letter-spacing:.5px}
+.src{position:absolute;bottom:38px;right:92px;left:92px;font-size:15px;color:#8f96c9;text-align:right}
+/* cards */
+.card{background:linear-gradient(160deg,rgba(46,54,150,.62),rgba(22,26,84,.66));border:1px solid var(--line);border-radius:26px;box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.ct{font-family:Kufi,Rx;font-weight:700;color:var(--gold);font-size:30px;line-height:1.3}
+.cb{color:var(--txt);font-size:22px;line-height:1.6}
+.cm{color:var(--mut);font-size:18px;line-height:1.5}
+.ic{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:var(--gold);box-shadow:0 0 0 8px rgba(255,211,110,.12),0 10px 30px rgba(255,190,80,.35);flex:none;position:relative}
+.ic::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px dashed rgba(255,211,110,.45);animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bl{list-style:none;display:flex;flex-direction:column;gap:20px}
+.bl li{position:relative;padding-right:38px;font-size:25px;line-height:1.5;color:var(--txt)}
+.bl li::before{content:"✦";position:absolute;right:0;top:.05em;color:var(--gold);font-size:24px}
+.bl li b{color:var(--gold);font-weight:600}
+.bl li small{display:block;font-size:17px;color:var(--mut);margin-top:2px}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+/* feature layout */
+.feat .panel{position:absolute;right:92px;top:250px;width:640px;padding:42px 44px 44px}
+.feat .panel .ic{margin:0 0 30px auto}
+.feat .vis{position:absolute;left:70px;top:230px;width:780px;height:590px}
+.win{position:absolute;border-radius:18px;overflow:hidden;background:#0d0f33;border:1px solid rgba(180,190,255,.28);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03),0 0 60px rgba(110,100,255,.18)}
+.win .bar{height:34px;background:rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;padding:0 14px;direction:ltr}
+.win .bar i{width:11px;height:11px;border-radius:50%;background:#ff6b6b}.win .bar i:nth-child(2){background:#ffd36e}.win .bar i:nth-child(3){background:#5fe0a8}
+.win .bar span{margin-left:auto;font-size:13px;color:#9aa1d6}
+.win .vp{position:absolute;top:34px;left:0;right:0;bottom:0;overflow:hidden}
+.win .vp img,.win .vp video{width:100%;display:block}
+.slide.on .pan img{animation:pan 16s ease-in-out .8s infinite alternate}
+@keyframes pan{from{transform:translateY(0)}to{transform:translateY(var(--pan,-30%))}}
+.slide.on .kb img{animation:kb 14s ease-in-out .8s infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.12) translate(-2%,-3%)}}
+.toast{position:absolute;display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:18px;background:rgba(255,255,255,.96);color:#1b1f55;font-size:20px;font-weight:600;box-shadow:0 20px 50px rgba(0,0,0,.45);white-space:nowrap}
+.toast .ti{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:24px;background:#fff2cc}
+.toast small{display:block;font-weight:400;color:#5b6191;font-size:15px}
+.slide.on .toast.pop{animation:toast 6s ease-in-out 1.6s infinite}
+@keyframes toast{0%{opacity:0;transform:translateY(-20px) scale(.95)}8%,80%{opacity:1;transform:none}92%,100%{opacity:0;transform:translateY(-10px)}}
+/* stat */
+.num{font-family:Rx;font-weight:700;color:var(--gold);direction:ltr;unicode-bidi:isolate;display:inline-block}
+/* nav */
+#ui{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;z-index:20;opacity:.0;transition:opacity .4s}
+body:hover #ui,#ui.show{opacity:1}
+#ui button{font:600 15px Rx;color:#fff;background:rgba(20,24,70,.8);border:1px solid var(--line);border-radius:999px;padding:10px 18px;cursor:pointer}
+#ui button.pr{background:var(--gold);color:#1b1f55;border-color:transparent}
+#ui .mid{display:flex;gap:10px;align-items:center}
+#cnt{font:600 15px Rx;color:#cfd3ff;min-width:70px;text-align:center;direction:ltr;unicode-bidi:isolate}
+#prog{position:fixed;top:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold2),var(--gold));box-shadow:0 0 12px var(--gold);transition:width .8s cubic-bezier(.2,.7,.2,1);z-index:21}
+#close{position:fixed;top:14px;left:16px;z-index:22;font:600 15px Rx;color:#fff;background:rgba(20,24,70,.75);border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer}
+/* ===== slide specific ===== */
+/* orbit system */
+.sys{position:absolute;pointer-events:none}
+.sys .ring{position:absolute;left:50%;top:50%;border:1px solid rgba(170,180,255,.16);border-radius:50%;transform:translate(-50%,-50%)}
+.sys .sun{position:absolute;left:50%;top:50%;width:var(--s,110px);height:var(--s,110px);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff6d0 0,#ffd36e 35%,#ffae3d 60%,rgba(255,160,60,0) 72%);box-shadow:0 0 90px 30px rgba(255,190,80,.35);animation:sunp 5s ease-in-out infinite}
+@keyframes sunp{50%{box-shadow:0 0 120px 44px rgba(255,190,80,.45)}}
+.sys .pl{position:absolute;left:0;top:0;border-radius:50%;will-change:transform}
+.sys .pl b{display:block;width:100%;height:100%;border-radius:50%;box-shadow:0 0 22px 4px currentColor;background:currentColor}
+.sys .lab{position:absolute;left:50%;top:calc(100% + 10px);transform:translateX(-50%);white-space:nowrap;font:600 22px Rx;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.8);display:flex;align-items:center;gap:6px}
+/* s1 */
+#s1 .big{position:absolute;right:120px;top:210px;text-align:right}
+#s1 .big h1{font-family:Kufi;font-weight:700;font-size:200px;line-height:1;color:#fff;text-shadow:0 10px 60px rgba(140,120,255,.45)}
+#s1 .big p{font-family:Kufi;font-weight:600;font-size:54px;color:var(--gold);margin-top:18px}
+#s1 .big .by{margin-top:44px;font-size:22px;color:var(--mut);line-height:1.7}
+#s1 .logo{position:absolute;right:120px;bottom:70px;width:210px;opacity:.95}
+/* s2 islands */
+.isl{position:absolute;top:300px;width:410px;text-align:center}
+.isl .card{padding:40px 30px 36px}
+.isl .ic{margin:0 auto 22px}
+.isl .sea{height:46px;margin:-6px 40px 0;border-radius:50%;background:radial-gradient(ellipse at center,rgba(90,140,255,.38),rgba(90,140,255,0) 70%);filter:blur(2px);animation:sea 6s ease-in-out infinite}
+@keyframes sea{50%{transform:scaleX(1.12);opacity:.6}}
+.brk{position:absolute;top:410px;width:90px;height:6px}
+.brk svg{overflow:visible}
+.brk path{stroke:var(--coral);stroke-width:4;stroke-dasharray:10 10;fill:none;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-40}}
+.brk .x{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:#2a1630;border:2px solid var(--coral);color:var(--coral);display:grid;place-items:center;font:700 22px Rx}
+.concl{position:absolute;bottom:92px;left:0;right:0;text-align:center;font-size:30px;color:#fff}
+.concl b{color:var(--gold);font-weight:600}
+/* s3 bars */
+.chart{position:absolute;right:92px;left:92px;top:268px;padding:46px 56px}
+.hb{display:grid;grid-template-columns:470px 1fr 130px;align-items:center;gap:28px;margin:0 0 34px}
+.hb:last-child{margin:0}
+.hb .l{font-size:24px;line-height:1.45;color:var(--txt)}
+.hb .l small{display:block;color:var(--mut);font-size:17px}
+.hb .t{height:34px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;position:relative}
+.hb .t i{position:absolute;inset:0 0 0 auto;width:0;border-radius:999px;background:linear-gradient(270deg,#ff9a8a,#ff6f91);box-shadow:0 0 24px rgba(255,111,145,.45)}
+.hb .t i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.6s ease-in-out infinite}
+@keyframes shine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.slide.on .hb .t i{width:var(--v);transition:width 1.8s cubic-bezier(.2,.7,.2,1) calc(var(--d) * 1s + .6s)}
+.hb .v{font-size:52px;text-align:left}
+/* s4 */
+#s4 .who{position:absolute;right:92px;top:255px;display:flex;align-items:center;gap:26px;padding:22px 30px 22px 22px}
+#s4 .who img.ph{width:118px;height:118px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 0 8px rgba(255,211,110,.12)}
+#s4 .who .lg{width:118px;height:118px;border-radius:22px;background:#fff;padding:8px;object-fit:contain}
+.st3{position:absolute;right:92px;left:92px;top:470px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.st3 .card{padding:36px 34px;text-align:center;min-height:330px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.st3 .em{font-size:46px;line-height:1}
+.st3 .num,.st3 .w{font-size:72px;line-height:1.05}
+.st3 .w{font-family:Kufi;color:var(--gold)}
+/* s5 research rows */
+.rr{position:absolute;right:92px;left:92px;top:240px;display:flex;flex-direction:column;gap:18px}
+.rr .card{display:grid;grid-template-columns:70px 470px 1fr;align-items:center;gap:26px;padding:20px 30px}
+.rr .em{font-size:40px;text-align:center;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.15)}}
+.rr .ct{font-size:26px}
+.rr .ct small{display:block;font-family:Rx;font-weight:500;color:var(--mut);font-size:16px;direction:ltr;text-align:right}
+.rr .cb{font-size:20px}
+/* s6 study -> feature */
+.sf{position:absolute;right:92px;left:92px;top:250px}
+.sf .hdr{display:grid;grid-template-columns:1fr 170px 1fr;margin-bottom:16px;font:600 22px Rx;color:var(--mut)}
+.sf .row{display:grid;grid-template-columns:1fr 170px 1fr;align-items:center;margin-bottom:16px}
+.sf .card{padding:18px 26px;display:flex;align-items:center;gap:18px;min-height:96px}
+.sf .card .em{font-size:34px;flex:none}
+.sf .st b{display:block;font-family:Kufi;color:var(--gold);font-size:24px;font-weight:700}
+.sf .st small{display:block;color:var(--mut);font-size:15px}
+.sf .ft{font-size:22px;line-height:1.45;color:#fff}
+.sf .ft.card{background:linear-gradient(160deg,rgba(255,211,110,.16),rgba(255,180,80,.06));border-color:rgba(255,211,110,.35)}
+.beam{position:relative;height:4px;margin:0 14px;border-radius:4px;background:linear-gradient(270deg,rgba(255,211,110,.1),rgba(255,211,110,.6))}
+.beam::after{content:"";position:absolute;top:50%;right:0;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff6d0;box-shadow:0 0 16px 4px var(--gold);animation:travel 2.2s ease-in-out infinite;animation-delay:var(--bd,0s)}
+@keyframes travel{from{right:0;opacity:0}15%{opacity:1}85%{opacity:1}to{right:calc(100% - 14px);opacity:0}}
+.beam::before{content:"";position:absolute;left:-6px;top:50%;margin-top:-8px;border:8px solid transparent;border-right:12px solid var(--gold);border-left:0}
+/* s7 vision */
+.v2{position:absolute;right:92px;left:92px;top:250px;display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.v2 .card{padding:36px 38px;display:flex;flex-direction:column;gap:20px;min-height:560px}
+.v2 .top{display:flex;align-items:center;gap:22px}
+.v2 .top img{width:120px;height:120px;flex:none}
+.v2 .top img.lg{border-radius:22px;background:#fff;padding:8px;object-fit:contain}
+.v2 .top img.ph{border-radius:50%;object-fit:cover;border:3px solid var(--gold);box-shadow:0 0 0 8px rgba(255,211,110,.12)}
+.v2 .chip{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:999px;background:rgba(255,211,110,.14);color:var(--gold);font-size:17px}
+.v2 .hi{margin-top:auto;padding:22px 24px;border-radius:18px;background:linear-gradient(160deg,rgba(255,211,110,.18),rgba(255,180,80,.06));border:1px solid rgba(255,211,110,.35);font-size:22px;line-height:1.55}
+.v2 .hi b{color:var(--gold)}
+/* s8 */
+.c3{position:absolute;right:92px;left:92px;top:280px;display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.c3 .card{padding:44px 34px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;min-height:470px;position:relative}
+.c3 .n{position:absolute;top:18px;left:22px;font:700 20px Rx;color:rgba(255,211,110,.7);border:1px solid rgba(255,211,110,.4);width:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+.c3 .ic{margin-top:6px}
+/* s9 */
+#s9 .sys{left:0;right:0;top:170px;height:730px}
+/* s17 tools */
+.tg{position:absolute;right:92px;left:92px;top:258px;display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.tg .card{padding:30px 26px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.tg .ti{width:82px;height:82px;border-radius:22px;display:grid;place-items:center;background:var(--c);box-shadow:0 12px 30px color-mix(in srgb,var(--c) 45%,transparent)}
+.tg .ti svg{width:46px;height:46px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.tg .nm{font:700 23px Rx;color:#fff;direction:ltr}
+.tg .cm{font-size:18px;color:var(--mut)}
+/* s18 english */
+#s18 .eng{position:absolute;right:92px;left:92px;top:260px;direction:ltr;display:grid;grid-template-columns:1fr 330px;gap:34px}
+#s18 .groups{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+#s18 .g{padding:24px 26px}
+#s18 .g h4{font:600 16px Rx;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;text-align:left}
+#s18 .g .chips{display:flex;flex-wrap:wrap;gap:10px}
+#s18 .chip{font:600 20px Rx;color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:8px 16px}
+#s18 .g.wide{grid-column:1/-1}
+#s18 .zero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:8px}
+#s18 .zero .num{font-size:120px;line-height:1}
+#s18 .zero .u{font:600 26px Rx;color:#fff}
+#s18 .zero .m{font:400 18px Rx;color:var(--mut)}
+#s18 .zero .n14{margin-top:18px;font:700 64px Rx;color:#fff}
+/* s19 rings */
+.lv{position:absolute;bottom:22px;right:24px;display:flex;gap:12px;direction:rtl}
+.lv span{padding:10px 18px;border-radius:999px;background:rgba(10,12,40,.85);border:1px solid rgba(255,211,110,.45);color:var(--gold);font:600 18px Rx;opacity:.35;animation:lvl 6s infinite}
+.lv span:nth-child(2){animation-delay:2s}.lv span:nth-child(3){animation-delay:4s}
+@keyframes lvl{0%,30%{opacity:1;box-shadow:0 0 20px rgba(255,211,110,.5)}34%,100%{opacity:.35;box-shadow:none}}
+/* s20 privacy */
+.pv{position:absolute;right:92px;left:92px;top:280px;display:grid;grid-template-columns:1fr 1fr;gap:30px 30px}
+.pv .card{display:flex;gap:26px;align-items:center;padding:36px 36px;min-height:230px}
+.pv .ic{width:76px;height:76px;font-size:34px}
+.pv .ct{font-size:29px;margin:4px 0 10px}
+.shield{position:absolute;width:120px;height:120px;border-radius:50%;display:grid;place-items:center;font-size:54px;background:radial-gradient(circle,#2a2f8f,#151a5a);border:2px solid rgba(255,211,110,.55);z-index:2;box-shadow:0 0 0 14px rgba(7,8,34,.85),0 0 50px rgba(255,211,110,.3);animation:pulse 3s ease-in-out infinite}
+/* s21 before/after */
+.ba{position:absolute;right:92px;left:92px;top:250px;display:grid;grid-template-columns:1.25fr 1fr;gap:34px}
+.ba .card{padding:34px 40px;min-height:570px;position:relative}
+.ba h3{font-family:Kufi;font-size:40px;margin-bottom:6px}
+.ba .bef h3{color:#ffb3bd}.ba .aft h3{color:var(--gold)}
+.vb{display:flex;align-items:flex-end;justify-content:space-around;height:330px;margin-top:22px;border-bottom:1px solid var(--line);gap:30px;padding:0 10px}
+.vb .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.vb .col .num{font-size:44px;color:#ffb3bd;margin-bottom:10px}
+.vb .col i{display:block;width:100%;max-width:110px;height:0;border-radius:16px 16px 4px 4px;background:linear-gradient(180deg,#ff8aa0,#c2456a);box-shadow:0 0 30px rgba(255,111,145,.35)}
+.slide.on .vb .col i{height:var(--v);transition:height 1.8s cubic-bezier(.2,.7,.2,1) calc(var(--d)*1s + .7s)}
+.vb-l{display:flex;justify-content:space-around;gap:30px;padding:14px 10px 0}
+.vb-l span{flex:1;text-align:center;font-size:20px;color:var(--txt);line-height:1.4}
+.donut{position:relative;width:270px;height:270px;margin:18px auto 10px}.donut svg{width:270px;height:270px}
+.donut svg{transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-width:26}
+.donut .bg{stroke:rgba(255,255,255,.08)}
+.donut .fg{stroke:url(#gg);stroke-linecap:round;stroke-dasharray:0 1000;filter:drop-shadow(0 0 10px rgba(255,200,90,.5))}
+.slide.on .donut .fg{stroke-dasharray:var(--dv) 1000;transition:stroke-dasharray 2s cubic-bezier(.2,.7,.2,1) 1s}
+.donut .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut .c .num{font-size:84px;line-height:1}
+.donut .c span{font-size:20px;color:#fff;margin-top:6px}
+.stars{font-size:34px;letter-spacing:6px;color:var(--gold);text-align:center}
+.slide.on .stars i{display:inline-block;animation:zoomin .5s both;animation-delay:calc(var(--i)*.15s + 2s);font-style:normal}
+/* s22 */
+.seg{position:absolute;right:92px;left:92px;top:270px;padding:30px 40px}
+.seg .row{display:flex;height:64px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.06);direction:rtl}
+.seg .row i{display:flex;align-items:center;justify-content:center;font:700 20px Rx;color:#141846;width:0;white-space:nowrap;overflow:hidden}
+.slide.on .seg .row i{width:var(--w);transition:width 1.4s cubic-bezier(.2,.7,.2,1) calc(var(--d)*1s + .6s)}
+.seg .lg{display:flex;justify-content:space-between;margin-top:16px;font-size:20px;color:var(--txt)}
+.seg .lg span::before{content:"";display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--c);margin-left:8px;vertical-align:-1px}
+.seg .tot{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.seg .tot .num{font-size:64px}
+.seg .tot span{font-size:24px;color:#fff}
+.g4{position:absolute;right:92px;left:92px;top:520px;display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.g4 .card{padding:24px 20px 26px;text-align:center}
+.g4 .ring{position:relative;width:170px;height:170px;margin:0 auto 12px}
+.g4 .ring svg{transform:rotate(-90deg)}
+.g4 .ring circle{fill:none;stroke-width:14}
+.g4 .ring .bg{stroke:rgba(255,255,255,.08)}
+.g4 .ring .fg{stroke:var(--mint);stroke-linecap:round;stroke-dasharray:0 600;filter:drop-shadow(0 0 8px rgba(95,224,168,.5))}
+.slide.on .g4 .ring .fg{stroke-dasharray:440 600;transition:stroke-dasharray 1.8s cubic-bezier(.2,.7,.2,1) calc(var(--d)*1s + 1s)}
+.g4 .ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:40px;color:#fff}
+.g4 .cb{font-size:19px;line-height:1.5}
+.g4 .cb b{color:var(--gold);font-weight:600;display:block}
+/* s23 */
+#s23 .big50{position:absolute;right:92px;top:250px;width:520px;padding:40px 36px;text-align:center;min-height:580px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#s23 .big50 .num{font-size:170px;line-height:1}
+#s23 .pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#s23 .pills span{padding:6px 16px;border-radius:999px;border:1px solid rgba(255,211,110,.5);color:var(--gold);font-size:19px}
+#s23 .phone{position:absolute;right:650px;top:240px;width:330px;height:600px;border-radius:44px;padding:12px;background:#0d0f33;border:2px solid rgba(180,190,255,.35);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(110,100,255,.2)}
+#s23 .phone video{width:100%;height:100%;object-fit:cover;border-radius:34px;display:block}
+#s23 .side{position:absolute;left:92px;top:250px;width:490px;display:flex;flex-direction:column;gap:18px}
+#s23 .side .card{display:flex;gap:20px;align-items:center;padding:20px 24px}
+#s23 .side .ic{width:64px;height:64px;font-size:28px}
+#s23 .side .ic::after{inset:-9px}
+#s23 .side .ct{font-size:25px}
+#s23 .side .cm{font-size:18px;color:var(--txt)}
+/* s24 voices */
+.vg{position:absolute;right:92px;left:92px;top:240px;display:grid;grid-template-columns:repeat(6,1fr);gap:26px}
+.vg .card{grid-column:span 2;padding:26px 28px 26px;display:flex;flex-direction:column;gap:16px;position:relative;min-height:290px}
+.vg .card:nth-child(4){grid-column:2/span 2}
+.vg .top{display:flex;align-items:center;gap:18px}
+.vg .av{position:relative;width:92px;height:92px;flex:none}
+.vg .av img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center;border:3px solid var(--gold);transform:scale(1)}
+.vg .av::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,211,110,.35);animation:spin 14s linear infinite;border-style:dashed}
+.vg .ct{font-size:25px}
+.vg .cm{font-size:16px}
+.vg .q{font-size:21px;line-height:1.6;color:#fff}
+.vg .play{margin-top:auto;align-self:flex-start;display:flex;align-items:center;gap:10px;font:600 18px Rx;color:#141846;background:var(--gold);border:0;border-radius:999px;padding:9px 18px 9px 14px;cursor:pointer;box-shadow:0 8px 22px rgba(255,190,80,.35)}
+.vg .play .eq{display:flex;gap:3px;align-items:flex-end;height:18px}
+.vg .play .eq i{width:3px;height:6px;background:#141846;border-radius:2px}
+.vg .card.on{border-color:rgba(255,211,110,.7);box-shadow:0 0 0 2px rgba(255,211,110,.35),0 18px 50px rgba(0,0,0,.35)}
+.vg .card.on .eq i{animation:eq .8s ease-in-out infinite}
+.vg .card.on .eq i:nth-child(2){animation-delay:.15s}.vg .card.on .eq i:nth-child(3){animation-delay:.3s}.vg .card.on .eq i:nth-child(4){animation-delay:.45s}
+@keyframes eq{50%{height:18px}}
+/* s25 */
+.qr3{position:absolute;right:92px;left:92px;top:260px;display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.qr3 .card{padding:34px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.qr3 .qr{position:relative;width:250px;height:250px;border-radius:20px;background:#fff;padding:14px;overflow:hidden}
+.qr3 .qr img{width:100%;height:100%;display:block}
+.qr3 .qr::after{content:"";position:absolute;left:0;right:0;height:3px;top:0;background:linear-gradient(90deg,transparent,#ffb84d,transparent);box-shadow:0 0 14px #ffb84d;animation:scan 2.6s ease-in-out infinite}
+@keyframes scan{50%{top:calc(100% - 3px)}}
+.qr3 .qr.soon{background:rgba(255,255,255,.05);border:2px dashed rgba(255,211,110,.5);display:grid;place-items:center;color:var(--gold);font-size:22px}
+.qr3 .qr.soon::after{display:none}
+/* s26 refs */
+.refs{position:absolute;right:92px;left:92px;top:225px;display:grid;grid-template-columns:1.35fr 1fr;gap:30px}
+.refs .card{padding:28px 34px}
+.refs h4{font:600 19px Rx;color:var(--gold);margin-bottom:12px}
+.refs ol{list-style:none}
+.refs li{font-size:16.5px;line-height:1.5;color:#e6e8ff;padding-left:2.2em;text-indent:-2.2em;margin-bottom:11px}
+.refs .en{direction:ltr;text-align:left}
+.refs .en h4{text-align:left}
+.refs .ar li{padding-left:0;text-indent:0;padding-right:2em;text-indent:-2em}
+.refs i{color:#fff}
+/* s27 */
+#s27 .t{position:absolute;right:0;left:0;top:150px;text-align:center}
+#s27 .t h1{font-family:Kufi;font-size:120px;color:#fff;text-shadow:0 10px 60px rgba(140,120,255,.45)}
+#s27 .t p{font-family:Kufi;font-weight:600;font-size:50px;color:var(--gold);margin-top:12px}
+#s27 .heart{display:inline-block;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.18)}}
+#s27 .sys{left:0;right:0;top:390px;height:420px}
+#s27 .logo{position:absolute;left:50%;bottom:82px;transform:translateX(-50%);width:200px}
+#s27 .nm{position:absolute;left:0;right:0;bottom:46px;text-align:center;color:var(--mut);font-size:20px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
+<div id="prog"></div>
+<button id="close" hidden>✕ إغلاق</button>
+<div id="wrap"><div id="stage">
+
+<!-- 1 الغلاف -->
+<section class="slide" id="s1">
+  <div class="sys" data-sys="cover" style="left:70px;top:120px;width:760px;height:680px"></div>
+  <div class="big">
+    <h1 class="a zoom">مَدار</h1>
+    <p class="a" style="--d:.3">لكل بنت مدارها</p>
+    <div class="by a" style="--d:.6">أ. أفنان سامي · ثانوية أم حبيب بنت العاص القرشية<br>فريق الابتكار · Google for Education</div>
+  </div>
+  <img class="logo a fade" style="--d:.9" src="../by-afnan-white.png" alt="By Afnan">
+</section>
+
+<!-- 2 المشكلة -->
+<section class="slide" id="s2">
+  <div class="hd"><h1 class="a" style="--d:.1">المشكلة: <em>كل واحد بجزيرة</em></h1><p class="a" style="--d:.25">المعلومة عن الطالبة موجودة… بس متفرقة</p></div>
+  <div class="isl a" style="right:92px;--d:.4"><div class="float" style="animation-delay:0s"><div class="card"><div class="ic" style="background:var(--lav)">👩‍🏫</div><div class="ct">المعلمة</div><div class="cb" style="margin-top:8px">تشوف أداءها بمادتها بس</div></div><div class="sea"></div></div></div>
+  <div class="brk a fade" style="right:510px;--d:1"><svg width="90" height="6"><path d="M0 3H90"/></svg><span class="x">✕</span></div>
+  <div class="isl a" style="right:595px;--d:.6"><div class="float" style="animation-delay:-2s"><div class="card"><div class="ic" style="background:var(--sky)">🏠</div><div class="ct">الأهل</div><div class="cb" style="margin-top:8px">يعرفون متأخر… بعد الاختبار</div></div><div class="sea"></div></div></div>
+  <div class="brk a fade" style="right:1013px;--d:1.2"><svg width="90" height="6"><path d="M0 3H90"/></svg><span class="x">✕</span></div>
+  <div class="isl a" style="right:1098px;--d:.8"><div class="float" style="animation-delay:-4s"><div class="card"><div class="ic" style="background:var(--pink)">🗂️</div><div class="ct">الوكيلة</div><div class="cb" style="margin-top:8px">تتصل… والرقم ما يرد</div></div><div class="sea"></div></div></div>
+  <div class="concl a" style="--d:1.5">والنتيجة: <b>محد يشوف الصورة كاملة</b>… والطالبة تضيع بين الجزر</div>
+</section>
+
+<!-- 3 بالأرقام -->
+<section class="slide" id="s3">
+  <div class="hd"><h1 class="a" style="--d:.1">المشكلة <em>بالأرقام</em></h1><p class="a" style="--d:.25">استبيان ميداني · 33 مشاركة: معلمات، ورئيسات أقسام من كل الأقسام، وإدارة</p></div>
+  <div class="card chart a" style="--d:.35">
+    <div class="hb" style="--d:0"><div class="l">يكتشفون تعثّر الطالبة متأخر<small>بعد أسبوعين… أو بعد الاختبار</small></div><div class="t"><i style="--v:91%"></i></div><div class="v num" data-n="91" data-s="%">0%</div></div>
+    <div class="hb" style="--d:.25"><div class="l">ما عندهم طريقة واضحة لترشيح موهبة<small>ترشيح طالبة موهوبة لمكتب الموهوبين</small></div><div class="t"><i style="--v:94%"></i></div><div class="v num" data-n="94" data-s="%">0%</div></div>
+    <div class="hb" style="--d:.5"><div class="l">ما يعرفون ميول طالباتهم ومواهبهن<small>برا حدود مادتهم</small></div><div class="t"><i style="--v:91%"></i></div><div class="v num" data-n="91" data-s="%">0%</div></div>
+    <div class="hb" style="--d:.75"><div class="l">يلاقون صعوبة بالوصول لولي الأمر<small>وقت الحاجة</small></div><div class="t"><i style="--v:70%"></i></div><div class="v num" data-n="70" data-s="%">0%</div></div>
+  </div>
+</section>
+
+<!-- 4 الكويت -->
+<section class="slide" id="s4">
+  <div class="hd"><h1 class="a" style="--d:.1">وعلى مستوى <em>الكويت</em></h1><p class="a" style="--d:.25">من تصريحات رئيس مكتب الموهوبين – وزارة التربية</p></div>
+  <div class="card who a left" style="--d:.35;right:auto;left:92px"><img class="lg" src="a/talent.png" alt="شعار مكتب الموهوبين"><div style="text-align:right"><div class="ct" style="font-size:28px">أ. بدر الشرهان</div><div class="cm">رئيس مكتب الموهوبين – وزارة التربية</div></div><img class="ph" src="a/bader.jpg" alt="أ. بدر الشرهان"></div>
+  <div class="st3">
+    <div class="card a" style="--d:.5"><div class="em">🎓</div><div class="num" data-n="20000" data-fmt="1">0</div><div class="cb">طالب موهوب متوقع بمدارس الوزارة… <b style="color:var(--gold);font-weight:600">«20 ألف فرصة بانتظار استثمارها»</b></div></div>
+    <div class="card a" style="--d:.7"><div class="em">📊</div><div class="num" data-n="95" data-s="%">0%</div><div class="cb">حد أدنى للمعدل للتقديم… والموهبة اللي درجاتها مو الأعلى تفوت</div></div>
+    <div class="card a" style="--d:.9"><div class="em">👨‍👩‍👧</div><div class="w">الأسرة</div><div class="cb">«كثير من الطلبة اكتشافهم عن طريق الأسرة، مو المدرسة أو المعلمين»</div></div>
+  </div>
+  <div class="src a fade" style="--d:1.2">المصدر: بدر الشرهان، رئيس مكتب الموهوبين – برنامج «نبض الشارع»، قناة الأخبار، 6 سبتمبر 2026</div>
+</section>
+
+<!-- 5 البحث العلمي -->
+<section class="slide" id="s5">
+  <div class="hd"><span class="tag a">الأساس العلمي</span><h1 class="a" style="--d:.1">مبني على <em>البحث العلمي</em></h1><p class="a" style="--d:.25">كل ميزة بمَدار لها أساس بدراسة منشورة</p></div>
+  <div class="rr">
+    <div class="card a right" style="--d:.35"><div class="em">🚦</div><div class="ct">الإنذار المبكر<small>Balfanz, Herzog &amp; Mac Iver, 2007</small></div><div class="cb">ثلاث مؤشرات: الحضور والسلوك والأداء بالمواد… وأكثر من نصف المتسربين ظهرت عليهم من الصف السادس</div></div>
+    <div class="card a right" style="--d:.5"><div class="em" style="animation-delay:-.6s">✉️</div><div class="ct">رسالة أسبوعية للأهل<small>Kraft &amp; Rogers, 2015</small></div><div class="cb">رسالة قصيرة كل أسبوع من المعلم للأهل خفّضت نسبة الطلاب اللي ما اجتازوا المقرر 41%</div></div>
+    <div class="card a right" style="--d:.65"><div class="em" style="animation-delay:-1.2s">🔭</div><div class="ct">الكشف الشامل عن الموهبة<small>Card &amp; Giuliano, 2016 — PNAS</small></div><div class="cb">لما انتقلوا من ترشيح المعلم والأهل لفحص الكل، ارتفع اكتشاف الموهوبين من 3.3% إلى 5.5%</div></div>
+    <div class="card a right" style="--d:.8"><div class="em" style="animation-delay:-1.8s">🧩</div><div class="ct">تعدد المصادر<small>National Association for Gifted Children (NAGC), 2019</small></div><div class="cb">الكشف لازم يصير على مدى الوقت، وبفرص متعددة، ومن مصادر مختلفة: معلمين وأهل والطالب نفسه</div></div>
+    <div class="card a right" style="--d:.95"><div class="em" style="animation-delay:-2.4s">🤖</div><div class="ct">الرفيق الذكي<small>Kestin et al., 2025 — Scientific Reports</small></div><div class="cb">تجربة بجامعة هارفارد (194 طالب): المعلم الذكي ضاعف مكاسب التعلم مقارنة بالتعلم النشط بالفصل</div></div>
+  </div>
+</section>
+
+<!-- 6 من الدراسة للميزة -->
+<section class="slide" id="s6">
+  <div class="hd"><h1 class="a" style="--d:.1">من الدراسة… <em>للميزة</em></h1><p class="a" style="--d:.25">كل دراسة صارت شي تشوفونه بمَدار</p></div>
+  <div class="sf">
+    <div class="hdr a fade" style="--d:.3"><span>📚 الدراسة</span><span></span><span>✨ الميزة بمَدار</span></div>
+    <div class="row a" style="--d:.4"><div class="card st"><span class="em">🚦</span><div><b>الإنذار المبكر</b><small class="ltr">Balfanz et al., 2007</small></div></div><div class="beam" style="--bd:0s"></div><div class="card ft"><span class="em">🔔</span>تنبيه يوصل المعلمة نفس اليوم</div></div>
+    <div class="row a" style="--d:.55"><div class="card st"><span class="em">✉️</span><div><b>رسالة أسبوعية للأهل</b><small class="ltr">Kraft &amp; Rogers, 2015</small></div></div><div class="beam" style="--bd:.4s"></div><div class="card ft"><span class="em">🏠</span>تقرير الخميس للأهل</div></div>
+    <div class="row a" style="--d:.7"><div class="card st"><span class="em">🔭</span><div><b>الكشف الشامل + تعدد المصادر</b><small class="ltr">Card &amp; Giuliano, 2016 · NAGC, 2019</small></div></div><div class="beam" style="--bd:.8s"></div><div class="card ft"><span class="em">🌌</span>الكوكبة: كل الطالبات ينفحصن، ومن أكثر من مصدر</div></div>
+    <div class="row a" style="--d:.85"><div class="card st"><span class="em">🤖</span><div><b>الرفيق الذكي</b><small class="ltr">Kestin et al., 2025</small></div></div><div class="beam" style="--bd:1.2s"></div><div class="card ft"><span class="em">🧭</span>«بوصلة»: ترتب جدول المذاكرة وتتابع يوم بيوم</div></div>
+    <div class="row a" style="--d:1"><div class="card st"><span class="em">🏫</span><div><b>تجربة الميدان</b><small>مقابلة وكيلة المدرسة</small></div></div><div class="beam" style="--bd:1.6s"></div><div class="card ft"><span class="em">📋</span>المشرفة ترصد… والكل يعرف بنفس اللحظة</div></div>
+  </div>
+</section>
+
+<!-- 7 رؤية الكويت -->
+<section class="slide" id="s7">
+  <div class="hd"><span class="tag a">الرؤية</span><h1 class="a" style="--d:.1">منسجم مع <em>رؤية الكويت</em></h1><p class="a" style="--d:.25">كويت جديدة 2035 · توجهات وزارة التربية</p></div>
+  <div class="v2">
+    <div class="card a" style="--d:.4">
+      <div class="top"><img class="lg" src="a/newkuwait.png" alt="شعار كويت جديدة"><div><div class="ct">كويت جديدة 2035</div><span class="chip">ركيزة «رأس المال البشري»</span></div></div>
+      <div class="cb">نظام تعليمي يكتشف قدرات كل طالب وينميها… من بدري، ومو بس من الدرجات.</div>
+      <div class="hi">🪐 <b>مَدار</b> يحوّل هالركيزة لأداة يومية: كل طالبة تنشاف، وكل موهبة تنرصد من بدري.</div>
+    </div>
+    <div class="card a" style="--d:.6">
+      <div class="top"><img class="ph" src="a/minister.jpg" alt="وزير التربية"><div><div class="ct">وزير التربية</div><span class="chip">م. سيد جلال الطبطبائي</span></div></div>
+      <div class="cb">أعلن مشروع وطني لتطبيق الذكاء الاصطناعي بالتعليم مع Google (تدريب ~40 ألف معلم)، وأكّد إن التقنية «أداة لتمكين المعلم، مو بديل عنه».</div>
+      <div class="hi">🪐 <b>مَدار</b> مبني بالكامل على Google… والقرار دايمًا للطالبة وأهلها، مو للذكاء الاصطناعي.</div>
+    </div>
+  </div>
+  <div class="src a fade" style="--d:1">المصادر: خطة التنمية «كويت جديدة» (الركائز السبع) · قمة «تحويل التعليم»، جريدة الجريدة 10 يوليو 2026</div>
+</section>
+
+<!-- 8 ليش مختلف -->
+<section class="slide" id="s8">
+  <div class="hd"><span class="tag a">الفرق</span><h1 class="a" style="--d:.1">ليش مَدار <em>مختلف؟</em></h1><p class="a" style="--d:.25">ثلاث نقاط</p></div>
+  <div class="c3">
+    <div class="card a zoom" style="--d:.4"><span class="n">1</span><div class="ic float">🧭</div><div class="ct">مبني على مشروع المسارات</div><div class="cb">أحدث مشاريع الوزارة (12 مدرسة، 8 مسارات من 2026/2027): مَدار يجهّز ملف الطالبة طول السنة… قبل ما تختار مسارها</div></div>
+    <div class="card a zoom" style="--d:.6"><span class="n">2</span><div class="ic float" style="animation-delay:-2s">⭐</div><div class="ct">مبني على مشروع الموهبة</div><div class="cb">يغذّي مكتب الموهوبين بترشيحات مبنية على أدلة من أكثر من مصدر… قبل ما يفتح الثانوي السنة الجاية</div></div>
+    <div class="card a zoom" style="--d:.8"><span class="n">3</span><div class="ic float" style="animation-delay:-4s">🔗</div><div class="ct">وظيفة جديدة: «بوصلة»</div><div class="cb">مرشد أكاديمي ذكي يربط الأخصائية والمعلمة والإدارة والأهل… وظيفة ما كانت موجودة</div></div>
+  </div>
+</section>
+
+<!-- 9 مكان واحد -->
+<section class="slide" id="s9">
+  <div class="hd"><span class="tag a">الفكرة</span><h1 class="a" style="--d:.1">مَدار: <em>مكان واحد يجمعهم كلهم</em></h1><p class="a" style="--d:.25">ستة كواكب تدور حول الطالبة</p></div>
+  <div class="sys a fade" data-sys="all" style="--d:.4"></div>
+</section>
+
+<!-- 10 التنبيه المبكر -->
+<section class="slide feat" id="s10">
+  <div class="hd"><span class="tag a">المعلمة</span><h1 class="a" style="--d:.1">التنبيه <em>المبكر</em></h1><p class="a" style="--d:.25">الطالبة تغلط اليوم… والمعلمة تعرف اليوم</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--lav)">👩‍🏫</div>
+    <ul class="bl"><li>كويز <span class="ltr">Google Forms</span> ← تنبيه تلقائي</li><li>تنبيه فوري لما يتكرر الغلط</li><li><span class="ltr">Gemini</span> يلخّص وين المشكلة بالضبط</li><li><b>ويقترح خطة علاجية مختلفة لكل طالبة</b> بناءً على مستواها وحالتها</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win kb" style="inset:0 0 40px 0"><div class="bar"><i></i><i></i><i></i><span>مَدار · المعلمة · صفحة قمر</span></div><div class="vp"><img src="a/sh-student.jpg" alt="صفحة الطالبة عند المعلمة"></div></div>
+    <div class="toast pop" style="left:-20px;bottom:0"><span class="ti">🔔</span><div>قمر محتاجة دعم بالتوزيع الإلكتروني<small>Gemini · خطة علاجية مقترحة: 3 تمارين قصيرة + فيديو</small></div></div>
+  </div>
+</section>
+
+<!-- 11 الوكيلة والمشرفة -->
+<section class="slide feat" id="s11">
+  <div class="hd"><span class="tag a">شؤون الطالبات</span><h1 class="a" style="--d:.1">الوكيلة <em>والمشرفة</em></h1><p class="a" style="--d:.25">كل ملاحظة توصل بنفس اللحظة</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--pink)">🗂️</div>
+    <ul class="bl"><li>المشرفة ترصد المخالفة من قائمة المدرسة</li><li>توصل للوكيلة والأهل بنفس اللحظة</li><li>ملف كامل لكل طالبة بتقرير <span class="ltr">Gemini</span></li><li>مبني على «برنامج نبيهة» للتنبيهات</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win" style="inset:30px 0 auto 0;height:440px"><div class="bar"><i></i><i></i><i></i><span>مَدار · الوكيلة</span></div><div class="vp pan" style="--pan:-12%"><img src="a/sh-vice.jpg" alt="وصل من المشرفات"></div></div>
+    <div class="toast pop" style="right:30px;bottom:30px"><span class="ti">📋</span><div>أ. هيا رصدت ملاحظة · 10/6<small>وصلت للوكيلة وولي الأمر الحين</small></div></div>
+  </div>
+</section>
+
+<!-- 12 البيت -->
+<section class="slide feat" id="s12">
+  <div class="hd"><span class="tag a">ولي الأمر</span><h1 class="a" style="--d:.1">البيت</h1><p class="a" style="--d:.25">تقرير بلغتهم… وموعد بضغطة</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--sky)">🏠</div>
+    <ul class="bl"><li>كل خميس: تقرير <span class="ltr">Gemini</span> قصير</li><li>بلغة الأهل نفسها (<span class="ltr">Google Translate</span>)</li><li>حجز موعد: حضوري أو <span class="ltr">Google Meet</span></li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win kb" style="inset:20px 0 60px 0"><div class="bar"><i></i><i></i><i></i><span>مَدار · ولي الأمر</span></div><div class="vp"><img src="a/sh-parent.jpg" alt="ملخص ولي الأمر"></div></div>
+    <div class="toast pop" style="left:-10px;bottom:0"><span class="ti">📩</span><div>تقرير الخميس · قمر<small>زينة بأغلب المواد… وتحتاج شوية متابعة بالكيمياء</small></div></div>
+  </div>
+</section>
+
+<!-- 13 التقويم الذكي -->
+<section class="slide feat" id="s13">
+  <div class="hd"><span class="tag a">التقويم</span><h1 class="a" style="--d:.1">التقويم <em>الذكي</em></h1><p class="a" style="--d:.25">التذكير يعرف الطالبة</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--sky)">📅</div>
+    <ul class="bl"><li>المعلمة ترسل لطالبة أو شعبة أو الكل</li><li>المحتاجة: تذكير قبل بأسبوع + بودكاست <span class="ltr">NotebookLM</span></li><li>المتفوقة: تذكير قبل بيوم</li><li>والكل يوصله «بالتوفيق» صباح الاختبار</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win" style="inset:10px 0 auto 0;height:540px"><div class="bar"><i></i><i></i><i></i><span>مَدار · التقويم</span></div><div class="vp kb"><img src="a/sh-cal.jpg" alt="التقويم"></div></div>
+    <div class="toast pop" style="left:-14px;bottom:-10px"><span class="ti">⏰</span><div>اختبار الكيمياء بعد أسبوع<small>خطة مراجعة + بودكاست الدرس من NotebookLM</small></div></div>
+  </div>
+</section>
+
+<!-- 14 الكوكبة -->
+<section class="slide feat" id="s14">
+  <div class="hd"><span class="tag a">الموهبة</span><h1 class="a" style="--d:.1">الكوكبة</h1><p class="a" style="--d:.25">لما الكل يشوف نفس الموهبة… تلقى الطالبة مدارها</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic">⭐</div>
+    <ul class="bl"><li>كل نجمة = دليل على موهبة، من المعلمة والأهل والطالبة نفسها</li><li>ترشيح بجملة: <span class="ltr">Gemini</span> يعبّي نموذج الموهوبين</li><li>«تستاهل تنفحص» مع الدليل… والقرار للمختصين</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win" style="left:150px;top:0;width:480px;height:590px"><div class="bar"><i></i><i></i><i></i><span>الطالبة · كوكبتي</span></div><div class="vp"><video src="a/constellation.mp4" poster="a/constellation.jpg" muted loop playsinline preload="auto"></video></div></div>
+    <div class="toast pop" style="left:-10px;top:120px"><span class="ti">🌟</span><div>نجمة جديدة بسماء قمر<small>صممت شعار نادي العلوم</small></div></div>
+  </div>
+</section>
+
+<!-- 15 بوصلة -->
+<section class="slide feat" id="s15">
+  <div class="hd"><span class="tag a">بوصلة</span><h1 class="a" style="--d:.1">بوصلة: <em>رفيقة الطالبة الذكية</em></h1><p class="a" style="--d:.25">مرشدها الأكاديمي… كل يوم</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--mint)">🧭</div>
+    <ul class="bl"><li>تجمع الدرجات وملاحظات المعلمات ورغبات الطالبة</li><li>ترتب لها جدول مذاكرة أسبوعي</li><li>تكلمها بصوتها، أو تصوّر لها ورقة العمل</li><li><b>إذا لاحظت تغيّر بالمستوى… تنبّه الطالبة وولي الأمر</b></li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win" style="inset:0 0 auto 60px;height:400px"><div class="bar"><i></i><i></i><i></i><span>الطالبة · خطتي اليوم</span></div><div class="vp pan" style="--pan:-25%"><img src="a/sh-plan.jpg" alt="خطتي اليوم"></div></div>
+    <div class="win" style="left:0;right:120px;top:350px;height:230px"><div class="bar"><i></i><i></i><i></i><span>بوصلة</span></div><div class="vp"><img src="a/sh-baw.jpg" alt="بوصلة"></div></div>
+  </div>
+</section>
+
+<!-- 16 المسار -->
+<section class="slide feat" id="s16">
+  <div class="hd"><span class="tag a">المسار</span><h1 class="a" style="--d:.1">المسار</h1><p class="a" style="--d:.25">علمي/أدبي أو مسار… ومعاه الجامعة وسوق العمل</p></div>
+  <div class="card panel a right" style="--d:.35;top:235px"><div class="ic" style="background:var(--mint)">🎯</div>
+    <ul class="bl"><li>بناءً على <b>رغباتها ودرجاتها</b> ورأي معلماتها</li><li>اختبار ميول (18 سؤال) مبني على نموذج هولاند <span class="ltr">RIASEC</span><small>Holland, 1997 — Making Vocational Choices</small></li><li>عادية: علمي/أدبي · مسارات: أنسب مسار من 8</li><li>3 تخصصات جامعية + فرص العمل… والقرار لها ولأهلها</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win" style="left:110px;top:0;width:560px;height:600px"><div class="bar"><i></i><i></i><i></i><span>بوصلة · علمي ولا أدبي؟</span></div><div class="vp pan" style="--pan:-42%"><img src="a/sh-path.jpg" alt="اقتراح المسار"></div></div>
+  </div>
+</section>
+
+<!-- 17 أدوات قوقل -->
+<section class="slide" id="s17">
+  <div class="hd"><span class="tag a">التقنية</span><h1 class="a" style="--d:.1">مبني بالكامل <em>بأدوات قوقل</em></h1><p class="a" style="--d:.25">كل جزء بمَدار شغّال على أداة من Google for Education</p></div>
+  <div class="tg">
+    <div class="card a zoom" style="--d:.35"><div class="ti float" style="--c:#7248b9"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="nm">Google Forms</div><div class="cm">الكويزات والاستبيان</div></div>
+    <div class="card a zoom" style="--d:.45"><div class="ti float" style="--c:#188038;animation-delay:-1s"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 9v12"/></svg></div><div class="nm">Google Sheets</div><div class="cm">قاعدة البيانات</div></div>
+    <div class="card a zoom" style="--d:.55"><div class="ti float" style="--c:#1a73e8;animation-delay:-2s"><svg viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg></div><div class="nm">Apps Script</div><div class="cm">المنصة نفسها</div></div>
+    <div class="card a zoom" style="--d:.65"><div class="ti float" style="--c:#6f5cf6;animation-delay:-3s"><svg viewBox="0 0 24 24"><path d="M12 3c.6 4.6 3.4 7.4 8 8-4.6.6-7.4 3.4-8 8-.6-4.6-3.4-7.4-8-8 4.6-.6 7.4-3.4 8-8z"/></svg></div><div class="nm">Gemini</div><div class="cm">التقارير و«بوصلة»</div></div>
+    <div class="card a zoom" style="--d:.75"><div class="ti float" style="--c:#4a5bd4;animation-delay:-1.5s"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div><div class="nm">Gemini Canvas</div><div class="cm">نسخة تجريبية للكل</div></div>
+    <div class="card a zoom" style="--d:.85"><div class="ti float" style="--c:#f4b400;animation-delay:-2.5s"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="7" y="9" width="10" height="6" rx="1"/></svg></div><div class="nm">Google Slides</div><div class="cm">نسخة العرض</div></div>
+    <div class="card a zoom" style="--d:.95"><div class="ti float" style="--c:#e8710a;animation-delay:-3.5s"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/></svg></div><div class="nm">Google Vids</div><div class="cm">فيديو المشروع</div></div>
+    <div class="card a zoom" style="--d:1.05"><div class="ti float" style="--c:#d93025;animation-delay:-.5s"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div><div class="nm">Gmail</div><div class="cm">التنبيهات وتقرير الأهل</div></div>
+  </div>
+</section>
+
+<!-- 18 جاهز لبيئة جوجل (English) -->
+<section class="slide" id="s18">
+  <div class="hd"><span class="tag a">Google Workspace for Education</span><h1 class="a" style="--d:.1">جاهز <em>لبيئة جوجل</em></h1><p class="a" style="--d:.25">14 أداة جوجل… وصفر تكلفة إضافية</p></div>
+  <div class="eng">
+    <div class="groups">
+      <div class="card g a" style="--d:.35"><h4>Collect &amp; Store</h4><div class="chips"><span class="chip">Forms</span><span class="chip">Sheets</span><span class="chip">Apps Script</span></div></div>
+      <div class="card g a" style="--d:.45"><h4>Communicate</h4><div class="chips"><span class="chip">Gmail</span><span class="chip">Calendar</span><span class="chip">Meet</span><span class="chip">Translate</span></div></div>
+      <div class="card g a" style="--d:.55"><h4>Learn</h4><div class="chips"><span class="chip">Classroom</span><span class="chip">YouTube</span><span class="chip">NotebookLM</span></div></div>
+      <div class="card g a" style="--d:.65"><h4>AI &amp; Insight</h4><div class="chips"><span class="chip">Gemini</span><span class="chip">Looker Studio</span></div></div>
+      <div class="card g wide a" style="--d:.75"><h4>Publish</h4><div class="chips"><span class="chip">Sites</span><span class="chip">Vids</span></div></div>
+    </div>
+    <div class="card zero a zoom" style="--d:.6"><div class="num">0</div><div class="u">extra cost</div><div class="m">Runs on the Ministry's existing Google Workspace accounts</div><div class="n14 num" data-n="14" style="color:#fff">0</div><div class="m">Google tools · one platform</div></div>
+  </div>
+</section>
+
+<!-- 19 يكبر مع الوزارة -->
+<section class="slide feat" id="s19">
+  <div class="hd"><span class="tag a">التوسّع</span><h1 class="a" style="--d:.1">يكبر مع <em>الوزارة</em></h1><p class="a" style="--d:.25">من المدرسة… للمنطقة… للوزارة</p></div>
+  <div class="card panel a right" style="--d:.35"><div class="ic" style="background:var(--sky)">🗺️</div>
+    <ul class="bl"><li>داشبورد <span class="ltr">Looker Studio</span> بثلاث طبقات</li><li>على حسابات الوزارة: بدون تكلفة</li><li>البيانات داخل دومين الوزارة</li></ul></div>
+  <div class="vis a left" style="--d:.5">
+    <div class="win kb" style="inset:20px 0 auto 0;height:470px"><div class="bar"><i></i><i></i><i></i><span>Looker Studio · مَدار</span></div><div class="vp"><img src="a/sh-looker.jpg" alt="داشبورد"></div></div>
+    <div class="lv" style="bottom:20px"><span>🏫 المدرسة</span><span>🗺️ المنطقة</span><span>🇰🇼 الوزارة</span></div>
+  </div>
+</section>
+
+<!-- 20 الخصوصية -->
+<section class="slide" id="s20">
+  <div class="hd"><span class="tag a">الأمان</span><h1 class="a" style="--d:.1">الخصوصية <em>أولًا</em></h1><p class="a" style="--d:.25">أربع قواعد ثابتة</p></div>
+  <div class="pv">
+    <div class="card a right" style="--d:.35"><div class="ic">🔒</div><div><div class="ct">داخل حساب الوزارة</div><div class="cb">البيانات بـ <span class="ltr">Google Workspace</span> حق الوزارة، مو برا</div></div></div>
+    <div class="card a left" style="--d:.45"><div class="ic">👁️</div><div><div class="ct">كل وحدة تشوف اللي يخصها</div><div class="cb">الأم تشوف ابنتها بس، والمعلمة فصولها بس</div></div></div>
+    <div class="card a right" style="--d:.55"><div class="ic">🤝</div><div><div class="ct">الذكاء يقترح… والطالبة تقرر</div><div class="cb"><span class="ltr">Gemini</span> و«بوصلة» ما ياخذون قرار عن أي طالبة؛ القرار لها ولأهلها</div></div></div>
+    <div class="card a left" style="--d:.65"><div class="ic">🧪</div><div><div class="ct">بيانات تجريبية بالعرض</div><div class="cb">ولا اسم طالبة حقيقي بالعرض أو الفيديو</div></div></div>
+  </div>
+  <div class="shield a zoom" style="--d:.9;left:190px;top:130px;transform:none;width:110px;height:110px">🛡️</div>
+</section>
+
+<!-- 21 الأثر المتوقع -->
+<section class="slide" id="s21">
+  <div class="hd"><span class="tag a">الأثر</span><h1 class="a" style="--d:.1">الأثر <em>المتوقع</em></h1><p class="a" style="--d:.25">قبل مَدار… وبعده</p></div>
+  <div class="ba">
+    <div class="card bef a right" style="--d:.35"><h3>قبل</h3><div class="cm">نسبة اللي يواجهون المشكلة (استبيان 33 مشاركة)</div>
+      <div class="vb"><div class="col" style="--d:0"><span class="num" data-n="91" data-s="%">0%</span><i style="--v:91%"></i></div><div class="col" style="--d:.2"><span class="num" data-n="70" data-s="%">0%</span><i style="--v:70%"></i></div><div class="col" style="--d:.4"><span class="num" data-n="94" data-s="%">0%</span><i style="--v:94%"></i></div></div>
+      <div class="vb-l"><span>يكتشفون التعثّر متأخر</span><span>صعوبة الوصول للأهل</span><span>ما عندهم طريق لترشيح الموهبة</span></div></div>
+    <div class="card aft a left" style="--d:.5"><h3>بعد</h3><div class="cm">رأي نفس المشاركات بعد ما شافوا مَدار</div>
+      <div class="donut"><svg width="300" height="300" viewBox="0 0 300 300"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe39a"/><stop offset="1" stop-color="#ffae3d"/></linearGradient></defs><circle class="bg" cx="150" cy="150" r="120"/><circle class="fg" cx="150" cy="150" r="120" style="--dv:731"/></svg><div class="c"><span class="num" data-n="97" data-s="%">0%</span></div></div><div class="cb" style="text-align:center;font-size:24px;margin:-4px 0 8px">قالوا: <b style="color:var(--gold)">«أكيد بستخدمها»</b></div>
+      <div class="stars"><i style="--i:0">★</i><i style="--i:1">★</i><i style="--i:2">★</i><i style="--i:3">★</i><i style="--i:4">★</i></div>
+      <div class="cb" style="text-align:center;margin-top:6px">97% أعطوا الأداة 5 من 5 · و0% قالوا «لا»</div></div>
+  </div>
+</section>
+
+<!-- 22 جرّبناه -->
+<section class="slide" id="s22">
+  <div class="hd"><span class="tag a">التجربة الفعلية</span><h1 class="a" style="--d:.1">جرّبناه <em>🧪</em></h1><p class="a" style="--d:.25">جرّبوه بأنفسهم… ورأيهم بعد التجربة</p></div>
+  <div class="card seg a" style="--d:.35">
+    <div class="tot"><span class="num" data-n="83">0</span><span>شخص جرّبوا مَدار بأنفسهم</span></div>
+    <div class="row"><i style="--w:24.1%;--d:0;background:#c49bff">20 معلمة</i><i style="--w:15.7%;--d:.25;background:#7cc8ff">13 إدارة</i><i style="--w:36.1%;--d:.5;background:#ffd36e">30 طالبة</i><i style="--w:24.1%;--d:.75;background:#5fe0a8">20 ولي أمر</i></div>
+  </div>
+  <div class="g4">
+    <div class="card a" style="--d:.6"><div class="ring" style="--d:0"><svg width="170" height="170" viewBox="0 0 170 170"><circle class="bg" cx="85" cy="85" r="70"/><circle class="fg" cx="85" cy="85" r="70"/></svg><span class="num" data-n="100" data-s="%">0%</span></div><div class="cb"><b>المعلمات والإدارة</b>«أكيد بستخدمها»</div></div>
+    <div class="card a" style="--d:.7"><div class="ring" style="--d:.2"><svg width="170" height="170" viewBox="0 0 170 170"><circle class="bg" cx="85" cy="85" r="70"/><circle class="fg" cx="85" cy="85" r="70"/></svg><span class="num" data-n="100" data-s="%">0%</span></div><div class="cb"><b>الطاقم</b>تنبّهني لتعثّر الطالبة أسرع</div></div>
+    <div class="card a" style="--d:.8"><div class="ring" style="--d:.4"><svg width="170" height="170" viewBox="0 0 170 170"><circle class="bg" cx="85" cy="85" r="70"/><circle class="fg" cx="85" cy="85" r="70"/></svg><span class="num" data-n="100" data-s="%">0%</span></div><div class="cb"><b>الأهل</b>التقرير الأسبوعي وحجز الموعد يفيدنا وايد</div></div>
+    <div class="card a" style="--d:.9"><div class="ring" style="--d:.6"><svg width="170" height="170" viewBox="0 0 170 170"><circle class="bg" cx="85" cy="85" r="70"/><circle class="fg" cx="85" cy="85" r="70"/></svg><span class="num" data-n="100" data-s="%">0%</span></div><div class="cb"><b>الطالبات</b>«بوصلة» بتفيدني وايد</div></div>
+  </div>
+</section>
+
+<!-- 23 التمكين والأثر -->
+<section class="slide" id="s23">
+  <div class="hd"><span class="tag a">التمكين</span><h1 class="a" style="--d:.1">التمكين <em>والأثر</em></h1><p class="a" style="--d:.25">مَدار ما وقف عند فصلي… نقلنا أدوات قوقل لزميلاتنا بورشة شهادة <span class="ltr">Gemini</span></p></div>
+  <div class="card big50 a right" style="--d:.35"><span class="num" data-n="50">0</span><div class="ct" style="color:#fff;font-size:34px">حضروا ورشة شهادة</div><div class="ct ltr" style="font-family:Rx;font-size:30px">Gemini Certified Educator</div><div class="pills"><span>معلمات</span><span>رئيسات أقسام</span><span>إدارة</span></div><div class="cm">الحضور موثّق بـ <span class="ltr">Google Forms</span></div></div>
+  <div class="phone a zoom" style="--d:.5"><video src="../deck/v23.mp4?v=2" poster="../deck/v23.jpg?v=2" muted loop playsinline preload="auto"></video></div>
+  <div class="side">
+    <div class="card a left" style="--d:.6"><div class="ic">📷</div><div><div class="ct">تمسح الكرت</div><div class="cm">كرت فيه <span class="ltr">QR</span> ينفتح منه الموقع</div></div></div>
+    <div class="card a left" style="--d:.7"><div class="ic">🎬</div><div><div class="ct">فيديو التسجيل</div><div class="cm">خطوة بخطوة بحساب الوزارة</div></div></div>
+    <div class="card a left" style="--d:.8"><div class="ic">📅</div><div><div class="ct">تحجز الاجتماع الفني</div><div class="cm">رئيسة القسم تختار اليوم والحصة</div></div></div>
+    <div class="card a left" style="--d:.9"><div class="ic">💬</div><div><div class="ct">واتساب الفريق</div><div class="cm">تواصل مباشر بضغطة</div></div></div>
+  </div>
+</section>
+
+<!-- 24 أصوات من الميدان -->
+<section class="slide" id="s24">
+  <div class="hd"><span class="tag a">قالوا عن مَدار</span><h1 class="a" style="--d:.1">أصوات <em>من الميدان</em></h1><p class="a" style="--d:.25">اضغطوا ▶ واسمعوهم بصوتهم</p></div>
+  <div class="vg">
+    <div class="card a zoom" style="--d:.35" data-au="../deck/v24-zainab.mp3"><div class="top"><div class="av float"><img src="a/f-zainab.jpg" alt=""></div><div><div class="ct">أ. زينب الكايد</div><div class="cm">وكيلة مدرسة أم حبيب بنت العاص القرشية</div></div></div><div class="q">«بالعكس وايد حلو… متابعة ولي أمر وحتى حقنا سهل.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.45" data-au="../deck/v24-wahaj.mp3"><div class="top"><div class="av float" style="animation-delay:-1.5s"><img src="a/f-wahaj.jpg" alt=""></div><div><div class="ct">أ. وهج الماجدي</div><div class="cm">معلمة فيزياء</div></div></div><div class="q">«نفس المسألة… ممكن طالبتين أو ثلاث عندهم مشكلة فيها، بس مشكلتهم مختلفة عن بعض.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.55" data-au="../deck/v24-salih.mp3"><div class="top"><div class="av float" style="animation-delay:-3s"><img src="a/f-salih.jpg" alt=""></div><div><div class="ct">أ. صالح العجيل</div><div class="cm">جائزة خليفة التربوية</div></div></div><div class="q">«فيه طالب موهوب في الحفظ، موهوب في مهارة معينة… المهم نعرف نقاط قوته.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
+    <div class="card a zoom" style="--d:.65" data-au="../deck/v24-munira.mp3"><div class="top"><div class="av float" style="animation-delay:-4.5s"><img src="a/f-munira.jpg" alt=""></div><div><div class="ct">أ. منيرة العدواني</div><div class="cm">مديرة ثانوية جمانة بنت أبي طالب (مسارات)</div></div></div><div class="q">«أنا مع البرامج اللي تسهّل علينا عملية الاختيار… والحكم الصحيح.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوها</span></button></div>
+    <div class="card a zoom" style="--d:.75" data-au="../deck/v24-filkawi.mp3"><div class="top"><div class="av float" style="animation-delay:-2s"><img src="a/f-filkawi.jpg" alt=""></div><div><div class="ct">د. عبدالله الفيلكاوي</div><div class="cm">قائم بأعمال رئيس قسم تكنولوجيا التعليم · كلية التربية – جامعة الكويت</div></div></div><div class="q">«خطة علاجية لكل طالب حسب احتياجه وتفضيلاته.»</div><button class="play"><span class="eq"><i></i><i></i><i></i><i></i></span><span class="pt">▶ اسمعوه</span></button></div>
+  </div>
+</section>
+
+<!-- 25 جرّبوه بنفسكم -->
+<section class="slide" id="s25">
+  <div class="hd"><span class="tag a">دوركم</span><h1 class="a" style="--d:.1">جرّبوه <em>بنفسكم</em></h1><p class="a" style="--d:.25">امسحوا الكود بكاميرا الجوال</p></div>
+  <div class="qr3">
+    <div class="card a zoom" style="--d:.35"><div class="qr"><img src="../shots/qr-site.png" alt="QR الموقع"></div><div class="ct">الموقع</div><div class="cm">مَدار – كل الكواكب</div></div>
+    <div class="card a zoom" style="--d:.5"><div class="qr"><img src="../shots/qr-gemini.png" alt="QR نسخة Gemini"></div><div class="ct">نسخة <span class="ltr">Gemini</span></div><div class="cm">نسخة تجريبية تنفتح لأي أحد</div></div>
+    <div class="card a zoom" style="--d:.65"><div class="qr soon" id="qrVid">🎬<br>قريبًا</div><div class="ct">الفيديو</div><div class="cm">ثلاث دقايق بقصة قمر</div></div>
+  </div>
+</section>
+
+<!-- 26 المراجع -->
+<section class="slide" id="s26">
+  <div class="hd"><span class="tag a">References · APA 7</span><h1 class="a" style="--d:.1">المراجع</h1></div>
+  <div class="refs">
+    <div class="card en a left" style="--d:.3"><h4>Research</h4><ol>
+      <li>Balfanz, R., Herzog, L., &amp; Mac Iver, D. J. (2007). Preventing student disengagement and keeping students on the graduation path in urban middle-grades schools: Early identification and effective interventions. <i>Educational Psychologist, 42</i>(4), 223–235. https://doi.org/10.1080/00461520701621079</li>
+      <li>Card, D., &amp; Giuliano, L. (2016). Universal screening increases the representation of low-income and minority students in gifted education. <i>Proceedings of the National Academy of Sciences, 113</i>(48), 13678–13683. https://doi.org/10.1073/pnas.1605043113</li>
+      <li>Holland, J. L. (1997). <i>Making vocational choices: A theory of vocational personalities and work environments</i> (3rd ed.). Psychological Assessment Resources.</li>
+      <li>Kestin, G., Miller, K., Klales, A., Milbourne, T., &amp; Ponti, G. (2025). AI tutoring outperforms in-class active learning: An RCT introducing a novel research-based design in an authentic educational setting. <i>Scientific Reports, 15</i>, Article 17458. https://doi.org/10.1038/s41598-025-97652-6</li>
+      <li>Kraft, M. A., &amp; Rogers, T. (2015). The underutilized potential of teacher-to-parent communication: Evidence from a field experiment. <i>Economics of Education Review, 47</i>, 49–63. https://doi.org/10.1016/j.econedurev.2015.04.001</li>
+      <li>National Association for Gifted Children. (2019). <i>2019 Pre-K–Grade 12 gifted programming standards</i>. https://nagc.org</li>
+    </ol></div>
+    <div class="card ar a right" style="--d:.45"><h4>مصادر محلية</h4><ol>
+      <li>الشرهان، بدر. (2026، 6 سبتمبر). لقاء مع رئيس مكتب الموهوبين [مقابلة تلفزيونية]. برنامج «نبض الشارع»، قناة الأخبار.</li>
+      <li>الشرهان، بدر. (2026، 19 أغسطس). لقاء مع رئيس مكتب الموهوبين [مقابلة تلفزيونية]. برنامج «مساء الخير يا كويت»، تلفزيون الكويت.</li>
+      <li>جريدة الجريدة. (2026، 10 يوليو). قمة «تحويل التعليم».</li>
+      <li>جريدة الجريدة. (2026، 14–15 سبتمبر). إطلاق نظام المسارات بالمرحلة الثانوية.</li>
+      <li>الأمانة العامة للمجلس الأعلى للتخطيط والتنمية. (د.ت.). خطة التنمية «كويت جديدة 2035».</li>
+      <li>مقابلات ميدانية أجرتها الباحثة (نوفمبر 2026): وكيلة المدرسة، معلمة فيزياء، مديرة مدرسة مسارات، خبير تلعيب، أكاديمي بجامعة الكويت.</li>
+    </ol></div>
+  </div>
+</section>
+
+<!-- 27 شكرًا -->
+<section class="slide" id="s27">
+  <div class="t"><h1 class="a zoom">لكل بنت مدارها</h1><p class="a" style="--d:.4">شكرًا من القلب <span class="heart">🤍</span></p></div>
+  <div class="sys" data-sys="end"></div>
+  <img class="logo a fade" style="--d:.8" src="../by-afnan-white.png" alt="By Afnan">
+  <div class="nm a fade" style="--d:1">أ. أفنان سامي – معلمة كيمياء</div>
+</section>
+
+</div></div>
+
+<div id="ui"><button id="prev">→ السابق</button><div class="mid"><button id="fs">⛶ شاشة كاملة</button><span id="cnt">1 / 27</span></div><button id="next" class="pr">التالي ←</button></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const slides=$$('.slide'), N=slides.length;
+/* scale stage */
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900); $('#stage').style.transform='scale('+s+')';}
+addEventListener('resize',fit); fit();
+/* starfield */
+const cv=$('#sky'), cx=cv.getContext('2d'); let W,H,stars=[],shoot=null,par=0,parT=0;
+function rs(){const d=Math.min(devicePixelRatio||1,2); W=cv.width=innerWidth*d; H=cv.height=innerHeight*d; stars=[]; const n=Math.round(innerWidth*innerHeight/2600);
+  for(let i=0;i<n;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()<.08?1.8:Math.random()*1.1+.3)*d,z:Math.random()*.9+.1,p:Math.random()*6.28,s:Math.random()*1.5+.5,c:Math.random()<.12?'255,220,160':Math.random()<.2?'180,200,255':'255,255,255'});}
+addEventListener('resize',rs); rs();
+let last=performance.now();
+function draw(t){const dt=Math.min(50,t-last); last=t; cx.clearRect(0,0,W,H); par+=(parT-par)*.04;
+  for(const s of stars){ s.x-=s.z*.06*dt/16; if(s.x<0) s.x+=W; const x=(s.x+par*s.z*W*.04+W)%W; const a=.35+.65*Math.abs(Math.sin(s.p+t*.001*s.s)); cx.beginPath(); cx.arc(x,s.y,s.r,0,6.283); cx.fillStyle='rgba('+s.c+','+(a*(.4+.6*s.z))+')'; cx.fill(); if(s.r>1.5*((devicePixelRatio||1))){const g=cx.createRadialGradient(x,s.y,0,x,s.y,s.r*5); g.addColorStop(0,'rgba('+s.c+','+a*.35+')'); g.addColorStop(1,'rgba('+s.c+',0)'); cx.fillStyle=g; cx.beginPath(); cx.arc(x,s.y,s.r*5,0,6.283); cx.fill();} }
+  if(!shoot&&Math.random()<.004) shoot={x:Math.random()*W*.8+W*.2,y:Math.random()*H*.4,l:0,v:(8+Math.random()*6)*(devicePixelRatio||1)};
+  if(shoot){shoot.l+=1; const k=shoot.l, x=shoot.x-k*shoot.v, y=shoot.y+k*shoot.v*.45; const g=cx.createLinearGradient(x,y,x+shoot.v*14,y-shoot.v*6.3); g.addColorStop(0,'rgba(255,240,200,.95)'); g.addColorStop(1,'rgba(255,240,200,0)'); cx.strokeStyle=g; cx.lineWidth=2*(devicePixelRatio||1); cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x+shoot.v*14,y-shoot.v*6.3); cx.stroke(); if(k>60) shoot=null;}
+  orbits(t); requestAnimationFrame(draw);}
+/* orbit systems (planets with upright labels) */
+const SYS={
+  cover:{w:760,h:680,sun:120,tilt:.42,pl:[[140,'#ffb84d',16,9],[215,'#7cc8ff',14,14],[290,'#c49bff',18,20],[360,'#5fe0a8',13,26],[430,'#ff8fbf',15,33]],lab:false},
+  all:{w:1600,h:730,sun:150,tilt:.36,pl:[[230,'#7cc8ff',30,22,'🏠 الأهل'],[330,'#c49bff',30,30,'👩‍🏫 المعلمة'],[430,'#5fe0a8',30,38,'🧭 بوصلة'],[530,'#ff8fbf',30,46,'🗂️ الوكيلة'],[620,'#ffe08a',28,54,'📋 المشرفة'],[700,'#ffb84d',26,62,'🏫 الإدارة']],lab:true,center:'⭐ الطالبة'},
+  end:{w:1600,h:420,sun:90,tilt:.3,pl:[[170,'#ffb84d',14,10],[260,'#7cc8ff',13,15],[350,'#c49bff',16,21],[440,'#5fe0a8',12,27],[530,'#ff8fbf',14,34]],lab:false}};
+const live=[];
+$$('[data-sys]').forEach(el=>{const c=SYS[el.dataset.sys]; if(!el.style.width) el.style.width='100%'; const H=c.h; el.style.height=el.style.height||H+'px';
+  const cxp=50,cyp=50;
+  c.pl.forEach(p=>{const r=document.createElement('div'); r.className='ring'; r.style.width=p[0]*2+'px'; r.style.height=p[0]*2*c.tilt+'px'; el.appendChild(r);});
+  const sun=document.createElement('div'); sun.className='sun'; sun.style.setProperty('--s',c.sun+'px'); el.appendChild(sun);
+  if(c.center){const l=document.createElement('div'); l.className='lab'; l.style.cssText='position:absolute;left:50%;top:calc(50% + '+(c.sun/2+6)+'px);transform:translateX(-50%);font:700 28px Rx;color:#ffe9b0;text-shadow:0 2px 14px rgba(0,0,0,.8)'; l.textContent=c.center; el.appendChild(l);}
+  const pls=c.pl.map((p,i)=>{const d=document.createElement('div'); d.className='pl'; d.style.width=d.style.height=p[2]+'px'; d.style.color=p[1]; d.innerHTML='<b></b>'+(p[4]?'<span class="lab">'+p[4]+'</span>':''); el.appendChild(d); return {d,r:p[0],sz:p[2],per:p[3],ph:i*1.1+.4};});
+  live.push({el,c,pls});
+});
+function orbits(t){for(const o of live){ if(!o.el.closest('.slide.on')) continue; const w=o.el.clientWidth,h=o.el.clientHeight;
+  for(const p of o.pls){const a=p.ph+t/1000/p.per*6.283*.6; const x=w/2+Math.cos(a)*p.r-p.sz/2, y=h/2+Math.sin(a)*p.r*o.c.tilt-p.sz/2; const front=Math.sin(a)>0; p.d.style.transform='translate('+x+'px,'+y+'px) scale('+(front?1.08:.88)+')'; p.d.style.zIndex=front?3:1; p.d.style.opacity=front?1:.85;}}}
+requestAnimationFrame(draw);
+/* counters */
+function count(el){const n=+el.dataset.n, s=el.dataset.s||'', fm=el.dataset.fmt, t0=performance.now(), dur=1800;
+  (function f(t){const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3), v=Math.round(n*e); el.textContent=(fm?v.toLocaleString('en-US'):v)+s; if(k<1) requestAnimationFrame(f);})(t0);}
+/* audio (slide 24) */
+let au=null,auCard=null;
+function stopAu(){if(au){au.pause(); au=null;} if(auCard){auCard.classList.remove('on'); const pt=auCard.querySelector('.pt'); pt.textContent=pt.dataset.t;} auCard=null;}
+$$('[data-au]').forEach(c=>{const pt=c.querySelector('.pt'); pt.dataset.t=pt.textContent; c.querySelector('.play').addEventListener('click',e=>{e.stopPropagation(); const was=auCard===c; stopAu(); if(was) return; au=new Audio(c.dataset.au); au.play().catch(()=>{}); au.onended=stopAu; auCard=c; c.classList.add('on'); pt.textContent='⏸ إيقاف';});});
+/* navigation */
+let cur=-1;
+function go(i,dir){i=Math.max(0,Math.min(N-1,i)); if(i===cur) return; const prev=slides[cur];
+  if(prev){prev.classList.remove('on'); prev.classList.toggle('back',dir<0); prev.querySelectorAll('video').forEach(v=>v.pause());}
+  stopAu(); cur=i; const s=slides[i]; s.classList.remove('back');
+  void s.offsetWidth; s.classList.add('on');
+  s.querySelectorAll('[data-n]').forEach(el=>{el.textContent=(el.dataset.fmt?'0':'0')+(el.dataset.s||''); setTimeout(()=>count(el),900);});
+  s.querySelectorAll('video').forEach(v=>{try{v.currentTime=0; v.play().catch(()=>{});}catch(e){}});
+  $('#cnt').textContent=(i+1)+' / '+N; $('#prog').style.width=((i+1)/N*100)+'%'; parT=-i*.6;
+  try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+}
+const next=()=>go(cur+1,1), prev=()=>go(cur-1,-1);
+$('#next').onclick=e=>{e.stopPropagation(); next();}; $('#prev').onclick=e=>{e.stopPropagation(); prev();};
+addEventListener('keydown',e=>{if(['ArrowLeft','PageDown',' ','Enter'].includes(e.key)){e.preventDefault(); next();} else if(['ArrowRight','PageUp','Backspace'].includes(e.key)){e.preventDefault(); prev();} else if(e.key==='Home') go(0,-1); else if(e.key==='End') go(N-1,1); else if(e.key==='Escape') closeMe(); else if(e.key==='f') fsT();});
+let tx=null; addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+addEventListener('touchend',e=>{if(tx==null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>50) (d>0?next():prev()); tx=null;});
+$('#wrap').addEventListener('click',e=>{if(e.target.closest('button,a,video,[data-au]')) return; const x=e.clientX/innerWidth; x<.5?next():prev();});
+function fsT(){const d=document; if(!d.fullscreenElement) (d.documentElement.requestFullscreen||d.documentElement.webkitRequestFullscreen||function(){}).call(d.documentElement); else (d.exitFullscreen||d.webkitExitFullscreen).call(d);}
+$('#fs').onclick=e=>{e.stopPropagation(); fsT();};
+const inFrame=window.parent!==window; if(inFrame){$('#close').hidden=false;}
+function closeMe(){if(inFrame) try{parent.postMessage('madar-show-close','*');}catch(e){}}
+$('#close').onclick=closeMe;
+let hideT; addEventListener('mousemove',()=>{$('#ui').classList.add('show'); clearTimeout(hideT); hideT=setTimeout(()=>$('#ui').classList.remove('show'),2500);});
+/* optional: video QR via ?yt= */
+const yt=new URLSearchParams(location.search).get('qr'); if(yt){const q=$('#qrVid'); q.className='qr'; q.innerHTML='<img src="'+yt+'" alt="QR الفيديو">';}
+const h=parseInt(location.hash.slice(1)); go(isNaN(h)?0:h-1,1);
+})();
+</script>
+</body>
+</html>
