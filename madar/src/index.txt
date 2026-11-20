@@ -2138,7 +2138,7 @@ function msgPanel(sid){const st=stu(sid), mine=MSGS.filter(m=>m.sid===sid&&m.fro
    (mine.length?'<div style="margin-top:10px">'+mine.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+m.to.map(k=>(MSG_TO[k]||{i:'👨‍👩‍👧'}).i).join(' ')+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</div>':'')+
    '<script type="text/plain" data-tpl>'+tpl.map(encodeURIComponent).join('|')+'</scr'+'ipt></section>';}
 function inbox(role,sid){const l=MSGS.filter(m=>m.from!=='student'&&m.to.includes(role)&&(!sid||m.sid===sid)).slice().reverse().slice(0,6); if(!l.length) return '';
-  return '<section class="panel"><h2>📨 رسائل من المعلمات</h2>'+l.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+esc(m.by)+'</span>'+(sid?'':'<b>'+esc(stu(m.sid).name)+':</b>')+'<span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</section>';}
+  return '<section class="panel"><h2>📨 رسائل من المعلمات</h2>'+l.map(m=>'<div class="row small" style="align-items:flex-start"><span class="pill acc">'+esc(m.by)+'</span>'+(sid||!m.sid||!(anyStu(m.sid)||stu(m.sid))?'':'<b>'+esc((anyStu(m.sid)||stu(m.sid)).name)+':</b>')+'<span style="flex:1">'+esc(m.text)+'</span><span class="muted num">'+esc(m.t)+'</span></div>').join('')+'</section>';}
 (function(){const _sr=studentReport;
   studentReport=function(sid){const h=_sr(sid); if(V.role!=='teacher') return h;
     const i=h.indexOf('</section>')+10; return h.slice(0,i)+teacherSummary(sid)+'<div class="cols"><div class="c7" style="display:flex;flex-direction:column;gap:16px">'+progressChart(sid)+'</div><div class="c5" style="display:flex;flex-direction:column;gap:16px">'+msgPanel(sid)+'</div></div>'+h.slice(i);};
@@ -3325,6 +3325,40 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-vx]'); if(
   else if(k==='bk'){(N18.bkst=N18.bkst||{})[v]=b.dataset.s; const rq=VX.req&&VX.req[v]; if(rq&&b.dataset.s==='ok'){const s=anyStu(rq.sid)||cStu(rq.sid); CALX.push({id:'vx'+v+Date.now(),t:'appt',title:'مقابلة ولي أمر '+s.name+' مع الوكيلة',date:rq.date,time:rq.time,to:{k:'parent',v:rq.sid},note:(rq.why||'')+(rq.mode==='meet'?' · عن طريق Google Meet':' · حضوري بالمدرسة'),meet:rq.mode==='meet'}); calSave();} render(); toast(b.dataset.s==='ok'?'✓ وافقتي، وانضاف للتقويم ووصل لولي الأمر':'وصل اعتذارج لولي الأمر');}
 },true);
 
+/* ================= المشرفة (20 نوفمبر): التواصل — ترسل وتستقبل (الأهل · الوكيلة · بوصلة) ================= */
+(function(){try{if(!MSGS.some(m=>m.to&&m.to.includes('monitor'))){const all=vxAll(), sn=c=>(all.find(s=>s.cls===c)||all[0]);
+  MSGS.push({sid:'s1',from:'vice',to:['monitor'],text:'أ. هيا، لاحظت زيادة بالغياب عن الطابور الصباحي بـ10/6 هالأسبوع. ممكن تركزين عليه بكرة وتبلغيني؟',by:'أ. زينب الكايد',toN:MON.name,t:'اليوم ٧:٠٥ ص'},
+   {sid:sn('10-5').id,from:'parent',to:['monitor'],text:'السلام عليكم، بنتي '+sn('10-5').name+' تقول تأخرت أمس بسبب الزحمة، ممكن ما تنحسب عليها مخالفة؟',by:'ولي أمر '+sn('10-5').name,toN:MON.name,t:'أمس ٨:٤٠ م'},
+   {sid:'s1',from:'counselor',to:['monitor'],text:'قمر عندها ضغط دراسي هالفترة، إذا لاحظتي عليها شي بالفسحة أو الطابور بلغيني 🤍',by:'بوصلة',toN:MON.name,t:'أمس ١٢:٣٠ م'}); msgSave();}}catch(e){}})();
+const MX=N18.mx||(N18.mx={to:'parent',sid:'',txt:'',rp:null});
+function monStu(){return vxAll().filter(s=>MON.classes.includes(s.cls));}
+function monMsgPanel(){const inb=MSGS.filter(m=>m.to&&m.to.includes('monitor')).slice().reverse(), sent=MSGS.filter(m=>m.from==='monitor').slice().reverse().slice(0,5), st=monStu();
+  const fromI={vice:'🗂️',parent:'🏠',counselor:'🧭'};
+  return '<section class="panel" id="mxin"><div class="panel-h"><h2>📨 رسائل وصلتج</h2><span class="spacer"></span><span class="pill warn">'+inb.filter(m=>!MSGS.some(x=>x.re===MSGS.indexOf(m))).length+' تنتظر رد</span></div>'+
+   (inb.length?inb.map(m=>{const i=MSGS.indexOf(m), rep=MSGS.filter(x=>x.re===i); return '<div class="pm-m"><div class="row small"><span class="pill acc">'+(fromI[m.from]||'✉️')+' '+esc(m.by)+'</span><span class="muted num">'+esc(m.t||'')+'</span><span class="spacer"></span>'+(rep.length?'<span class="pill good">✓ رديتي</span>':'')+'</div><p>'+esc(m.text)+'</p>'+
+     rep.map(x=>'<p class="small" style="opacity:.8">↩️ ردج: '+esc(x.text)+'</p>').join('')+
+     (MX.rp===i?'<textarea id="mxRp" placeholder="اكتبي ردج…"></textarea><div class="row" style="gap:8px;margin-top:6px"><button class="btn primary" data-mx2="rsend" data-i="'+i+'">إرسال</button><button class="btn" data-mx2="rcancel">إلغاء</button></div>':'<button class="k-soft" data-mx2="ropen" data-i="'+i+'">↩️ ردّي</button>')+'</div>';}).join(''):'<div class="empty">ما في رسائل 🤍</div>')+'</section>'+
+   '<section class="panel" id="mxnew"><h2>✉️ رسالة جديدة</h2><label class="field">لمنو؟<select id="mxTo"><option value="parent"'+(MX.to==='parent'?' selected':'')+'>🏠 ولي أمر طالبة</option><option value="vice"'+(MX.to==='vice'?' selected':'')+'>🗂️ الوكيلة — أ. زينب الكايد</option><option value="counselor"'+(MX.to==='counselor'?' selected':'')+'>🧭 بوصلة (مدار)</option></select></label>'+
+   '<label class="field">بخصوص الطالبة'+(MX.to==='parent'?'':' (اختياري)')+'<select id="mxSid"><option value="">'+(MX.to==='parent'?'اختاري الطالبة…':'— بدون —')+'</option>'+MON.classes.map(c=>'<optgroup label="'+esc(clsName(c))+'">'+st.filter(s=>s.cls===c).map(s=>'<option value="'+s.id+'"'+(MX.sid===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</optgroup>').join('')+'</select></label>'+
+   '<div class="row" style="gap:6px;flex-wrap:wrap;margin:4px 0 8px">'+['شكراً على تعاونكم، التزامها هالأسبوع ممتاز 🤍','تكررت عليها نفس الملاحظة، نتمنى تتابعونها معانا.','ممكن نتواصل بخصوص تأخرها عن الطابور؟'].map(t=>'<button class="k-soft" data-mx2="tpl" data-t="'+esc(t)+'">'+esc(t)+'</button>').join('')+'</div>'+
+   '<label class="field">الرسالة<textarea id="mxTxt" placeholder="اكتبي رسالتج…">'+esc(MX.txt||'')+'</textarea></label><button class="btn primary" data-mx2="send">إرسال</button>'+
+   (sent.length?'<div class="pm-sent"><b class="small">📤 رسائلج</b>'+sent.map(m=>'<div class="row small"><span class="pill none">'+esc(m.toN)+'</span><span style="flex:1">'+esc(m.text)+'</span><span class="pill good">✓ وصلت</span></div>').join('')+'</div>':'')+'</section>';}
+document.addEventListener('change',e=>{if(e.target.id==='mxTo'){MX.to=e.target.value; MX.txt=($('#mxTxt')||{}).value||''; render();} if(e.target.id==='mxSid') MX.sid=e.target.value;});
+document.addEventListener('input',e=>{if(e.target.id==='mxTxt') MX.txt=e.target.value;});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mx2]'); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); const a=b.dataset.mx2, now=new Date().toLocaleTimeString('ar-KW',{hour:'numeric',minute:'2-digit'});
+  if(a==='tpl'){MX.txt=b.dataset.t; const t=$('#mxTxt'); if(t) t.value=MX.txt; return;}
+  if(a==='ropen'){MX.rp=+b.dataset.i; render(); setTimeout(()=>{const t=$('#mxRp'); t&&t.focus();},50); return;}
+  if(a==='rcancel'){MX.rp=null; render(); return;}
+  if(a==='rsend'){const i=+b.dataset.i, m=MSGS[i], t=(($('#mxRp')||{}).value||'').trim(); if(!t){toast('اكتبي ردج أول');return;}
+    const me=V.role==='vice'?'vice':'monitor'; MSGS.push({sid:m.sid,from:me,to:[m.from],re:i,text:t,by:me==='vice'?'أ. زينب الكايد':MON.name,toN:m.by,t:now}); msgSave(); MX.rp=null; render(); toast('📨 وصل ردج إلى '+m.by); return;}
+  const to=MX.to, sid=($('#mxSid')||{}).value||'', t=(($('#mxTxt')||{}).value||'').trim();
+  if(to==='parent'&&!sid){toast('اختاري الطالبة أول');return;} if(!t){toast('اكتبي الرسالة أول');return;}
+  const toN=to==='parent'?'ولي أمر '+anyStu(sid).name:to==='vice'?'الوكيلة':'بوصلة';
+  MSGS.push({sid:sid||null,from:'monitor',to:[to],text:t,by:MON.name,toN,t:now}); msgSave(); MX.txt=''; MX.sid=''; render(); toast('📨 وصلت إلى '+toN+' ✓');},true);
+/* اللي ترسله المشرفة أو ولي الأمر للوكيلة يطلع عندها بـ«وصل من المشرفات» */
+function vxMsgs(){const l=MSGS.filter(m=>m.to&&m.to.includes('vice')&&m.from).slice().reverse().slice(0,6); if(!l.length) return '';
+  return '<section class="panel"><h2>📨 رسائل وصلتج</h2>'+l.map(m=>{const i=MSGS.indexOf(m), rep=MSGS.filter(x=>x.re===i); return '<div class="pm-m"><div class="row small"><span class="pill acc">'+(m.from==='monitor'?'📋 ':'🏠 ')+esc(m.by)+'</span><span class="muted num">'+esc(m.t||'')+'</span><span class="spacer"></span>'+(rep.length?'<span class="pill good">✓ رديتي</span>':'')+'</div><p>'+esc(m.text)+'</p>'+rep.map(x=>'<p class="small" style="opacity:.8">↩️ ردج: '+esc(x.text)+'</p>').join('')+(MX.rp===i?'<textarea id="mxRp" placeholder="اكتبي ردج…"></textarea><div class="row" style="gap:8px;margin-top:6px"><button class="btn primary" data-mx2="rsend" data-i="'+i+'">إرسال</button><button class="btn" data-mx2="rcancel">إلغاء</button></div>':'<button class="k-soft" data-mx2="ropen" data-i="'+i+'">↩️ ردّي</button>')+'</div>';}).join('')+'</section>';}
+
 /* ================= 🪐 الصفحة الرئيسية لكل شخصية (19 نوفمبر): كل ميزة بمكان واحد بس ================= */
 const HUB={role:null,page:'home'};
 (function(){
@@ -3369,13 +3403,14 @@ const TL={
   {k:'mon',i:'🧾',n:'ملاحظات المشرفات',d:'جدول الشعبة بالألوان… اضغطي على أي طالبة',c:'#ff8fbf',keep:M=>{const d=document.createElement('div'); d.innerHTML=cViolPanel(); return [d.firstElementChild];}},
   calTile]},
  vice:{home:M=>{const k=M.querySelector(':scope > .kpis'); const d=document.createElement('div'); d.innerHTML=vxTrend(); return [k,d.firstElementChild];}, tiles:[
-  {k:'in',i:'📥',n:'وصل من المشرفات',d:'بحث بالاسم + فلتر الصف والشعبة',c:'#ff8fbf',big:1,keep:M=>{const d=document.createElement('div'); d.innerHTML=vxInbox(); return [...d.children];}},
+  {k:'in',i:'📥',n:'وصل من المشرفات',d:'ملاحظات ورسائل المشرفات + بحث بالاسم',c:'#ff8fbf',big:1,keep:M=>{const d=document.createElement('div'); d.innerHTML=vxMsgs()+vxInbox(); return [...d.children];}},
   {k:'file',i:'🔎',n:'ملف أي طالبة',d:'تقرير + ملاحظاتج + رسالة للأهل أو الطالبة',c:'#ffd36e',big:1,keep:M=>{const d=document.createElement('div'); d.innerHTML=vxFile(); return [...d.children];}},
   {k:'many',i:'⚠️',n:'عليها 3 مخالفات أو أكثر',d:'اضغطي الاسم تطلع مخالفاتها',c:'#ff7a8a',stat:()=>safe(()=>vxAll().filter(s=>violOf(s.id).length>=3).length+' طالبات'),keep:M=>{const d=document.createElement('div'); d.innerHTML=vxNames('many'); return [...d.children];}},
   {k:'top',i:'🌟',n:'الفائقات',d:'بدون مخالفات + شهادة تميّز',c:'#5fe0a8',stat:()=>safe(()=>vxAll().filter(s=>avgTerm(s)>=90&&!violOf(s.id).length).length+' طالبات'),keep:M=>{const d=document.createElement('div'); d.innerHTML=vxNames('top'); return [...d.children];}},
   {k:'cal',i:'📅',n:'التقويم والمقابلات',d:'أضيفي مواعيد + وافقي على طلبات أولياء الأمور',c:'#7cc8ff',stat:()=>safe(()=>{const n=4-Object.keys(N18.bkst||{}).filter(k=>/^rq/.test(k)).length; return n>0?n+' طلبات تنتظر':'';}),keep:M=>{const d=document.createElement('div'); d.innerHTML=vxBook(); return [d.firstElementChild,id(M,'mcal')];}}]},
  monitor:{home:M=>[sec(M,/هلا أ\./),id(M,'msum')], tiles:[
   {k:'rasd',i:'📋',n:'ارصدي ملاحظة',d:'اختاري الطالبة… والملاحظة توصل للوكيلة وولي الأمر بنفس اللحظة',c:'#ff8fbf',big:1,keep:M=>[...M.querySelectorAll('.cols .c7 > section, .cols .c5 > section')]},
+  {k:'msg',i:'💬',n:'الرسائل',d:'رسائل لولي الأمر والوكيلة وبوصلة… وردّي على اللي يوصلج',c:'#7cc8ff',big:1,stat:()=>safe(()=>{const n=MSGS.filter(m=>m.to&&m.to.includes('monitor')&&!MSGS.some(x=>x.re===MSGS.indexOf(m))).length; return n?n+' رسائل تنتظر رد':'';}),keep:M=>{const d=document.createElement('div'); d.innerHTML=monMsgPanel(); return [...d.children];}},
   calTile]},
  admin:{top:M=>[M.querySelector('section.scope')],home:M=>[M.querySelector('#kpis')], tiles:[
   {k:'ask',i:'✦',n:'اسألي البيانات',d:'سؤال بالعربي… وGemini يجاوب من بيانات المدرسة',c:'#5fe0a8',big:1,keep:M=>[id(M,'askai')]},
