@@ -80,7 +80,7 @@
 .hub-tx small{font-size:.86rem;opacity:.78;line-height:1.45}
 .hub-tx em{font-style:normal;align-self:flex-start;margin-top:4px;padding:3px 12px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c);font-weight:700;font-size:.85rem}
 .hub-go{position:absolute;left:16px;bottom:14px;opacity:.45;font-size:1.1rem}
-.hub-bar{display:flex;align-items:center;gap:14px}
+.hub-bar{display:flex;align-items:center;gap:14px}.hub-bar .hub-back{margin-inline-start:auto}
 .hub-bar h2{margin:0;font-size:1.35rem;display:flex;align-items:center;gap:10px}
 .hub-bar h2 span{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 40%,color-mix(in srgb,var(--c) 55%,#141846) 100%);font-size:20px}
 .hub-back{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:1px solid #FFD166;background:rgba(255,209,102,.12);color:#FFD166;cursor:pointer}
@@ -3293,9 +3293,9 @@ render=function(){
   const wrap=document.createElement('div'); wrap.className='hub';
   top.forEach(n=>wrap.appendChild(n));
   if(t){
-    const bar=document.createElement('div'); bar.className='hub-bar'; bar.innerHTML='<button type="button" class="hub-back" data-hub="home">→ الرئيسية</button><h2><span style="--c:'+t.c+'">'+t.i+'</span> '+t.n+'</h2>'; wrap.appendChild(bar);
+    const bar=document.createElement('div'); bar.className='hub-bar'; bar.innerHTML='<h2><span style="--c:'+t.c+'">'+t.i+'</span> '+t.n+'</h2><button type="button" class="hub-back" data-hub="home">🏠 الرئيسية</button>'; wrap.appendChild(bar);
     const body=document.createElement('div'); body.className='hub-body'; picked.forEach(n=>body.appendChild(n)); wrap.appendChild(body);
-    if(!picked.length) body.innerHTML='<div class="empty">ما في شي هني الحين</div>';
+    if(!picked.length) body.innerHTML='<div class="empty">ما في شي هني الحين</div>'; else {const f=picked[0], h=f&&f.querySelector('h2,h3'); if(h&&h.textContent.replace(/[^\u0600-\u06FF ]/g,'').trim()===t.n.trim()) h.style.display='none';}
   } else {
     picked.forEach(n=>wrap.appendChild(n));
     let bg=C.tiles.filter(x=>x.big), sm=C.tiles.filter(x=>!x.big); if(sm.length===1){bg=bg.concat(sm); sm=[];} [[bg,'big'],[sm,'sm']].forEach(([l,c])=>{if(!l.length) return; const g=document.createElement('div'); g.className='hub-grid '+c; g.style.setProperty('--n',Math.min(l.length,c==='big'?4:5)); g.innerHTML=l.map(tileHTML).join(''); wrap.appendChild(g);});
@@ -3304,7 +3304,7 @@ render=function(){
   if(r==='student') hubPlanLite(M);
 };
 document.addEventListener('click',e=>{const b=e.target.closest('[data-hub]'); if(!b) return; const a=b.dataset.hub;
-  if(a==='go'||a==='home'){e.preventDefault(); e.stopImmediatePropagation(); HUB.page=a==='go'?b.dataset.k:'home'; render(); scrollTo({top:0,behavior:'smooth'});}
+  if(a==='go'||a==='home'){e.preventDefault(); e.stopImmediatePropagation(); const hs=history.state; if(a==='home'&&hs&&hs.madar&&(hs.hub&&hs.hub!=='home'||hs.one)){history.back(); return;} if(a==='go') try{history.pushState({madar:1,hub:b.dataset.k,role:V.role},'');}catch(_){} HUB.page=a==='go'?b.dataset.k:'home'; render(); scrollTo({top:0,behavior:'smooth'});}
   else if(a==='unlite'){e.preventDefault(); e.stopImmediatePropagation(); const L=N18.lite; if(L){L.forEach(x=>{const p=S.plans.find(q=>q.id===x.id); if(p){p.day=x.day; p.why=x.why;}}); N18.lite=null;} render(); toast('↩️ رجعت خطتج الأصلية');}
 },true);
 /* «خففي خطتي» ← يحفظ الخطة قبل، وبعدها يطلع «رجّعي خطتي الأصلية» */
@@ -3322,6 +3322,18 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-hub="pop"]
 
 /* البوب أب أول ما ينفتح الموقع = نفس النسخة الكاملة (فيها التقويم وأدوات قوقل) */
 (function(){const m=$('#modal'); if(m&&!m.hidden&&/أهلًا بالحكام/.test(m.textContent)) judgePop();})();
+/* زر «تراجع» حق المتصفح/الجوال يرجع خطوة وحدة داخل الموقع (20 نوفمبر) */
+(function(){let skip=false; const push=st=>{try{history.pushState(Object.assign({madar:1},st),'');}catch(e){}};
+  try{history.replaceState({madar:1,base:1},'');}catch(e){}
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-gate="one"]'); if(!b) return;
+    if(b.dataset.gate==='one') push({hub:HUB.page,role:V.role,one:b.dataset.sid});},true);
+  const _ge=gateEnter; gateEnter=function(){const r=_ge.apply(this,arguments); const st=history.state||{}; if(!st.hub) push({hub:'home',role:V.role}); return r;};
+  addEventListener('popstate',e=>{const s=e.state||{}; if(!GATE.who) return; if(s.base){try{gateOut();}catch(_){} return;}
+    if(!$('#modal').hidden) closeModal();
+    if(s.one){V.view='one'; V.sid=s.one;} else if(V.view==='one'&&(V.role==='teacher'||V.role==='counselor')){V.view='class';}
+    HUB.page=s.hub||'home'; render(); scrollTo({top:0});});
+})();
+
 if(GATE.who) render();
 </script>
 
