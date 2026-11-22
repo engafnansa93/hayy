@@ -700,7 +700,7 @@ function demoState(){
       {id:'s1', name:'قمر', cls:'10-6', parent:'ولي أمر قمر', abs:1, hw:0, goal:'أرفع درجة الكيمياء', term:{chem:74,phys:88,math:85,bio:90,arabic:82,eng:86,social:80}, interests:{creative:5,social:4,research:3,practical:3,leading:2,organizing:2}},
       {id:'s2', name:'نورة', cls:'10-6', parent:'ولي أمر نورة', abs:0, hw:0, goal:'أشارك في أولمبياد الكيمياء', term:{chem:98,phys:97,math:96,bio:95,arabic:90,eng:94,social:88}, interests:{research:5,practical:4,creative:2,social:3,leading:3,organizing:2}},
       {id:'s3', name:'سارة', cls:'10-6', parent:'ولي أمر سارة', abs:0, hw:0, goal:'أدخل مسار العلوم', term:{chem:92,phys:94,math:96,bio:85,arabic:78,eng:84,social:76}, interests:{research:5,social:4,practical:3,creative:2,leading:3,organizing:3}},
-      {id:'s4', name:'ريم', cls:'10-6', parent:'ولي أمر ريم', abs:2, hw:1, goal:'', term:{chem:68,phys:72}, interests:null},
+      {id:'s4', name:'ريم', cls:'10-6', parent:'ولي أمر ريم', abs:2, hw:1, goal:'', term:{chem:68,phys:72,math:71,bio:74,arabic:79,eng:75,social:77}, interests:null},
       {id:'s5', name:'هيا', cls:'10-6', parent:'ولي أمر هيا', abs:0, hw:2, goal:'', term:{chem:75,phys:66,math:70,bio:78,arabic:85,eng:80,social:84}, interests:{social:5,leading:4,organizing:3,creative:3,research:2,practical:2}},
       {id:'s6', name:'لطيفة', cls:'10-6', parent:'ولي أمر لطيفة', abs:4, hw:1, goal:'', term:{chem:70,phys:74,math:72,bio:76,arabic:88,eng:79,social:90}, interests:{social:4,creative:4,organizing:3,research:2,practical:2,leading:3}},
       {id:'s7', name:'مها', cls:'10-6', parent:'ولي أمر مها', abs:0, hw:0, goal:'', term:{chem:84,phys:82,math:80,bio:86,arabic:83,eng:88,social:82}, interests:{organizing:5,leading:4,research:3,social:3,practical:2,creative:2}},
@@ -1613,7 +1613,7 @@ function boot(){
     S=demoState(); render();
     call('getBootstrap').then(d=>{
       if(d.config) Object.assign(CONFIG,d.config,{links:Object.assign(CONFIG.links,d.config.links||{})});
-      if(d.mode==='live'){ S=d.state; S.mode='live'; S.chats=S.chats||{}; S.reviews=S.reviews||{}; S.requests=S.requests||[]; S.audit=S.audit||[]; S.practice=S.practice||[];
+      if(d.mode==='live'&&window.MADAR_LIVE){ S=d.state; S.mode='live'; S.chats=S.chats||{}; S.reviews=S.reviews||{}; S.requests=S.requests||[]; S.audit=S.audit||[]; S.practice=S.practice||[];
         V.role=S.me.roles[0]; V.sid=S.me.self||(S.students[0]&&S.students[0].id); V.subj=Object.keys(S.subjects)[0]; V.assess=null; V.week=S.week||1; }
       S.gemini=d.gemini?'live':'sim'; render();
       try{ google.script.url.getLocation(loc=>{const sk=loc.parameter&&loc.parameter.play; if(sk&&GAMES[sk]){ if(S.me.roles.includes('student')) V.role='student'; render(); openGame(S.me.self||V.sid,sk,null);} }); }catch(e){}
@@ -2554,6 +2554,7 @@ const QZ={
   eng:{t:'Grammar',q:[['She ___ to school every day.','goes',['go','going','gone']],['They ___ playing football now.','are',['is','was','be']],['Past simple of "write":','wrote',['writed','written','writes']],['I have lived here ___ 2020.','since',['for','from','at']],['Plural of "child":','children',['childs','childes','child']]]},
   arabic:{t:'النحو',q:[['علامة رفع الفعل المضارع صحيح الآخر؟','الضمة',['الفتحة','الكسرة','السكون']],['«كان» وأخواتها:','ترفع الاسم وتنصب الخبر',['تنصب الاسم وترفع الخبر','ترفعهما معًا','تنصبهما معًا']],['إعراب «الطالبةُ» في: نجحت الطالبةُ','فاعل مرفوع',['مبتدأ مرفوع','مفعول به منصوب','خبر مرفوع']],['«إنّ» وأخواتها:','تنصب الاسم وترفع الخبر',['ترفع الاسم وتنصب الخبر','تجزم الفعل','تنصبهما معًا']],['جمع «كتاب»:','كُتُب',['كتابات فقط','كتابون','كتابين']]]},
   social:{t:'تاريخ الكويت',q:[['سنة استقلال الكويت؟','1961',['1950','1971','1945']],['صدر دستور الكويت سنة؟','1962',['1961','1975','1990']],['العيد الوطني للكويت؟','25 فبراير',['26 فبراير','19 يونيو','11 نوفمبر']],['يوم التحرير؟','26 فبراير 1991',['25 فبراير 1990','2 أغسطس 1990','1 يناير 1992']],['أول انتخابات لمجلس الأمة كانت سنة؟','1963',['1961','1970','1981']]]},
+  islamic:{t:'أركان الإسلام والتجويد',q:[['عدد أركان الإسلام؟','5',['3','4','6']],['أول ركن من أركان الإسلام؟','الشهادتان',['الصلاة','الزكاة','الحج']],['عدد الصلوات المفروضة في اليوم والليلة؟','5',['3','4','7']],['حكم النون الساكنة إذا جاء بعدها حرف من حروف الحلق؟','الإظهار',['الإدغام','الإخفاء','الإقلاب']],['شهر الصيام هو شهر…','رمضان',['شعبان','شوال','رجب']]]},
   it:{t:'أساسيات البرمجة',q:[['الخوارزمية هي…','خطوات مرتبة لحل مشكلة',['لغة برمجة','جهاز حاسوب','برنامج رسم']],['1 بايت = ؟','8 بت',['10 بت','4 بت','16 بت']],['الحلقة التكرارية نستخدمها عشان…','نكرر أوامر',['نحذف ملف','نرسم شكل','نطفي الجهاز']],['ناتج 7 % 2 في بايثون؟','1',['3.5','3','0']],['نوع البيانات لـ "مرحبا"؟','نص (string)',['رقم صحيح','منطقي','عشري']]]}
 };
 let QLOG=(()=>{try{return JSON.parse(localStorage.getItem('madar.qlog')||'[]')}catch(e){return []}})();
