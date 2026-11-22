@@ -3438,7 +3438,7 @@ render=function(){
   const wrap=document.createElement('div'); wrap.className='hub';
   top.forEach(n=>wrap.appendChild(n));
   if(t){
-    const bar=document.createElement('div'); bar.className='hub-bar'; bar.innerHTML='<h2><span style="--c:'+t.c+'">'+t.i+'</span> '+t.n+'</h2><button type="button" class="hub-back" data-hub="home">🏠 الرئيسية</button>'; wrap.appendChild(bar);
+    const bar=document.createElement('div'); bar.className='hub-bar'; bar.innerHTML='<h2><span style="--c:'+t.c+'">'+t.i+'</span> '+t.n+'</h2><button type="button" class="hub-back" data-hub="home">↩️ رجوع</button>'; wrap.appendChild(bar);
     const body=document.createElement('div'); body.className='hub-body'; picked.forEach(n=>body.appendChild(n)); wrap.appendChild(body);
     if(!picked.length) body.innerHTML='<div class="empty">ما في شي هني الحين</div>'; else {const f=picked[0], h=f&&f.querySelector('h2,h3'); if(h&&h.textContent.replace(/[^\u0600-\u06FF ]/g,'').trim()===t.n.trim()) h.style.display='none';}
   } else {
